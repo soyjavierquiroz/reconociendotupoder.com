@@ -1,13 +1,13 @@
 # Server-only capture relay env
 # Configure these on the PHP/web server. Do not expose them through VITE_*.
 
-CAPTURE_SITE_ID=example-site
-CAPTURE_ALLOWED_ORIGINS=https://example.com,https://www.example.com
+CAPTURE_SITE_ID=reconociendo-tu-poder
+CAPTURE_ALLOWED_ORIGINS=https://reconociendotupoder.com,https://www.reconociendotupoder.com
 CAPTURE_ADS_WEBHOOK_URL=https://crm.example.com/webhook/ads
 CAPTURE_ORGANIC_WEBHOOK_URL=https://crm.example.com/webhook/organic
 CAPTURE_WEBHOOK_URL=
-CAPTURE_DEFAULT_LIST_SLUG=example-main-list
-CAPTURE_ORGANIC_LIST_SLUG=example-organic-list
+CAPTURE_DEFAULT_LIST_SLUG=rtp-main-list
+CAPTURE_ORGANIC_LIST_SLUG=rtp-organic-list
 CAPTURE_ALLOWED_CHANNELS=ads,organic
 CAPTURE_TIMEOUT_SECONDS=10
 CAPTURE_LOG_PII=false

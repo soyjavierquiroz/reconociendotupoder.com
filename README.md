@@ -1,30 +1,52 @@
-# Funnel Boilerplate Parent
+# Reconociendo Tu Poder
 
-Clean parent repo for cloning funnels without inheriting a child site's identity, assets, checkout, tracking, capture endpoints, or deploy assumptions.
+Child site for `reconociendotupoder.com`, based on `funnel-boilerplate` tag `parent-clean-v1`.
 
-## Current Baseline
+## Repository Lineage
 
-- Active site config: `src/site/dna.config.ts`.
-- Default product: `Example Funnel`.
-- Default event: `Example Event`.
-- Default site id: `EXAMPLE_SITE`.
-- Default asset: `public/assets/funnel-placeholder.svg`.
-- Default ads route prefix: `VITE_ADS_ROUTE_PREFIX=/x9m`.
-- Capture relay: `public/capture.php`, configured only with server env keys prefixed by `CAPTURE_`.
+- Base: `funnel-boilerplate parent-clean-v1`.
+- Upstream: `git@github.com:soyjavierquiroz/funnel-boilerplate.git`.
+- Origin: `git@github.com:soyjavierquiroz/reconociendotupoder.com.git`.
+- Branch: `reconociendotupoder`.
 
-The parent does not include a site-specific deploy script or a legacy Docker stack. Child sites own their deployment path.
+Core engine, routing, analytics, shared components, and `public/capture.php` come from upstream unless a change should apply to every clone.
 
-## Clone Surface
+## Current Site Identity
 
-For a new clone, edit:
+- Product/event: `Reconociendo Tu Poder`.
+- Site id: `RECONOCIENDO_TU_PODER`.
+- Domain: `reconociendotupoder.com`.
+- Landing slug: `reconociendo-tu-poder`.
+- Ads route prefix: `VITE_ADS_ROUTE_PREFIX=/x9m`.
+- Capture frontend endpoint: `VITE_CAPTURE_WEBHOOK_URL=/capture.php`.
+- Capture remains in dry-run/placeholders until real server env is configured.
+- Assets currently point to `public/assets/funnel-placeholder.svg`.
 
-- `.env` and server env values.
+## Editable Surface
+
+Primary RTP-owned edits should stay in:
+
+- `.env`.
 - `src/site/**`, especially `src/site/dna.config.ts`.
-- `public/assets/**` with assets owned by the clone.
+- `public/assets/reconociendo-tu-poder/**`.
+- Server env values prefixed with `CAPTURE_*`.
 
-`VITE_ADS_ROUTE_PREFIX` is a public browser value used to separate ads routes from organic routes. Each clone may change it. It must start with `/`, must not be `/`, and must not end with `/`.
+Do not put secrets, real tokens, or private webhook URLs in committed files.
 
-Traffic attribution is resolved by `src/core/attribution`. The canonical priority is:
+## Routing
+
+Current public routes are:
+
+- `/`
+- `/x9m`
+- `/oferta`
+- `/x9m/oferta`
+- `/confirmacion`
+- `/x9m/confirmacion`
+
+`VITE_ADS_ROUTE_PREFIX` is a public browser value used to separate ads routes from organic routes. It must start with `/`, must not be `/`, and must not end with `/`.
+
+Traffic attribution is resolved by upstream code in `src/core/attribution`. The canonical priority is:
 
 1. Ads route prefix.
 2. `fbclid`.
@@ -40,7 +62,7 @@ Analytics, browser pixels, CAPI relay payloads, and the event capture payload sh
 
 For new forms and checkout CTAs, resolve attribution once in the route/component and pass the `ResolvedAttribution` object into analytics. Capture payloads should include the shared `buildAttributionEventFields(attribution)` output. Legacy VSL helpers such as `AdvancedCaptureForm`, `PricingCard`, and `ExpertCtaButton` are not clone-safe capture/tracking templates until they are adapted to that contract.
 
-Keep shared components, analytics helpers, routing, and capture relay generic unless the change should flow back to every clone.
+Keep shared components, analytics helpers, routing, and capture relay generic unless the change should flow back upstream to every clone.
 
 ## Validation
 
