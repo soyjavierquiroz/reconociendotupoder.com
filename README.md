@@ -33,6 +33,11 @@ Primary RTP-owned edits should stay in:
 
 Do not put secrets, real tokens, or private webhook URLs in committed files.
 
+## Operations
+
+- [Deploy on CyberPanel](OPERATIONS/deploy-cyberpanel.md)
+- [Capture server env](OPERATIONS/capture-server-env.md)
+
 ## Routing
 
 Current public routes are:
