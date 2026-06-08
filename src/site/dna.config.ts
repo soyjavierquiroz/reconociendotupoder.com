@@ -262,6 +262,8 @@ export interface DnaConfig {
     };
     offer: {
       priceLabel: string;
+      regularPriceLabel: string;
+      valueTotalLabel: string;
       ctaLabel: string;
     };
     bumpPrice: string;
@@ -1160,6 +1162,8 @@ export const DNA = {
     },
     offer: {
       priceLabel: 'Bs 29',
+      regularPriceLabel: 'Bs 97',
+      valueTotalLabel: 'Bs 286',
       ctaLabel: 'Quiero mi acceso por Bs 29',
     },
     bumpPrice: 'Bs 15',

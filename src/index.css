@@ -366,6 +366,7 @@
   .nle-ritual-copy p,
   .nle-price-card p,
   .nle-payment-card p,
+  .nle-value-stack,
   .nle-guarantee-card p,
   .nle-legal-note p,
   .nle-faq-item p,
@@ -476,7 +477,7 @@
   }
 
   .nle-identification .nle-container--narrow {
-    max-width: 660px;
+    max-width: 620px;
   }
 
   .nle-flow-copy {
@@ -497,7 +498,7 @@
   .nle-flow-copy .nle-gold-line {
     color: rgb(var(--nle-champagne));
     font-family: var(--font-sans);
-    font-size: clamp(1.35rem, 5.8vw, 1.8rem);
+    font-size: clamp(1.22rem, 5.2vw, 1.62rem);
     font-weight: 900;
   }
 
@@ -506,13 +507,17 @@
   }
 
   .nle-ritual-card {
+    position: relative;
     display: grid;
     gap: 1.25rem;
+    border: 1px solid rgb(var(--nle-ritual-gold) / 0.58);
     border-radius: 2rem;
     background:
       radial-gradient(circle at 14% 18%, rgb(var(--nle-ritual-gold) / 0.22), transparent 12rem),
       linear-gradient(145deg, rgb(var(--nle-champagne) / 0.95), rgb(var(--nle-warm-white) / 0.88));
-    box-shadow: 0 26px 90px rgb(var(--nle-deep-night) / 0.34);
+    box-shadow:
+      0 26px 90px rgb(var(--nle-deep-night) / 0.34),
+      0 0 70px rgb(var(--nle-ritual-gold) / 0.16);
     color: rgb(var(--nle-deep-night));
     padding: 1.45rem;
   }
@@ -520,7 +525,7 @@
   .nle-ritual-number {
     color: rgb(var(--nle-royal-plum));
     font-family: var(--font-sans);
-    font-size: clamp(5.5rem, 30vw, 8.5rem);
+    font-size: clamp(7rem, 34vw, 10rem);
     font-weight: 900;
     letter-spacing: 0;
     line-height: 0.82;
@@ -550,6 +555,10 @@
 
   .nle-method-section .nle-section-header {
     max-width: 740px;
+  }
+
+  .nle-method-section .nle-section-header h2 span {
+    color: rgb(var(--nle-champagne));
   }
 
   .nle-timeline {
@@ -590,14 +599,14 @@
     position: relative;
     z-index: 1;
     display: grid;
-    height: 2.9rem;
-    width: 2.9rem;
+    height: 3.25rem;
+    width: 3.25rem;
     place-items: center;
     border-radius: 999px;
     background: linear-gradient(135deg, rgb(var(--nle-ritual-gold)), rgb(var(--nle-champagne)));
     color: rgb(var(--nle-deep-night));
     font-family: var(--font-sans);
-    font-size: 1.3rem;
+    font-size: 1.55rem;
     font-weight: 900;
     box-shadow: 0 12px 34px rgb(var(--nle-ritual-gold) / 0.22);
   }
@@ -784,6 +793,94 @@
     margin-block: 0.4rem 0.3rem;
   }
 
+  .nle-value-section {
+    padding-block: 5rem;
+  }
+
+  .nle-value-section .nle-section-header {
+    max-width: 720px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .nle-value-stack {
+    display: grid;
+    gap: 1rem;
+    max-width: 940px;
+    margin-inline: auto;
+    border: 1px solid rgb(var(--nle-champagne) / 0.16);
+    border-radius: 1.75rem;
+    background:
+      radial-gradient(circle at 50% 100%, rgb(var(--nle-ritual-gold) / 0.12), transparent 25rem),
+      rgb(var(--nle-warm-white) / 0.045);
+    box-shadow: 0 28px 90px rgb(var(--nle-deep-night) / 0.34);
+    overflow: hidden;
+    padding: 1rem;
+  }
+
+  .nle-value-stack__items {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nle-value-stack__items li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.55rem 0.75rem;
+    align-items: start;
+    border-bottom: 1px solid rgb(var(--nle-champagne) / 0.1);
+    list-style: none;
+    padding: 0.85rem 0.45rem;
+  }
+
+  .nle-value-stack__items li:last-child {
+    border-bottom: 0;
+  }
+
+  .nle-value-stack__items svg {
+    height: 1.2rem;
+    width: 1.2rem;
+    border-radius: 999px;
+    background: rgb(var(--nle-ritual-gold) / 0.16);
+    color: rgb(var(--nle-ritual-gold));
+    padding: 0.18rem;
+  }
+
+  .nle-value-stack__items span {
+    color: rgb(var(--nle-warm-white));
+    font-weight: 800;
+    line-height: 1.4;
+  }
+
+  .nle-value-stack__items strong {
+    grid-column: 2;
+    color: rgb(var(--nle-champagne));
+    font-size: 0.86rem;
+    line-height: 1.3;
+  }
+
+  .nle-value-stack__summary {
+    display: grid;
+    gap: 0.45rem;
+    border-radius: 1.25rem;
+    background: linear-gradient(135deg, rgb(var(--nle-champagne) / 0.96), rgb(var(--nle-ritual-gold) / 0.9));
+    color: rgb(var(--nle-deep-night));
+    padding: 1.25rem;
+  }
+
+  .nle-value-stack__summary p {
+    color: rgb(var(--nle-deep-night));
+    font-weight: 800;
+    line-height: 1.35;
+  }
+
+  .nle-value-stack__summary p:last-child {
+    font-family: var(--font-sans);
+    font-size: 1.12rem;
+  }
+
   .nle-placeholder-mockup {
     position: relative;
     display: grid;
@@ -833,6 +930,25 @@
     gap: 0.75rem;
   }
 
+  .nle-price-anchors {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .nle-price-anchors p {
+    color: rgb(var(--nle-moon-lavender));
+    font-weight: 800;
+  }
+
+  .nle-price-anchors strong {
+    color: rgb(var(--nle-champagne));
+  }
+
+  .nle-price-urgency {
+    color: rgb(var(--nle-champagne)) !important;
+    font-weight: 800;
+  }
+
   .nle-big-price {
     color: rgb(var(--nle-champagne));
     font-family: var(--font-sans);
@@ -844,22 +960,27 @@
   }
 
   .nle-payment-card {
+    grid-template-areas:
+      'header'
+      'visual'
+      'actions';
     border-radius: 1.65rem;
     padding: 1.35rem 1.25rem;
   }
 
-  .nle-payment-copy {
+  .nle-payment-header {
+    grid-area: header;
+    margin-bottom: 0;
+  }
+
+  .nle-payment-actions {
+    grid-area: actions;
     display: grid;
     gap: 1.15rem;
   }
 
-  .nle-payment-copy .nle-section-header {
-    margin-bottom: 0;
-  }
-
   .nle-steps {
     counter-reset: nle-payment-step;
-    margin-bottom: 1.1rem;
   }
 
   .nle-steps li {
@@ -887,31 +1008,23 @@
     font-weight: 900;
   }
 
-  .nle-payment-mockup {
-    display: grid;
-    min-height: 250px;
-    place-items: center;
-    gap: 1rem;
+  .nle-payment-visual {
+    grid-area: visual;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid rgb(var(--nle-whatsapp-green) / 0.36);
     border-radius: 1.45rem;
     background:
       radial-gradient(circle at 50% 18%, rgb(var(--nle-whatsapp-green) / 0.22), transparent 10rem),
       rgb(var(--nle-deep-night) / 0.35);
-    padding: 1.35rem;
-    text-align: center;
+    box-shadow: 0 24px 70px rgb(var(--nle-whatsapp-green) / 0.12);
+    padding: 0.35rem;
   }
 
-  .nle-payment-mockup svg {
-    height: 2.35rem;
-    width: 2.35rem;
-    color: rgb(var(--nle-whatsapp-green));
-  }
-
-  .nle-payment-mockup span {
-    max-width: 16rem;
-    color: rgb(var(--nle-moon-lavender));
-    font-size: 0.9rem;
-    font-weight: 800;
-    line-height: 1.45;
+  .nle-payment-visual img {
+    display: block;
+    width: 100%;
+    border-radius: 1.15rem;
   }
 
   .nle-guarantee-card {
@@ -1015,6 +1128,17 @@
     font-family: var(--font-sans);
     font-size: 1.05rem;
     line-height: 1.25;
+  }
+
+  .nle-final-prices {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .nle-final-prices span {
+    color: rgb(var(--nle-moon-lavender));
+    font-size: 0.9rem;
+    font-weight: 800;
   }
 
   .nle-sticky-cta {
@@ -1201,7 +1325,7 @@
     }
 
     .nle-timeline-item::before {
-      top: 1.45rem;
+      top: 1.62rem;
       right: 0;
       bottom: auto;
       left: 2.9rem;
@@ -1213,6 +1337,27 @@
     .nle-timeline-item div {
       margin-right: 1rem;
       padding: 1rem;
+    }
+
+    .nle-value-stack {
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .nle-value-stack__items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1.5rem;
+    }
+
+    .nle-value-stack__items li:nth-last-child(2) {
+      border-bottom: 0;
+    }
+
+    .nle-value-stack__summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: center;
+      text-align: center;
+      padding: 1.5rem;
     }
 
     .nle-includes-section {
@@ -1291,13 +1436,17 @@
     }
 
     .nle-payment-card {
-      grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.82fr);
+      grid-template-areas:
+        'header visual'
+        'actions visual';
+      grid-template-columns: minmax(0, 0.9fr) minmax(31.25rem, 1.1fr);
       align-items: center;
       gap: 3.5rem;
     }
 
-    .nle-payment-mockup {
-      min-height: 360px;
+    .nle-payment-visual {
+      width: 100%;
+      justify-self: end;
     }
 
     .nle-sticky-cta {
