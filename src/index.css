@@ -970,6 +970,7 @@
 
   .nle-payment-header {
     grid-area: header;
+    max-width: 760px;
     margin-bottom: 0;
   }
 
@@ -1437,11 +1438,34 @@
 
     .nle-payment-card {
       grid-template-areas:
-        'header visual'
+        'header header'
         'actions visual';
-      grid-template-columns: minmax(0, 0.9fr) minmax(31.25rem, 1.1fr);
+      grid-template-columns: minmax(0, 0.82fr) minmax(31.25rem, 1.18fr);
       align-items: center;
-      gap: 3.5rem;
+      gap: 3rem 4rem;
+    }
+
+    .nle-payment-header {
+      width: min(100%, 820px);
+      max-width: none;
+      justify-self: center;
+      text-align: center;
+    }
+
+    .nle-payment-header .nle-eyebrow {
+      justify-self: center;
+    }
+
+    .nle-payment-header h2 {
+      font-size: clamp(2.7rem, 4vw, 3.5rem);
+      line-height: 1.02;
+    }
+
+    .nle-payment-header p:last-child {
+      max-width: 700px;
+      margin-inline: auto;
+      font-size: 1.08rem;
+      line-height: 1.72;
     }
 
     .nle-payment-visual {

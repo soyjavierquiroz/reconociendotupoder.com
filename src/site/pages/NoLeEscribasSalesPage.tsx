@@ -319,7 +319,7 @@ export function NoLeEscribasSalesPage() {
         <SalesQrPayment
           buttonLabel="Recibir mi QR seguro"
           imageAlt="Pago seguro por QR desde WhatsApp en Bolivia"
-          imageSrc="/assets/reconociendo-tu-poder/pago-seguro-por-qr.png"
+          imageSrc="/assets/reconociendo-tu-poder/pago-seguro-por-qr.webp"
           microcopy="El QR se genera según tu orden. No te pediremos datos de tarjeta."
           steps={paymentSteps}
           subtitle="No necesitas tarjeta. No ingresas datos bancarios. Solo dejas tu WhatsApp, recibes tu QR seguro y pagas desde tu app bancaria o billetera móvil."
