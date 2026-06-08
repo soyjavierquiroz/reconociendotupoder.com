@@ -1,5 +1,11 @@
 export { SalesBadge } from './SalesBadge';
 export { SalesButton } from './SalesButton';
+export { SalesFaq } from './SalesFaq';
+export { SalesLegalNote } from './SalesLegalNote';
+export { SalesPlaceholderMockup } from './SalesPlaceholderMockup';
+export { SalesPriceBox } from './SalesPriceBox';
+export { SalesSection } from './SalesSection';
 export { SalesTopBar } from './SalesTopBar';
+export { SalesTimeline } from './SalesTimeline';
 export { StickySalesCta } from './StickySalesCta';
 export { TrustMicrocopy } from './TrustMicrocopy';

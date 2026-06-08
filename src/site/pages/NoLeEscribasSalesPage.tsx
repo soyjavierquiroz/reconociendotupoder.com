@@ -1,16 +1,15 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import {
-  Check,
-  Heart,
-  Pause,
-  ShieldCheck,
-  Sparkles,
-  Smartphone,
-} from 'lucide-react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { Check, Pause, ShieldCheck, Sparkles, Smartphone } from 'lucide-react';
 import { DNA } from '../current';
 import {
   SalesBadge,
   SalesButton,
+  SalesFaq,
+  SalesLegalNote,
+  SalesPlaceholderMockup,
+  SalesPriceBox,
+  SalesSection,
+  SalesTimeline,
   SalesTopBar,
   StickySalesCta,
   TrustMicrocopy,
@@ -43,41 +42,50 @@ const colorVariables: NoLeEscribasColorVariables = {
 };
 
 const pauseSteps = [
-  ['P', 'Parar el impulso'],
-  ['A', 'Aterrizar la emoción'],
-  ['U', 'Ubicar la realidad, no la fantasía'],
-  ['S', 'Sustituir el mensaje por una acción segura'],
-  ['A', 'Acordarte de ti'],
+  {
+    letter: 'P',
+    title: 'Parar el impulso',
+    text: 'Detienes el movimiento antes de escribir, revisar o reclamar.',
+  },
+  {
+    letter: 'A',
+    title: 'Aterrizar la emoción',
+    text: 'Nombras lo que sientes sin juzgarte.',
+  },
+  {
+    letter: 'U',
+    title: 'Ubicar la realidad',
+    text: 'Separas lo que pasó de lo que tu ansiedad está imaginando.',
+  },
+  {
+    letter: 'S',
+    title: 'Sustituir el mensaje',
+    text: 'Cambias el impulso por una acción segura.',
+  },
+  {
+    letter: 'A',
+    title: 'Acordarte de ti',
+    text: 'Vuelves a tu centro antes de volver a su chat.',
+  },
 ] as const;
 
 const receives = [
-  'Kit de emergencia: “No le escribas todavía”',
-  'Reto guiado de 7 días',
-  'PDF + workbook diario',
-  'Audios diarios descargables',
-  'Checklist antes de escribirle',
-  'Carta que no vas a enviar',
-] as const;
-
-const bumpMoments = [
-  'Cuando quieres escribirle.',
-  'Cuando te deja en visto.',
-  'Cuando sube una historia.',
-  'Cuando aparece con un “hola perdida”.',
-  'Cuando lo extrañas de noche.',
-  'Cuando quieres reclamarle.',
-  'Cuando quieres pedir cierre.',
-  'Cuando sientes que te reemplazó.',
-  'Cuando te sientes insuficiente.',
-  'Cuando necesitas volver a ti.',
+  'Módulo de emergencia para empezar cuando estás a punto de escribirle',
+  '7 módulos guiados, uno por día',
+  'Videos explicativos para cada módulo',
+  'PDFs y workbook diario',
+  'Audios descargables de acompañamiento',
+  'Checklist antes de mandar ese mensaje',
+  'Carta que escribes para soltar, no para enviar',
+  'Plan anti-recaída para noches y fines de semana',
 ] as const;
 
 const paymentSteps = [
-  'Tocas el botón de acceso.',
-  'Dejas tu nombre y WhatsApp.',
-  'Recibes las instrucciones y tu QR seguro por WhatsApp.',
-  'Pagas desde tu app bancaria.',
-  'Entras al área privada después de confirmar tu pago.',
+  'Dejas tu nombre y WhatsApp',
+  'Recibes tu QR seguro',
+  'Pagas desde tu app bancaria',
+  'Confirmamos tu pago',
+  'Recibes tu acceso al área de miembros',
 ] as const;
 
 const faqs = [
@@ -118,22 +126,6 @@ const faqs = [
   },
 ] as const;
 
-function Section({
-  children,
-  className = '',
-  id,
-}: {
-  children: ReactNode;
-  className?: string;
-  id?: string;
-}) {
-  return (
-    <section className={`nle-section ${className}`} id={id}>
-      <div className="nle-container">{children}</div>
-    </section>
-  );
-}
-
 function SectionHeader({
   eyebrow,
   title,
@@ -165,26 +157,8 @@ function CheckList({ items }: { items: readonly string[] }) {
   );
 }
 
-function ProductMockup() {
-  return (
-    <div className="nle-product-mockup" aria-label="Mockup visual del producto No Le Escribas" role="img">
-      <div className="nle-product-cover">
-        <span>Método P.A.U.S.A.</span>
-        <strong>No Le Escribas</strong>
-        <small>Kit de emergencia emocional + reto 7 días</small>
-      </div>
-      <div className="nle-product-pages">
-        <span>Workbook</span>
-        <span>Audios</span>
-        <span>Checklist</span>
-      </div>
-    </div>
-  );
-}
-
 export function NoLeEscribasSalesPage() {
   const { ctaLabel, priceLabel } = DNA.noLeEscribas.offer;
-  const bumpPrice = DNA.noLeEscribas.bumpPrice;
   const heroRef = useRef<HTMLElement | null>(null);
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
 
@@ -230,168 +204,142 @@ export function NoLeEscribasSalesPage() {
         </div>
       </section>
 
-      <Section className="nle-identification">
-        <div className="nle-copy-card">
-          <SectionHeader title="Tal vez solo querías mandarle un “hola”." />
-          <div className="nle-prose">
-            <p>Pero tú sabes que no es solo un hola.</p>
-            <p>Es ansiedad. Es esperar que responda. Es querer saber si todavía le importas.</p>
-            <p>Es revisar si está en línea. Es sentir ese nudo en el pecho y pensar:</p>
-            <blockquote>“Si no hago algo, lo pierdo.”</blockquote>
-            <p>Antes de enviar ese mensaje, date 10 minutos para volver a ti.</p>
+      <SalesSection className="nle-identification" width="narrow">
+        <div className="nle-flow-copy">
+          <h2>Tal vez solo querías mandarle un “hola”.</h2>
+          <p>Pero tú sabes que no es solo un hola.</p>
+          <p>Es ansiedad.</p>
+          <p>Es esperar que responda.</p>
+          <p>Es querer saber si todavía le importas.</p>
+          <p>Es revisar si está en línea.</p>
+          <p className="nle-gold-line">Y ahí es donde necesitas una pausa.</p>
+          <p>No una conversación más que te deje peor.</p>
+        </div>
+      </SalesSection>
+
+      <SalesSection className="nle-ten-minute-section" width="narrow">
+        <div className="nle-ritual-card">
+          <span className="nle-ritual-number">10</span>
+          <div className="nle-ritual-copy">
+            <h2>Antes de escribirle, date 10 minutos.</h2>
+            <p>No tienes que prometer que nunca le vas a escribir.</p>
+            <p>No tienes que bloquearlo ahora.</p>
+            <p>No tienes que eliminar su número.</p>
+            <strong>Solo esto: 10 minutos sin enviar el mensaje.</strong>
+            <p>Durante esos 10 minutos, haces una P.A.U.S.A.</p>
           </div>
-          <SalesButton variant="outline">Hacer mi P.A.U.S.A. ahora</SalesButton>
         </div>
-      </Section>
+      </SalesSection>
 
-      <Section>
-        <SectionHeader title="El método P.A.U.S.A." />
-        <div className="nle-pause-grid">
-          {pauseSteps.map(([letter, label]) => (
-            <article className="nle-pause-card" key={letter}>
-              <span>{letter}</span>
-              <h3>{label}</h3>
-            </article>
-          ))}
-        </div>
-      </Section>
+      <SalesSection className="nle-method-section">
+        <SectionHeader
+          eyebrow="Método P.A.U.S.A."
+          title="Un camino corto para salir del impulso."
+          subtitle="No tienes que resolver toda tu historia en una noche. Solo necesitas volver a tierra antes de volver al chat."
+        />
+        <SalesTimeline items={pauseSteps} />
+      </SalesSection>
 
-      <Section>
-        <div className="nle-split">
-          <div>
-            <SectionHeader title="Esto recibes hoy dentro del área de miembros" />
+      <SalesSection className="nle-includes-section">
+        <div className="nle-includes-layout">
+          <SalesPlaceholderMockup>
+            Aquí irá el mockup del producto: videos + PDFs + workbook + audios + área de miembros
+          </SalesPlaceholderMockup>
+          <div className="nle-includes-copy">
+            <SectionHeader
+              title="No es solo un PDF. Es un kit completo para volver a ti."
+              subtitle="Dentro del área de miembros tendrás videos, PDFs, workbook y audios descargables para acompañarte paso a paso durante 7 días."
+            />
             <CheckList items={receives} />
           </div>
-          <ProductMockup />
         </div>
-      </Section>
+      </SalesSection>
 
-      <Section className="nle-price-section" id="pago-qr">
-        <div className="nle-price-card">
-          <SalesBadge>Lanzamiento Bolivia</SalesBadge>
-          <h2>Empieza hoy por solo</h2>
-          <p className="nle-big-price">{priceLabel}</p>
+      <SalesSection className="nle-price-section" id="pago-qr" width="narrow">
+        <SalesPriceBox
+          badge="Lanzamiento Bolivia"
+          buttonLabel={ctaLabel}
+          microcopy="Pago con QR · Sin tarjeta · Acceso al área privada"
+          priceLabel={priceLabel}
+          title="Empieza hoy por solo"
+        >
           <p>
             No porque valga poco. Sino porque queremos que puedas entrar hoy, justo antes de
             mandar ese mensaje que tal vez mañana te duela.
           </p>
-          <SalesButton>{ctaLabel}</SalesButton>
-          <TrustMicrocopy>Pago por QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
-        </div>
-      </Section>
+        </SalesPriceBox>
+      </SalesSection>
 
-      <Section>
-        <div className="nle-bump-card">
-          <div className="nle-bump-top">
-            <div>
-              <p className="nle-eyebrow">Preventa visual</p>
-              <h2>Agrega los 10 audios de emergencia</h2>
-            </div>
-            <div className="nle-fake-checkbox" aria-hidden="true" />
-          </div>
-          <p>
-            Para esos momentos donde no necesitas más teoría. Necesitas una voz que te ayude a pausar.
-          </p>
-          <CheckList items={bumpMoments} />
-          <p className="nle-bump-price">Solo {bumpPrice} adicionales</p>
-          <p className="nle-microcopy">
-            Esto es visual/preventa. No hay checkbox funcional todavía.
-          </p>
-        </div>
-      </Section>
-
-      <Section>
-        <div className="nle-split nle-payment">
-          <div>
-            <SectionHeader
-              title="¿Cómo pago?"
-              subtitle="En Bolivia pagas fácil con QR. No necesitas tarjeta de crédito ni débito."
-            />
+      <SalesSection className="nle-payment-section">
+        <div className="nle-payment-card">
+          <div className="nle-payment-copy">
+            <SectionHeader title="Pagar en Bolivia es fácil: recibes tu QR por WhatsApp" />
+            <p>
+              No necesitas tarjeta. No ingresas datos bancarios. Solo dejas tu WhatsApp, recibes
+              tu QR y pagas desde tu app bancaria o billetera móvil.
+            </p>
             <ol className="nle-steps">
               {paymentSteps.map((step) => (
                 <li key={step}>{step}</li>
               ))}
             </ol>
-            <div className="nle-trust-box">
-              <ShieldCheck aria-hidden="true" />
-              <p>
-                No te pediremos datos de tarjeta. Recibes las instrucciones por WhatsApp y entras
-                al área privada después de confirmar tu pago.
-              </p>
-            </div>
             <SalesButton>Recibir mi QR seguro</SalesButton>
           </div>
-          <div className="nle-qr-card" aria-label="Placeholder visual de pago QR Bolivia" role="img">
+          <div className="nle-payment-mockup" aria-label="Placeholder visual de pago QR Bolivia" role="img">
             <Smartphone aria-hidden="true" />
-            <div className="nle-qr-placeholder">
-              <span />
-              <span />
-              <span />
-              <span />
-            </div>
-            <strong>QR Bolivia</strong>
-            <small>Pago seguro sin tarjeta</small>
+            <span>
+              Aquí irá el mockup: WhatsApp + QR de pago + confirmación de acceso
+            </span>
           </div>
         </div>
-      </Section>
+      </SalesSection>
 
-      <Section>
+      <SalesSection className="nle-guarantee-section" width="narrow">
         <div className="nle-guarantee-card">
           <ShieldCheck aria-hidden="true" />
           <div>
             <h2>Garantía “No era para mí” de 7 días</h2>
+            <p>Entra al reto. Haz el Módulo de Emergencia y el Día 1.</p>
             <p>
-              Entra al reto. Haz el Módulo de Emergencia y el Día 1. Si sientes que no te ayudó
-              a pausar el impulso y ordenar lo que estabas sintiendo, nos escribes dentro de 7
-              días y te devolvemos tu dinero.
-            </p>
-            <small>Sin drama. Sin explicaciones incómodas.</small>
-          </div>
-        </div>
-      </Section>
-
-      <Section>
-        <div className="nle-important-card">
-          <Heart aria-hidden="true" />
-          <div>
-            <h2>Importante</h2>
-            <p>
-              Este reto es una herramienta de acompañamiento emocional y autocuidado. No reemplaza
-              terapia, diagnóstico, tratamiento psicológico ni atención profesional.
-            </p>
-            <p>
-              Si estás en una situación de peligro, violencia, amenaza, crisis emocional intensa o
-              sientes que podrías hacerte daño, busca ayuda inmediata con una persona de confianza,
-              servicios de emergencia de tu país o un profesional de salud mental.
+              Si sientes que no te ayudó a pausar el impulso y ordenar lo que estabas sintiendo,
+              nos escribes dentro de 7 días y te devolvemos tu dinero.
             </p>
           </div>
         </div>
-      </Section>
+      </SalesSection>
 
-      <Section>
+      <SalesSection className="nle-faq-section" width="narrow">
         <SectionHeader title="Preguntas frecuentes" />
-        <div className="nle-faq-grid">
-          {faqs.map((faq) => (
-            <article className="nle-faq-card" key={faq.question}>
-              <h3>{faq.question}</h3>
-              <p>{faq.answer}</p>
-            </article>
-          ))}
-        </div>
-      </Section>
+        <SalesFaq items={faqs} />
+      </SalesSection>
 
-      <Section className="nle-final-cta">
+      <SalesSection className="nle-legal-section" width="narrow">
+        <SalesLegalNote title="Importante">
+          <p>
+            Este reto es una herramienta de acompañamiento emocional y autocuidado. No reemplaza
+            terapia, diagnóstico, tratamiento psicológico ni atención profesional.
+          </p>
+          <p>
+            Si estás en una situación de peligro, violencia, amenaza, crisis emocional intensa o
+            sientes que podrías hacerte daño, busca ayuda inmediata con una persona de confianza,
+            servicios de emergencia de tu país o un profesional de salud mental.
+          </p>
+        </SalesLegalNote>
+      </SalesSection>
+
+      <SalesSection className="nle-final-cta" width="narrow">
         <div className="nle-final-card">
           <Sparkles aria-hidden="true" />
           <h2>Antes de volver a él, vuelve a ti.</h2>
           <p>No tienes que decidir toda tu historia hoy. Solo empieza con una P.A.U.S.A.</p>
+          <strong>Acceso de lanzamiento: {priceLabel}</strong>
           <SalesButton>{ctaLabel}</SalesButton>
-          <TrustMicrocopy>Pago por QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
+          <TrustMicrocopy>Pago con QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
         </div>
-      </Section>
+      </SalesSection>
 
       <StickySalesCta
-        ctaLabel="Obtener acceso"
+        ctaLabel={ctaLabel}
         priceLabel={priceLabel}
         visible={isStickyCtaVisible}
       />
