@@ -44,6 +44,8 @@ Current public routes are:
 
 - `/`
 - `/x9m`
+- `/no-le-escribas`
+- `/x9m/no-le-escribas`
 - `/oferta`
 - `/x9m/oferta`
 - `/confirmacion`
@@ -80,4 +82,5 @@ Before publishing a clone, run:
 `git diff --check`
 
 Then verify the current routes using the configured ads prefix. With `VITE_ADS_ROUTE_PREFIX=/x9m`, check `/`, `/x9m`, `/oferta`, `/x9m/oferta`, `/confirmacion`, and `/x9m/confirmacion`.
+The first RTP sales letter lives at `/no-le-escribas` and `/x9m/no-le-escribas`; `/oferta` remains available but is not the strategic ads route for this offer.
 Also verify `/oferta?fbclid=abc`, `/oferta?ttclid=abc`, `/oferta?gclid=abc`, and `/oferta?utm_medium=paid` resolve as ads, then clear `localStorage.funnel_attribution` and confirm `/oferta` returns to organic/default.

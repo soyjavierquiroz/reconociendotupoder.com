@@ -255,6 +255,25 @@ export interface DnaConfig {
     description: string;
     socialImage: string;
   };
+  noLeEscribas: {
+    seo: {
+      title: string;
+      description: string;
+    };
+    price: string;
+    bumpPrice: string;
+    colors: {
+      deepNight: string;
+      aubergine: string;
+      royalPlum: string;
+      ritualGold: string;
+      champagne: string;
+      moonLavender: string;
+      warmWhite: string;
+      softMauve: string;
+      whatsappGreen: string;
+    };
+  };
   colors: {
     primary: string;
     accent: string;
@@ -1123,9 +1142,32 @@ export const DNA = {
     tiktokPixelScriptBaseUrl: readEnv('VITE_TIKTOK_PIXEL_SCRIPT_BASE_URL', 'https://analytics.tiktok.com/i18n/pixel/events.js'),
   },
   seo: {
-    title: readEnv('VITE_SITE_TITLE', productName + ' | ' + eventName),
-    description: readEnv('VITE_SITE_DESCRIPTION', 'Espacio de crecimiento personal y reconexion interior.'),
+    title: readEnv('VITE_SITE_TITLE', 'No Le Escribas | Reconociendo Tu Poder'),
+    description: readEnv(
+      'VITE_SITE_DESCRIPTION',
+      'Un kit de emergencia emocional y reto de 7 dias para pausar antes de escribirle, recuperar claridad y volver a ti.'
+    ),
     socialImage: readEnv('VITE_SOCIAL_IMAGE', 'https://' + domain + '/assets/funnel-placeholder.svg'),
+  },
+  noLeEscribas: {
+    seo: {
+      title: 'No Le Escribas | Reconociendo Tu Poder',
+      description:
+        'Un kit de emergencia emocional y reto de 7 dias para pausar antes de escribirle, recuperar claridad y volver a ti.',
+    },
+    price: 'Bs 29',
+    bumpPrice: 'Bs 15',
+    colors: {
+      deepNight: '16 9 19',
+      aubergine: '38 20 48',
+      royalPlum: '83 48 107',
+      ritualGold: '226 184 92',
+      champagne: '255 239 202',
+      moonLavender: '206 188 226',
+      warmWhite: '255 250 241',
+      softMauve: '169 130 178',
+      whatsappGreen: '37 211 102',
+    },
   },
   colors: {
     primary: '13 59 102',

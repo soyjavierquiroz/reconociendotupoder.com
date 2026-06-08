@@ -6,6 +6,7 @@
 
 - `dna.config.ts`: active site config with the minimal Reconociendo Tu Poder identity.
 - `current.ts`: official runtime export consumed by pages and components.
+- `pages/NoLeEscribasSalesPage.tsx`: RTP-owned visual sales letter for the first offer.
 
 ## Current Identity
 
@@ -16,6 +17,7 @@
 - Tracking source: `rtp-event`.
 - Product ids: `RTP_MAIN`, `RTP_BUMP`, `RTP_CONTINUITY`, `RTP_VIP`.
 - Assets still point to `/assets/funnel-placeholder.svg` until brand media is added.
+- First offer routes: `/no-le-escribas` and `/x9m/no-le-escribas`.
 
 ## Site Guidance
 
