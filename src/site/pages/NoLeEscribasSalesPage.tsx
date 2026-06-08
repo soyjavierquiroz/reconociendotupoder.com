@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import {
   Check,
   Heart,
@@ -192,6 +192,24 @@ function ProductMockup() {
 export function NoLeEscribasSalesPage() {
   const price = DNA.noLeEscribas.price;
   const bumpPrice = DNA.noLeEscribas.bumpPrice;
+  const heroRef = useRef<HTMLElement | null>(null);
+  const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
+
+  useEffect(() => {
+    const updateStickyCtaVisibility = () => {
+      const heroBottom = heroRef.current?.getBoundingClientRect().bottom ?? 0;
+      setIsStickyCtaVisible(heroBottom <= 0);
+    };
+
+    updateStickyCtaVisibility();
+    window.addEventListener('scroll', updateStickyCtaVisibility, { passive: true });
+    window.addEventListener('resize', updateStickyCtaVisibility);
+
+    return () => {
+      window.removeEventListener('scroll', updateStickyCtaVisibility);
+      window.removeEventListener('resize', updateStickyCtaVisibility);
+    };
+  }, []);
 
   return (
     <main className="no-le-escribas-page" style={colorVariables}>
@@ -199,7 +217,7 @@ export function NoLeEscribasSalesPage() {
         <span>Pago con QR · Sin tarjeta · Acceso por WhatsApp</span>
       </div>
 
-      <section className="nle-hero">
+      <section className="nle-hero" ref={heroRef}>
         <div className="nle-container nle-hero-content">
           <div className="nle-hero-copy">
             <p className="nle-badge">
@@ -397,7 +415,10 @@ export function NoLeEscribasSalesPage() {
         </div>
       </Section>
 
-      <div className="nle-sticky-cta" aria-label="Acceso rápido a la oferta">
+      <div
+        className={`nle-sticky-cta${isStickyCtaVisible ? ' nle-sticky-cta--visible' : ''}`}
+        aria-label="Acceso rápido a la oferta"
+      >
         <div>
           <strong>{price}</strong>
           <span>Pago QR</span>
