@@ -2,7 +2,6 @@ import type { CSSProperties, ReactNode } from 'react';
 import {
   Check,
   Heart,
-  Moon,
   Pause,
   ShieldCheck,
   Sparkles,
@@ -201,37 +200,38 @@ export function NoLeEscribasSalesPage() {
       </div>
 
       <section className="nle-hero">
-        <div className="nle-container nle-hero-grid">
+        <div className="nle-container nle-hero-content">
           <div className="nle-hero-copy">
             <p className="nle-badge">
               <Pause aria-hidden="true" />
               Método P.A.U.S.A. · Reto 7 días
             </p>
-            <h1>No le escribas todavía.</h1>
-            <p className="nle-hero-subheadline">
+            <h1>
+              No le escribas <span>todavía.</span>
+            </h1>
+            <p className="nle-hero-subheadline nle-mobile-only">
               Haz una P.A.U.S.A. antes de mandar ese mensaje que mañana puede dolerte.
             </p>
-            <p className="nle-hero-text">
+            <p className="nle-hero-subheadline nle-desktop-only">
+              Antes de mandar ese mensaje que mañana puede dolerte, haz una P.A.U.S.A. para
+              calmar el impulso, ordenar lo que sientes y volver a ti.
+            </p>
+            <p className="nle-hero-text nle-mobile-only">
               Un kit de emergencia emocional + reto guiado de 7 días para calmar el impulso,
               ordenar lo que sientes y volver a ti sin rogar, reclamar ni perseguir migajas.
             </p>
+            <p className="nle-hero-text nle-desktop-only">
+              Un kit de emergencia emocional con videos, PDFs, workbook y audios descargables
+              para esos momentos donde estás a punto de buscarlo desde la ansiedad.
+            </p>
             <p className="nle-price-line">Acceso de lanzamiento: {price}</p>
             <NoopButton>Quiero mi acceso por {price}</NoopButton>
-            <p className="nle-microcopy">
+            <p className="nle-microcopy nle-mobile-only">
               Pago seguro con QR · No necesitas tarjeta · Recibes acceso por WhatsApp
             </p>
-          </div>
-
-          <div className="nle-hero-visual" aria-label="Visual emocional de pausa antes de escribir" role="img">
-            <div className="nle-phone-frame">
-              <div className="nle-phone-top" />
-              <div className="nle-chat nle-chat--incoming">¿Y si le escribo?</div>
-              <div className="nle-chat nle-chat--outgoing">No. Hoy elijo volver a mí.</div>
-              <div className="nle-ritual-card">
-                <Moon aria-hidden="true" />
-                <span>Respira 10 minutos antes de enviar.</span>
-              </div>
-            </div>
+            <p className="nle-microcopy nle-desktop-only">
+              Pagas con QR en Bolivia · Sin tarjeta · Recibes acceso por WhatsApp
+            </p>
           </div>
         </div>
       </section>
