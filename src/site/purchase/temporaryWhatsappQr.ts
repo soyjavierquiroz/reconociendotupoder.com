@@ -47,6 +47,18 @@ function sendIntentToWebhook(intent: PurchaseIntent, webhookUrl: string): void {
   }
 }
 
+export function buildTemporaryWhatsappQrMessage(
+  productName: string,
+  orderId: string,
+  priceLabel: string,
+): string {
+  return [
+    `Hola, quiero recibir mi QR para *${productName}.*`,
+    `Código de pedido: ${orderId}`,
+    `Monto: ${priceLabel}`,
+  ].join('\n');
+}
+
 export function startTemporaryWhatsappQrIntent(
   input: StartPurchaseIntentInput,
 ): StartPurchaseIntentResult {
@@ -78,12 +90,11 @@ export function startTemporaryWhatsappQrIntent(
 
   sendIntentToWebhook(intent, DNA.noLeEscribas.purchase.intentWebhookUrl);
 
-  const message = [
-    `Hola, quiero recibir mi QR para ${input.productName}.`,
-    '',
-    `Código de pedido: ${orderId}`,
-    `Monto: ${DNA.noLeEscribas.offer.priceLabel}`,
-  ].join('\n');
+  const message = buildTemporaryWhatsappQrMessage(
+    input.productName,
+    orderId,
+    DNA.noLeEscribas.offer.priceLabel,
+  );
   const whatsappUrl = buildWhatsappUrl(DNA.noLeEscribas.purchase.whatsappUrl, message);
 
   if (!whatsappUrl || typeof window === 'undefined') {

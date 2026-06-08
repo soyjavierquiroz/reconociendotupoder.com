@@ -1,9 +1,8 @@
-const ORDER_PREFIX = 'RTP-NLE';
+const ORDER_PREFIX = 'NLE';
 const RANDOM_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 function formatDate(date: Date): string {
   return [
-    date.getUTCFullYear(),
     String(date.getUTCMonth() + 1).padStart(2, '0'),
     String(date.getUTCDate()).padStart(2, '0'),
   ].join('');

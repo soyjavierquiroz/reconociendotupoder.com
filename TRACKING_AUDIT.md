@@ -21,7 +21,7 @@ Status: neutral parent baseline.
   manual WhatsApp and QR handoff. The intended final destination is the
   Jakawi/Drenvex checkout.
 - Every No Le Escribas purchase CTA calls `startPurchaseIntent`, which creates
-  an `RTP-NLE-YYYYMMDD-XXXX` order id, resolves current attribution, stores the
+  an `NLE-MMDD-XXXX` order id, resolves current attribution, stores the
   intent in local and session storage, and invokes `InitiateCheckout`.
 - `InitiateCheckout` receives explicit attribution and follows
   `ResolvedAttribution.shouldTrackAds`; organic/default visits do not emit ads
