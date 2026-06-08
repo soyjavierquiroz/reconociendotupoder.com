@@ -1221,19 +1221,16 @@
 
     .nle-includes-layout {
       grid-template-areas:
-        'media header'
+        'header header'
         'media list';
-      grid-template-columns: minmax(0, 1.16fr) minmax(22rem, 0.84fr);
-      gap: 1.35rem 4.2rem;
-    }
-
-    .nle-includes-header,
-    .nle-includes-list {
-      max-width: 32rem;
+      grid-template-columns: minmax(0, 1.1fr) minmax(22rem, 0.9fr);
+      gap: 2.7rem 4.2rem;
     }
 
     .nle-includes-header {
-      align-self: end;
+      width: min(100%, 58rem);
+      justify-self: center;
+      text-align: center;
     }
 
     .nle-includes-header .nle-section-header {
@@ -1246,12 +1243,15 @@
     }
 
     .nle-includes-header .nle-section-header p {
+      max-width: 44rem;
+      margin-inline: auto;
       font-size: 1.08rem;
       line-height: 1.72;
     }
 
     .nle-includes-list {
-      align-self: start;
+      max-width: 34rem;
+      align-self: center;
     }
 
     .nle-includes-list .nle-check-list {
