@@ -273,9 +273,10 @@
     align-items: end;
     overflow: hidden;
     background-image: url('/assets/reconociendo-tu-poder/hero-principal-mobile.webp');
-    background-position: center top;
-    background-size: cover;
-    padding: 18.4rem 0 2.35rem;
+    background-position: 58% top;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    padding: 17.6rem 0 2.25rem;
   }
 
   .nle-hero::before {
@@ -305,7 +306,7 @@
 
   .nle-hero-copy {
     display: grid;
-    gap: 0.68rem;
+    gap: 0.64rem;
     width: 100%;
     border: 1px solid rgb(var(--nle-champagne) / 0.13);
     border-radius: 1.55rem;
@@ -339,7 +340,7 @@
 
   .nle-hero h1 {
     max-width: 8.8ch;
-    font-size: clamp(3rem, 14vw, 3.875rem);
+    font-size: clamp(2.7rem, 11.5vw, 3.35rem);
     text-wrap: balance;
   }
 
@@ -349,9 +350,13 @@
 
   .nle-hero-subheadline {
     color: rgb(var(--nle-champagne));
-    font-size: clamp(1rem, 4.4vw, 1.12rem);
+    font-size: clamp(0.98rem, 4.1vw, 1.08rem);
     font-weight: 800;
     line-height: 1.32;
+  }
+
+  .nle-hero-text {
+    max-width: 32rem;
   }
 
   .nle-hero-text,
@@ -859,6 +864,7 @@
       align-items: center;
       background-image: url('/assets/reconociendo-tu-poder/hero-desktop.webp');
       background-position: center right;
+      background-size: cover;
       padding: 4.5rem 0;
     }
 
@@ -886,12 +892,12 @@
     }
 
     .nle-hero-copy {
-      max-width: 620px;
+      max-width: 570px;
       border: 0;
       background: transparent;
       box-shadow: none;
       padding: 0;
-      gap: 1.12rem;
+      gap: 1rem;
     }
 
     .nle-mobile-only {
@@ -904,19 +910,19 @@
 
     .nle-hero h1 {
       max-width: 9.1ch;
-      font-size: clamp(4.45rem, 6.4vw, 6.45rem);
+      font-size: clamp(4rem, 5.2vw, 5.4rem);
     }
 
     .nle-hero-subheadline {
-      max-width: 36rem;
-      font-size: 1.32rem;
+      max-width: 34rem;
+      font-size: 1.22rem;
       line-height: 1.38;
     }
 
     .nle-hero-text {
-      max-width: 35rem;
-      font-size: 1.04rem;
-      line-height: 1.74;
+      max-width: 32.5rem;
+      font-size: 1.02rem;
+      line-height: 1.68;
     }
 
     .nle-button {

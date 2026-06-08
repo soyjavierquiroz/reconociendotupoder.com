@@ -260,7 +260,10 @@ export interface DnaConfig {
       title: string;
       description: string;
     };
-    price: string;
+    offer: {
+      priceLabel: string;
+      ctaLabel: string;
+    };
     bumpPrice: string;
     colors: {
       deepNight: string;
@@ -1155,7 +1158,10 @@ export const DNA = {
       description:
         'Un kit de emergencia emocional y reto de 7 dias para pausar antes de escribirle, recuperar claridad y volver a ti.',
     },
-    price: 'Bs 29',
+    offer: {
+      priceLabel: 'Bs 29',
+      ctaLabel: 'Quiero mi acceso por Bs 29',
+    },
     bumpPrice: 'Bs 15',
     colors: {
       deepNight: '16 9 19',

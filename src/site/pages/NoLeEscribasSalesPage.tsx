@@ -8,6 +8,13 @@ import {
   Smartphone,
 } from 'lucide-react';
 import { DNA } from '../current';
+import {
+  SalesBadge,
+  SalesButton,
+  SalesTopBar,
+  StickySalesCta,
+  TrustMicrocopy,
+} from '../components/sales';
 
 type NoLeEscribasColorVariables = CSSProperties &
   Record<
@@ -66,11 +73,11 @@ const bumpMoments = [
 ] as const;
 
 const paymentSteps = [
-  'Tocas “Quiero mi acceso”.',
+  'Tocas el botón de acceso.',
   'Dejas tu nombre y WhatsApp.',
-  'Eliges si quieres agregar los audios extra.',
-  'Recibes tu QR seguro por WhatsApp.',
-  'Pagas desde tu app bancaria y recibes tu acceso.',
+  'Recibes las instrucciones y tu QR seguro por WhatsApp.',
+  'Pagas desde tu app bancaria.',
+  'Entras al área privada después de confirmar tu pago.',
 ] as const;
 
 const faqs = [
@@ -92,7 +99,7 @@ const faqs = [
   {
     question: '¿Cuándo recibo el acceso?',
     answer:
-      'La experiencia está pensada para entregar el acceso por WhatsApp después del pago por QR cuando el checkout esté activo.',
+      'La experiencia está pensada para darte acceso al área privada después de confirmar el pago por QR cuando el checkout esté activo.',
   },
   {
     question: '¿Necesito tarjeta?',
@@ -110,20 +117,6 @@ const faqs = [
       'Dura 7 días, con un módulo de emergencia para empezar justo cuando necesitas pausar.',
   },
 ] as const;
-
-function NoopButton({
-  children,
-  variant = 'solid',
-}: {
-  children: ReactNode;
-  variant?: 'solid' | 'outline';
-}) {
-  return (
-    <button className={`nle-button nle-button--${variant}`} type="button">
-      {children}
-    </button>
-  );
-}
 
 function Section({
   children,
@@ -190,7 +183,7 @@ function ProductMockup() {
 }
 
 export function NoLeEscribasSalesPage() {
-  const price = DNA.noLeEscribas.price;
+  const { ctaLabel, priceLabel } = DNA.noLeEscribas.offer;
   const bumpPrice = DNA.noLeEscribas.bumpPrice;
   const heroRef = useRef<HTMLElement | null>(null);
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
@@ -213,43 +206,26 @@ export function NoLeEscribasSalesPage() {
 
   return (
     <main className="no-le-escribas-page" style={colorVariables}>
-      <div className="nle-announcement">
-        <span>Pago con QR · Sin tarjeta · Acceso por WhatsApp</span>
-      </div>
+      <SalesTopBar text="Acceso privado · Pago seguro con QR · Garantía 7 días" />
 
       <section className="nle-hero" ref={heroRef}>
         <div className="nle-container nle-hero-content">
           <div className="nle-hero-copy">
-            <p className="nle-badge">
-              <Pause aria-hidden="true" />
+            <SalesBadge icon={<Pause aria-hidden="true" />}>
               Método P.A.U.S.A. · Reto 7 días
-            </p>
+            </SalesBadge>
             <h1>
               No le escribas <span>todavía.</span>
             </h1>
-            <p className="nle-hero-subheadline nle-mobile-only">
+            <p className="nle-hero-subheadline">
               Haz una P.A.U.S.A. antes de mandar ese mensaje que mañana puede dolerte.
             </p>
-            <p className="nle-hero-subheadline nle-desktop-only">
-              Antes de mandar ese mensaje que mañana puede dolerte, haz una P.A.U.S.A. para
-              calmar el impulso, ordenar lo que sientes y volver a ti.
+            <p className="nle-hero-text">
+              Un kit de emergencia emocional para calmar el impulso, ordenar lo que sientes y
+              volver a ti antes de buscarlo desde la ansiedad.
             </p>
-            <p className="nle-hero-text nle-mobile-only">
-              Un kit de emergencia emocional + reto guiado de 7 días para calmar el impulso,
-              ordenar lo que sientes y volver a ti sin rogar, reclamar ni perseguir migajas.
-            </p>
-            <p className="nle-hero-text nle-desktop-only">
-              Un kit de emergencia emocional con videos, PDFs, workbook y audios descargables
-              para esos momentos donde estás a punto de buscarlo desde la ansiedad.
-            </p>
-            <p className="nle-price-line">Acceso de lanzamiento: {price}</p>
-            <NoopButton>Quiero mi acceso por {price}</NoopButton>
-            <p className="nle-microcopy nle-mobile-only">
-              Pago seguro con QR · No necesitas tarjeta · Recibes acceso por WhatsApp
-            </p>
-            <p className="nle-microcopy nle-desktop-only">
-              Pagas con QR en Bolivia · Sin tarjeta · Recibes acceso por WhatsApp
-            </p>
+            <SalesButton>{ctaLabel}</SalesButton>
+            <TrustMicrocopy>Pago por QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
           </div>
         </div>
       </section>
@@ -264,7 +240,7 @@ export function NoLeEscribasSalesPage() {
             <blockquote>“Si no hago algo, lo pierdo.”</blockquote>
             <p>Antes de enviar ese mensaje, date 10 minutos para volver a ti.</p>
           </div>
-          <NoopButton variant="outline">Hacer mi P.A.U.S.A. ahora</NoopButton>
+          <SalesButton variant="outline">Hacer mi P.A.U.S.A. ahora</SalesButton>
         </div>
       </Section>
 
@@ -292,15 +268,15 @@ export function NoLeEscribasSalesPage() {
 
       <Section className="nle-price-section" id="pago-qr">
         <div className="nle-price-card">
-          <p className="nle-badge">Lanzamiento Bolivia</p>
+          <SalesBadge>Lanzamiento Bolivia</SalesBadge>
           <h2>Empieza hoy por solo</h2>
-          <p className="nle-big-price">{price}</p>
+          <p className="nle-big-price">{priceLabel}</p>
           <p>
             No porque valga poco. Sino porque queremos que puedas entrar hoy, justo antes de
             mandar ese mensaje que tal vez mañana te duela.
           </p>
-          <NoopButton>Quiero mi acceso por {price}</NoopButton>
-          <p className="nle-microcopy">Pago con QR · Sin tarjeta · Acceso por WhatsApp</p>
+          <SalesButton>{ctaLabel}</SalesButton>
+          <TrustMicrocopy>Pago por QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
         </div>
       </Section>
 
@@ -339,11 +315,11 @@ export function NoLeEscribasSalesPage() {
             <div className="nle-trust-box">
               <ShieldCheck aria-hidden="true" />
               <p>
-                No te pediremos datos de tarjeta. Tu pago se realiza por QR y tu acceso llega por
-                WhatsApp.
+                No te pediremos datos de tarjeta. Recibes las instrucciones por WhatsApp y entras
+                al área privada después de confirmar tu pago.
               </p>
             </div>
-            <NoopButton>Recibir mi QR seguro por WhatsApp</NoopButton>
+            <SalesButton>Recibir mi QR seguro</SalesButton>
           </div>
           <div className="nle-qr-card" aria-label="Placeholder visual de pago QR Bolivia" role="img">
             <Smartphone aria-hidden="true" />
@@ -409,22 +385,16 @@ export function NoLeEscribasSalesPage() {
           <Sparkles aria-hidden="true" />
           <h2>Antes de volver a él, vuelve a ti.</h2>
           <p>No tienes que decidir toda tu historia hoy. Solo empieza con una P.A.U.S.A.</p>
-          <p className="nle-price-line">Acceso de lanzamiento: {price}</p>
-          <NoopButton>Quiero mi acceso por {price}</NoopButton>
-          <p className="nle-microcopy">Pago seguro con QR · Acceso por WhatsApp</p>
+          <SalesButton>{ctaLabel}</SalesButton>
+          <TrustMicrocopy>Pago por QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
         </div>
       </Section>
 
-      <div
-        className={`nle-sticky-cta${isStickyCtaVisible ? ' nle-sticky-cta--visible' : ''}`}
-        aria-label="Acceso rápido a la oferta"
-      >
-        <div>
-          <strong>{price}</strong>
-          <span>Pago QR</span>
-        </div>
-        <button type="button">Obtener acceso</button>
-      </div>
+      <StickySalesCta
+        ctaLabel="Obtener acceso"
+        priceLabel={priceLabel}
+        visible={isStickyCtaVisible}
+      />
     </main>
   );
 }
