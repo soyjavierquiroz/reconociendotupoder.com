@@ -4,6 +4,7 @@ import analytics from '../core/services/analytics';
 import funnelConfig from '../core/config/funnel.config';
 import { resolveCurrentAttribution, type ResolvedAttribution, type TrafficChannel } from '../core/attribution';
 import { DNA } from '../site/current';
+import { consumeCaptureCompleteRegistrationMarker } from '../site/tracking/registration';
 
 function trackCompleteRegistrationOnce(channel: TrafficChannel, attribution: ResolvedAttribution) {
   const trackingKey = `${DNA.siteId}.${channel}.success.complete-registration`;
@@ -41,7 +42,10 @@ export function Success() {
     redirectSeconds > 0 ? ((redirectSeconds - secondsRemaining) / redirectSeconds) * 100 : 100;
 
   useEffect(() => {
-    if (attribution.shouldTrackAds) {
+    if (
+      attribution.shouldTrackAds &&
+      consumeCaptureCompleteRegistrationMarker(trafficChannel)
+    ) {
       trackCompleteRegistrationOnce(trafficChannel, attribution);
     }
   }, [attribution, attribution.shouldTrackAds, trafficChannel]);

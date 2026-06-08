@@ -1,6 +1,7 @@
 export type DnaTheme = 'expert' | 'panda';
 export type DnaFunnelType = 'vsl' | 'event' | 'tripwire';
 export type DnaSuccessActionType = 'whatsapp' | 'url' | 'checkout' | 'zoom' | 'email' | 'none';
+export type DnaPurchaseFlow = 'temporary_whatsapp_qr' | 'jakawi_drenvex_checkout';
 
 const runtimeEnv = ((import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {});
 
@@ -261,10 +262,20 @@ export interface DnaConfig {
       description: string;
     };
     offer: {
+      productId: string;
+      offerId: string;
       priceLabel: string;
       regularPriceLabel: string;
       valueTotalLabel: string;
+      value: number;
+      currency: string;
       ctaLabel: string;
+      qrCtaLabel: string;
+    };
+    purchase: {
+      flow: DnaPurchaseFlow;
+      whatsappUrl: string;
+      intentWebhookUrl: string;
     };
     bumpPrice: string;
     colors: {
@@ -1161,10 +1172,20 @@ export const DNA = {
         'Un kit de emergencia emocional y reto de 7 dias para pausar antes de escribirle, recuperar claridad y volver a ti.',
     },
     offer: {
+      productId: 'NO_LE_ESCRIBAS',
+      offerId: 'NLE_LAUNCH_BOB_29',
       priceLabel: 'Bs 29',
       regularPriceLabel: 'Bs 97',
       valueTotalLabel: 'Bs 286',
+      value: 29,
+      currency: 'BOB',
       ctaLabel: 'Quiero mi acceso por Bs 29',
+      qrCtaLabel: 'Recibir mi QR seguro',
+    },
+    purchase: {
+      flow: readEnv('VITE_PURCHASE_FLOW', 'temporary_whatsapp_qr') as DnaPurchaseFlow,
+      whatsappUrl: readEnv('VITE_TEMPORARY_QR_WHATSAPP_URL'),
+      intentWebhookUrl: readEnv('VITE_PURCHASE_INTENT_WEBHOOK_URL'),
     },
     bumpPrice: 'Bs 15',
     colors: {

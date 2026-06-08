@@ -15,6 +15,25 @@ Status: neutral parent baseline.
 - Paid attribution can come from an ads route, `fbclid`, `ttclid`, `gclid`, paid-like `utm_medium`, or fresh stored attribution.
 - New forms should use `resolveCurrentAttribution` and include `buildAttributionEventFields(attribution)` in capture payloads. Legacy VSL capture/checkout helpers are documentation-only starting points until adapted to the resolver contract.
 
+## No Le Escribas Temporary Sales Flow
+
+- `temporary_whatsapp_qr` is a temporary adapter for validating sales through a
+  manual WhatsApp and QR handoff. The intended final destination is the
+  Jakawi/Drenvex checkout.
+- Every No Le Escribas purchase CTA calls `startPurchaseIntent`, which creates
+  an `RTP-NLE-YYYYMMDD-XXXX` order id, resolves current attribution, stores the
+  intent in local and session storage, and invokes `InitiateCheckout`.
+- `InitiateCheckout` receives explicit attribution and follows
+  `ResolvedAttribution.shouldTrackAds`; organic/default visits do not emit ads
+  tracking.
+- `ViewContent` uses explicit attribution and is emitted once per session only
+  when `shouldTrackAds` is true.
+- The landing does not emit `Lead`, `Purchase`, or `CompleteRegistration`.
+  Confirmed `Purchase` must be emitted server-side by n8n or the final checkout.
+- `CompleteRegistration` is not a sales conversion. The confirmation page emits
+  it only after consuming a session marker created by a successful event
+  capture, so direct confirmation-page visits do not track it.
+
 ## Clone Requirements
 
 A clone must set its own site id, pixel ids, relay URL, allowed origins, capture destination, and test payloads. The parent contains no active production tracking identity.

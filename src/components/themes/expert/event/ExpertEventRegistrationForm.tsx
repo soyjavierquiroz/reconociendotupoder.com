@@ -9,6 +9,7 @@ import analytics, {
 } from '../../../../core/services/analytics';
 import { useVisitor } from '../../../../core/visitor/VisitorContext';
 import { buildVisitorPayload, type VisitorPayload } from '../../../../core/visitor/visitorPayload';
+import { markCaptureCompleteRegistrationPending } from '../../../../site/tracking/registration';
 
 interface FormErrors {
   firstName?: string;
@@ -177,6 +178,7 @@ export function ExpertEventRegistrationForm() {
         }
       }
 
+      markCaptureCompleteRegistrationPending(trafficChannel);
       window.location.assign(channelConfig.confirmationPath);
     } catch (error) {
       console.error('[ExpertEventRegistrationForm] webhook submission failed', error);

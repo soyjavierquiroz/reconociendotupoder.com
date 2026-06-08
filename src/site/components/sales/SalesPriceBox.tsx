@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { SalesBadge } from './SalesBadge';
 import { SalesButton } from './SalesButton';
 import { TrustMicrocopy } from './TrustMicrocopy';
@@ -6,6 +6,7 @@ import { TrustMicrocopy } from './TrustMicrocopy';
 type SalesPriceBoxProps = {
   badge: string;
   buttonLabel: string;
+  onButtonClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
   children: ReactNode;
   microcopy: string;
   priceLabel: string;
@@ -17,6 +18,7 @@ type SalesPriceBoxProps = {
 export function SalesPriceBox({
   badge,
   buttonLabel,
+  onButtonClick,
   children,
   microcopy,
   priceLabel,
@@ -44,7 +46,7 @@ export function SalesPriceBox({
       <h2>{title}</h2>
       <p className="nle-big-price">{priceLabel}</p>
       <div className="nle-price-copy">{children}</div>
-      <SalesButton hideOnMobile>{buttonLabel}</SalesButton>
+      <SalesButton hideOnMobile onClick={onButtonClick}>{buttonLabel}</SalesButton>
       <TrustMicrocopy>{microcopy}</TrustMicrocopy>
     </div>
   );

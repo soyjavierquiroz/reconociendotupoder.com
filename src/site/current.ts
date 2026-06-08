@@ -5,4 +5,10 @@ export {
   resolveDnaFunnelTheme,
   resolveDnaThemeStyle,
 } from './dna.config';
-export type { DnaConfig, DnaFunnelType, DnaSuccessActionType, DnaTheme } from './dna.config';
+export type {
+  DnaConfig,
+  DnaFunnelType,
+  DnaPurchaseFlow,
+  DnaSuccessActionType,
+  DnaTheme,
+} from './dna.config';

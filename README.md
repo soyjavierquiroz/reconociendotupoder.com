@@ -38,6 +38,25 @@ Do not put secrets, real tokens, or private webhook URLs in committed files.
 - [Deploy on CyberPanel](OPERATIONS/deploy-cyberpanel.md)
 - [Capture server env](OPERATIONS/capture-server-env.md)
 
+## Temporary No Le Escribas Purchase Flow
+
+`/no-le-escribas` and `/x9m/no-le-escribas` currently use the
+`temporary_whatsapp_qr` purchase adapter to validate paid demand before the
+Jakawi/Drenvex checkout is ready.
+
+- The landing calls only `startPurchaseIntent`; WhatsApp navigation and QR
+  handoff details stay isolated in `src/site/purchase`.
+- `VITE_TEMPORARY_QR_WHATSAPP_URL` configures the public WhatsApp destination.
+  An empty value leaves every CTA safe and non-navigating.
+- `VITE_PURCHASE_INTENT_WEBHOOK_URL` is optional. Purchase intents are still
+  stored locally and WhatsApp still opens when the webhook is absent or fails.
+- Requesting a QR fires `InitiateCheckout` because it starts the purchase
+  process. It never fires `Purchase`, `Lead`, or `CompleteRegistration`.
+- Confirmed `Purchase` events must come later from n8n or the final
+  Jakawi/Drenvex checkout after payment confirmation.
+- `CompleteRegistration` remains a capture conversion only and requires a
+  session marker created by a successful event capture.
+
 ## Routing
 
 Current public routes are:

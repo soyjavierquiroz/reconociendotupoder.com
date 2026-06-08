@@ -1,6 +1,10 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Check, Pause, Sparkles } from 'lucide-react';
+import { resolveCurrentAttribution } from '../../core/attribution';
+import { trackEvent } from '../../core/services/analytics';
 import { DNA } from '../current';
+import { startPurchaseIntent } from '../purchase';
 import {
   SalesBadge,
   SalesButton,
@@ -169,10 +173,66 @@ function CheckList({ items }: { items: readonly string[] }) {
 }
 
 export function NoLeEscribasSalesPage() {
-  const { ctaLabel, priceLabel, regularPriceLabel, valueTotalLabel } = DNA.noLeEscribas.offer;
+  const location = useLocation();
+  const attribution = useMemo(() => resolveCurrentAttribution(location), [location]);
+  const {
+    ctaLabel,
+    currency,
+    offerId,
+    priceLabel,
+    productId,
+    qrCtaLabel,
+    regularPriceLabel,
+    value,
+    valueTotalLabel,
+  } = DNA.noLeEscribas.offer;
   const heroRef = useRef<HTMLElement | null>(null);
   const tenMinuteRef = useRef<HTMLElement | null>(null);
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
+
+  const handlePurchaseIntent = (source: string, clickedCtaLabel: string) => () => {
+    const result = startPurchaseIntent({
+      productId,
+      offerId,
+      productName: 'Mujer, No Le Escribas',
+      value,
+      currency,
+      source,
+      ctaLabel: clickedCtaLabel,
+    });
+
+    if (result.status !== 'opened') {
+      console.warn(`[NoLeEscribasSalesPage] ${result.message}`);
+    }
+  };
+
+  useEffect(() => {
+    if (!attribution.shouldTrackAds) {
+      return;
+    }
+
+    const trackingKey = `${DNA.siteId}.no-le-escribas.view-content`;
+
+    try {
+      if (window.sessionStorage.getItem(trackingKey) === '1') {
+        return;
+      }
+
+      window.sessionStorage.setItem(trackingKey, '1');
+    } catch {
+      // Analytics remains safe when storage is unavailable.
+    }
+
+    void trackEvent('ViewContent', {
+      content_name: 'No Le Escribas',
+      content_category: 'sales_page',
+      content_type: 'product',
+      product_id: productId,
+      currency,
+      value,
+      attribution,
+    }).catch(() => undefined);
+  }, [attribution, attribution.shouldTrackAds, currency, productId, value]);
 
   useEffect(() => {
     const updateStickyCtaVisibility = () => {
@@ -210,7 +270,9 @@ export function NoLeEscribasSalesPage() {
               Un kit de emergencia emocional para calmar el impulso, ordenar lo que sientes y
               volver a ti antes de buscarlo desde la ansiedad.
             </p>
-            <SalesButton>{ctaLabel}</SalesButton>
+            <SalesButton onClick={handlePurchaseIntent('hero_cta', ctaLabel)}>
+              {ctaLabel}
+            </SalesButton>
             <TrustMicrocopy>Pago con QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
           </div>
         </div>
@@ -323,6 +385,7 @@ export function NoLeEscribasSalesPage() {
         <SalesPriceBox
           badge="Lanzamiento Bolivia"
           buttonLabel={ctaLabel}
+          onButtonClick={handlePurchaseIntent('price_desktop_cta', ctaLabel)}
           microcopy="Pago con QR · Sin tarjeta · Acceso al área de miembros premium"
           priceLabel={priceLabel}
           regularPriceLabel={regularPriceLabel}
@@ -337,10 +400,11 @@ export function NoLeEscribasSalesPage() {
 
       <SalesSection className="nle-payment-section">
         <SalesQrPayment
-          buttonLabel="Recibir mi QR seguro"
+          buttonLabel={qrCtaLabel}
           imageAlt="Pago seguro por QR desde WhatsApp en Bolivia"
           imageSrc="/assets/reconociendo-tu-poder/pago-seguro-por-qr.webp"
           microcopy="El QR se genera según tu orden. No te pediremos datos de tarjeta."
+          onButtonClick={handlePurchaseIntent('qr_desktop_cta', qrCtaLabel)}
           steps={paymentSteps}
           subtitle="No necesitas tarjeta. Dejas tu WhatsApp, recibes tu QR seguro, pagas desde tu app bancaria y activamos tu acceso al área de miembros premium."
           title="Pagas con QR. Entras al área privada."
@@ -392,7 +456,12 @@ export function NoLeEscribasSalesPage() {
             <strong>Acceso de lanzamiento: {priceLabel}</strong>
             <span>Precio regular: {regularPriceLabel}</span>
           </div>
-          <SalesButton hideOnMobile>Quiero recibir mi QR seguro</SalesButton>
+          <SalesButton
+            hideOnMobile
+            onClick={handlePurchaseIntent('final_desktop_cta', 'Quiero recibir mi QR seguro')}
+          >
+            Quiero recibir mi QR seguro
+          </SalesButton>
           <TrustMicrocopy>
             Pago con QR · Sin tarjeta · Acceso al área de miembros premium
           </TrustMicrocopy>
@@ -401,6 +470,7 @@ export function NoLeEscribasSalesPage() {
 
       <StickySalesCta
         ctaLabel="Recibir QR"
+        onClick={handlePurchaseIntent('sticky_cta', 'Recibir QR')}
         priceLabel={priceLabel}
         regularPriceLabel={regularPriceLabel}
         visible={isStickyCtaVisible}
