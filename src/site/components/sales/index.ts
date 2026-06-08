@@ -2,6 +2,7 @@ export { SalesBadge } from './SalesBadge';
 export { SalesButton } from './SalesButton';
 export { SalesFaq } from './SalesFaq';
 export { SalesLegalNote } from './SalesLegalNote';
+export { SalesMediaShowcase } from './SalesMediaShowcase';
 export { SalesPlaceholderMockup } from './SalesPlaceholderMockup';
 export { SalesPriceBox } from './SalesPriceBox';
 export { SalesSection } from './SalesSection';

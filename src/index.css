@@ -471,6 +471,10 @@
     text-wrap: balance;
   }
 
+  .nle-section-header h2 span {
+    display: block;
+  }
+
   .nle-identification .nle-container--narrow {
     max-width: 660px;
   }
@@ -643,19 +647,146 @@
     color: rgb(var(--nle-ritual-gold));
   }
 
+  .nle-includes-section {
+    padding-block: 5rem;
+  }
+
   .nle-includes-layout {
+    grid-template-areas:
+      'header'
+      'media'
+      'list';
+    gap: 1.35rem;
     align-items: center;
   }
 
-  .nle-includes-copy {
+  .nle-includes-header {
+    grid-area: header;
+  }
+
+  .nle-includes-header .nle-section-header {
+    margin-bottom: 0;
+  }
+
+  .nle-includes-header .nle-section-header h2 {
+    font-size: clamp(2.15rem, 9.8vw, 2.8rem);
+  }
+
+  .nle-includes-header .nle-section-header p {
+    max-width: 34rem;
+    font-size: clamp(1rem, 3.9vw, 1.1rem);
+    line-height: 1.68;
+  }
+
+  .nle-includes-list {
+    grid-area: list;
+  }
+
+  .nle-includes-list .nle-check-list {
+    gap: 0.86rem;
+  }
+
+  .nle-includes-list .nle-check-list li {
+    gap: 0.82rem;
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  .nle-includes-list .nle-check-list svg {
+    height: 1.28rem;
+    width: 1.28rem;
+    margin-top: 0.08rem;
+    border-radius: 999px;
+    background: rgb(var(--nle-ritual-gold) / 0.12);
+    padding: 0.18rem;
+  }
+
+  .nle-media-showcase {
+    position: relative;
+    isolation: isolate;
     display: grid;
+    width: 100%;
+    margin: 0;
+  }
+
+  .nle-media-showcase::before {
+    content: '';
+    position: absolute;
+    inset: 7% 6% 4%;
+    z-index: -1;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 50% 35%, rgb(var(--nle-ritual-gold) / 0.24), transparent 18rem),
+      radial-gradient(circle at 34% 70%, rgb(var(--nle-royal-plum) / 0.3), transparent 18rem);
+    filter: blur(26px);
+    opacity: 0.84;
+  }
+
+  .nle-media-showcase__frame {
+    position: relative;
+    display: grid;
+    overflow: hidden;
+    border: 1px solid rgb(var(--nle-champagne) / 0.11);
+    border-radius: 1.55rem;
+    background:
+      radial-gradient(circle at 50% 12%, rgb(var(--nle-ritual-gold) / 0.2), transparent 14rem),
+      radial-gradient(circle at 16% 82%, rgb(var(--nle-royal-plum) / 0.34), transparent 16rem),
+      linear-gradient(145deg, rgb(var(--nle-warm-white) / 0.09), rgb(var(--nle-warm-white) / 0.035));
+    box-shadow:
+      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.12),
+      0 28px 90px rgb(var(--nle-deep-night) / 0.28);
+  }
+
+  .nle-media-showcase__image {
+    display: block;
+    width: 100%;
+    border-radius: 1.38rem;
+    object-fit: cover;
+  }
+
+  .nle-media-showcase--image .nle-media-showcase__frame {
+    padding: 0.34rem;
+  }
+
+  .nle-media-showcase--placeholder .nle-media-showcase__frame,
+  .nle-placeholder-mockup {
+    min-height: 260px;
+    place-items: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .nle-media-showcase--placeholder .nle-media-showcase__frame::before,
+  .nle-placeholder-mockup::before {
+    content: '';
+    position: absolute;
+    inset: 16% 17%;
+    border-radius: 1.5rem;
+    background: rgb(var(--nle-warm-white) / 0.06);
+    filter: blur(2px);
+  }
+
+  .nle-media-showcase span,
+  .nle-placeholder-mockup span {
+    position: relative;
+    z-index: 1;
+    max-width: 18rem;
+    color: rgb(var(--nle-moon-lavender));
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  .nle-includes-showcase {
+    grid-area: media;
+    width: min(100%, 36rem);
+    justify-self: center;
+    margin-block: 0.4rem 0.3rem;
   }
 
   .nle-placeholder-mockup {
     position: relative;
     display: grid;
-    min-height: 260px;
-    place-items: center;
     overflow: hidden;
     border: 1px solid rgb(var(--nle-champagne) / 0.11);
     border-radius: 2rem;
@@ -666,27 +797,6 @@
     box-shadow:
       inset 0 1px 0 rgb(var(--nle-warm-white) / 0.12),
       0 28px 90px rgb(var(--nle-deep-night) / 0.28);
-    padding: 2rem;
-    text-align: center;
-  }
-
-  .nle-placeholder-mockup::before {
-    content: '';
-    position: absolute;
-    inset: 16% 17%;
-    border-radius: 1.5rem;
-    background: rgb(var(--nle-warm-white) / 0.06);
-    filter: blur(2px);
-  }
-
-  .nle-placeholder-mockup span {
-    position: relative;
-    z-index: 1;
-    max-width: 18rem;
-    color: rgb(var(--nle-moon-lavender));
-    font-size: 0.9rem;
-    font-weight: 800;
-    line-height: 1.45;
   }
 
   .nle-price-section {
@@ -1105,12 +1215,78 @@
       padding: 1rem;
     }
 
-    .nle-includes-layout {
-      grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.92fr);
-      gap: 4rem;
+    .nle-includes-section {
+      padding-block: 7rem;
     }
 
-    .nle-placeholder-mockup {
+    .nle-includes-layout {
+      grid-template-areas:
+        'media header'
+        'media list';
+      grid-template-columns: minmax(0, 1.16fr) minmax(22rem, 0.84fr);
+      gap: 1.35rem 4.2rem;
+    }
+
+    .nle-includes-header,
+    .nle-includes-list {
+      max-width: 32rem;
+    }
+
+    .nle-includes-header {
+      align-self: end;
+    }
+
+    .nle-includes-header .nle-section-header {
+      gap: 1rem;
+    }
+
+    .nle-includes-header .nle-section-header h2 {
+      font-size: clamp(2.7rem, 4vw, 3.5rem);
+      line-height: 1.02;
+    }
+
+    .nle-includes-header .nle-section-header p {
+      font-size: 1.08rem;
+      line-height: 1.72;
+    }
+
+    .nle-includes-list {
+      align-self: start;
+    }
+
+    .nle-includes-list .nle-check-list {
+      gap: 0.92rem;
+    }
+
+    .nle-includes-showcase {
+      width: min(100%, 43rem);
+      justify-self: start;
+      margin-block: 0;
+    }
+
+    .nle-media-showcase::before {
+      inset: 5% 2% 2%;
+      filter: blur(34px);
+      opacity: 0.92;
+    }
+
+    .nle-media-showcase__frame {
+      border-radius: 2rem;
+      box-shadow:
+        inset 0 1px 0 rgb(var(--nle-warm-white) / 0.14),
+        0 34px 110px rgb(var(--nle-deep-night) / 0.34);
+    }
+
+    .nle-media-showcase__image {
+      border-radius: 1.68rem;
+    }
+
+    .nle-media-showcase--image .nle-media-showcase__frame {
+      padding: 0.48rem;
+    }
+
+    .nle-placeholder-mockup,
+    .nle-media-showcase--placeholder .nle-media-showcase__frame {
       min-height: 360px;
     }
 

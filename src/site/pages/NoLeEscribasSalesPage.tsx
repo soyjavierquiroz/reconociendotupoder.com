@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Check, Pause, ShieldCheck, Sparkles, Smartphone } from 'lucide-react';
 import { DNA } from '../current';
 import {
@@ -6,7 +6,7 @@ import {
   SalesButton,
   SalesFaq,
   SalesLegalNote,
-  SalesPlaceholderMockup,
+  SalesMediaShowcase,
   SalesPriceBox,
   SalesSection,
   SalesTimeline,
@@ -70,14 +70,14 @@ const pauseSteps = [
 ] as const;
 
 const receives = [
-  'Módulo de emergencia para empezar cuando estás a punto de escribirle',
-  '7 módulos guiados, uno por día',
-  'Videos explicativos para cada módulo',
-  'PDFs y workbook diario',
-  'Audios descargables de acompañamiento',
-  'Checklist antes de mandar ese mensaje',
-  'Carta que escribes para soltar, no para enviar',
-  'Plan anti-recaída para noches y fines de semana',
+  'Módulo de emergencia para empezar justo cuando estás a punto de escribirle',
+  'Reto guiado de 7 días para sostener la pausa y recuperar tu centro',
+  'Lecciones y ejercicios para entender lo que sientes sin actuar desde la ansiedad',
+  'Workbook y herramientas prácticas para aterrizar tu emoción',
+  'Audios de acompañamiento para momentos de impulso, noches difíciles y recaídas',
+  'Checklist P.A.U.S.A. para usar antes de mandar ese mensaje',
+  'Carta de liberación para soltar lo que necesitas decir sin volver a caer',
+  'Plan anti-recaída para que no vuelvas al mismo ciclo',
 ] as const;
 
 const paymentSteps = [
@@ -132,7 +132,7 @@ function SectionHeader({
   subtitle,
 }: {
   eyebrow?: string;
-  title: string;
+  title: ReactNode;
   subtitle?: string;
 }) {
   return (
@@ -242,14 +242,23 @@ export function NoLeEscribasSalesPage() {
 
       <SalesSection className="nle-includes-section">
         <div className="nle-includes-layout">
-          <SalesPlaceholderMockup>
-            Aquí irá el mockup del producto: videos + PDFs + workbook + audios + área de miembros
-          </SalesPlaceholderMockup>
-          <div className="nle-includes-copy">
+          <div className="nle-includes-header">
             <SectionHeader
-              title="No es solo un PDF. Es un kit completo para volver a ti."
-              subtitle="Dentro del área de miembros tendrás videos, PDFs, workbook y audios descargables para acompañarte paso a paso durante 7 días."
+              title={
+                <>
+                  <span>No es solo un PDF.</span>
+                  <span>Es un kit completo para volver a ti.</span>
+                </>
+              }
+              subtitle="Dentro del área de miembros tendrás una guía completa para acompañarte durante 7 días, ayudarte a frenar el impulso, ordenar lo que sientes y volver a ti con más claridad y calma."
             />
+          </div>
+          <SalesMediaShowcase
+            alt="Mockup del kit Mujer, No Le Escribas con área de miembros, workbook, audios, checklist y reto de 7 días"
+            className="nle-includes-showcase"
+            src="/assets/reconociendo-tu-poder/mockup-producto-mujer-no-le-escribas.webp"
+          />
+          <div className="nle-includes-list">
             <CheckList items={receives} />
           </div>
         </div>
