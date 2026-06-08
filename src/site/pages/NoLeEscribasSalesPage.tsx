@@ -5,6 +5,7 @@ import {
   SalesBadge,
   SalesButton,
   SalesFaq,
+  SalesImageFeature,
   SalesLegalNote,
   SalesMediaShowcase,
   SalesPriceBox,
@@ -233,18 +234,19 @@ export function NoLeEscribasSalesPage() {
       </SalesSection>
 
       <section className="nle-section nle-ten-minute-section" ref={tenMinuteRef}>
-        <div className="nle-container nle-container--narrow">
-          <div className="nle-ritual-card">
-            <span className="nle-ritual-number">10</span>
-            <div className="nle-ritual-copy">
-              <h2>Antes de escribirle, date 10 minutos.</h2>
-              <p>No tienes que prometer que nunca le vas a escribir.</p>
-              <p>No tienes que bloquearlo ahora.</p>
-              <p>No tienes que eliminar su número.</p>
-              <strong>Solo esto: 10 minutos sin enviar el mensaje.</strong>
-              <p>Durante esos 10 minutos, haces una P.A.U.S.A.</p>
-            </div>
-          </div>
+        <div className="nle-container">
+          <SalesImageFeature
+            imageAlt="Visual de la regla de los 10 minutos antes de escribirle"
+            imageSrc="/assets/reconociendo-tu-poder/visual-regla-10-minutos.png.webp"
+            title="Antes de escribirle, date 10 minutos."
+          >
+            <p>No tienes que prometer que nunca le vas a escribir.</p>
+            <p>No tienes que bloquearlo ahora.</p>
+            <p>No tienes que eliminar su número.</p>
+            <strong>Solo esto:</strong>
+            <p className="nle-image-feature__highlight">10 minutos sin enviar el mensaje.</p>
+            <p>Durante esos 10 minutos, haces una P.A.U.S.A.</p>
+          </SalesImageFeature>
         </div>
       </section>
 
@@ -275,6 +277,7 @@ export function NoLeEscribasSalesPage() {
           </div>
           <SalesMediaShowcase
             alt="Mockup del kit Mujer, No Le Escribas con área de miembros, workbook, audios, checklist y reto de 7 días"
+            caption="Esto es lo que verás dentro del área privada."
             className="nle-includes-showcase"
             src="/assets/reconociendo-tu-poder/mockup-producto-mujer-no-le-escribas.webp"
           />
@@ -284,10 +287,32 @@ export function NoLeEscribasSalesPage() {
         </div>
       </SalesSection>
 
+      <SalesSection className="nle-honesty-section" width="narrow">
+        <SectionHeader title="Esto no es una promesa falsa." />
+        <div className="nle-honesty-points">
+          <p>
+            <Check aria-hidden="true" />
+            <span>No prometemos que él vuelva.</span>
+          </p>
+          <p>
+            <Check aria-hidden="true" />
+            <span>No te vamos a decir que “solo seas fuerte”.</span>
+          </p>
+          <p>
+            <Check aria-hidden="true" />
+            <span>No necesitas decidir toda tu vida hoy.</span>
+          </p>
+        </div>
+        <p className="nle-honesty-closing">
+          Esto es una herramienta práctica para ayudarte a pausar antes de actuar desde la
+          ansiedad.
+        </p>
+      </SalesSection>
+
       <SalesSection className="nle-value-section">
         <SectionHeader
-          title="Todo lo que recibes al entrar hoy"
-          subtitle="Creamos este kit para que no tengas que improvisar cuando el impulso aparece."
+          title="Todo esto está incluido hoy"
+          subtitle="No estás comprando un PDF. Estás entrando a un sistema completo para pausar, ordenar lo que sientes y volver a ti."
         />
         <SalesValueStack
           items={valueStackItems}
@@ -304,14 +329,12 @@ export function NoLeEscribasSalesPage() {
           microcopy="Pago con QR · Sin tarjeta · Acceso al área de miembros premium"
           priceLabel={priceLabel}
           regularPriceLabel={regularPriceLabel}
-          title="Hoy entras por solo:"
+          title="Hoy puedes entrar por:"
           valueTotalLabel={valueTotalLabel}
         >
-          <p>
-            Este precio de lanzamiento está disponible mientras validamos la primera versión del
-            reto en Bolivia.
+          <p className="nle-price-urgency">
+            Este precio es solo para la etapa de lanzamiento en Bolivia.
           </p>
-          <p className="nle-price-urgency">Disponible durante el lanzamiento en Bolivia.</p>
         </SalesPriceBox>
       </SalesSection>
 
@@ -322,8 +345,8 @@ export function NoLeEscribasSalesPage() {
           imageSrc="/assets/reconociendo-tu-poder/pago-seguro-por-qr.webp"
           microcopy="El QR se genera según tu orden. No te pediremos datos de tarjeta."
           steps={paymentSteps}
-          subtitle="No necesitas tarjeta. No ingresas datos bancarios. Solo dejas tu WhatsApp, recibes tu QR seguro y pagas desde tu app bancaria o billetera móvil."
-          title="Pagar en Bolivia es fácil: recibes tu QR por WhatsApp"
+          subtitle="No necesitas tarjeta. Dejas tu WhatsApp, recibes tu QR seguro, pagas desde tu app bancaria y activamos tu acceso al área de miembros premium."
+          title="Pagas con QR. Entras al área privada."
         />
       </SalesSection>
 
@@ -369,7 +392,7 @@ export function NoLeEscribasSalesPage() {
             <strong>Acceso de lanzamiento: {priceLabel}</strong>
             <span>Precio regular: {regularPriceLabel}</span>
           </div>
-          <SalesButton>Quiero recibir mi QR seguro</SalesButton>
+          <SalesButton hideOnMobile>Quiero recibir mi QR seguro</SalesButton>
           <TrustMicrocopy>
             Pago con QR · Sin tarjeta · Acceso al área de miembros premium
           </TrustMicrocopy>

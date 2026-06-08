@@ -40,7 +40,7 @@ export function SalesQrPayment({
             <li key={step}>{step}</li>
           ))}
         </ol>
-        <SalesButton>{buttonLabel}</SalesButton>
+        <SalesButton hideOnMobile>{buttonLabel}</SalesButton>
         <TrustMicrocopy>{microcopy}</TrustMicrocopy>
       </div>
     </div>

@@ -1,6 +1,7 @@
 export { SalesBadge } from './SalesBadge';
 export { SalesButton } from './SalesButton';
 export { SalesFaq } from './SalesFaq';
+export { SalesImageFeature } from './SalesImageFeature';
 export { SalesLegalNote } from './SalesLegalNote';
 export { SalesMediaShowcase } from './SalesMediaShowcase';
 export { SalesPlaceholderMockup } from './SalesPlaceholderMockup';

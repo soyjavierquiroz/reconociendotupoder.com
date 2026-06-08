@@ -44,7 +44,7 @@ export function SalesPriceBox({
       <h2>{title}</h2>
       <p className="nle-big-price">{priceLabel}</p>
       <div className="nle-price-copy">{children}</div>
-      <SalesButton>{buttonLabel}</SalesButton>
+      <SalesButton hideOnMobile>{buttonLabel}</SalesButton>
       <TrustMicrocopy>{microcopy}</TrustMicrocopy>
     </div>
   );
