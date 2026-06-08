@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { Check, Pause, ShieldCheck, Sparkles } from 'lucide-react';
+import { Check, Pause, Sparkles } from 'lucide-react';
 import { DNA } from '../current';
 import {
   SalesBadge,
   SalesButton,
   SalesFaq,
+  SalesGuaranteeCard,
   SalesImageFeature,
   SalesLegalNote,
   SalesMediaShowcase,
@@ -73,13 +74,11 @@ const pauseSteps = [
 ] as const;
 
 const receives = [
-  'Módulo de emergencia para empezar cuando estás a punto de escribirle',
-  'Reto guiado de 7 días, paso a paso',
-  'Videos explicativos para cada módulo',
+  'Módulo de emergencia para ese momento crítico',
+  'Reto guiado de 7 días',
+  'Videos explicativos por módulo',
   'PDFs y workbook diario',
   'Audios descargables de acompañamiento',
-  'Checklist antes de mandar ese mensaje',
-  'Carta que escribes para soltar, no para enviar',
   'Plan anti-recaída para noches y fines de semana',
 ] as const;
 
@@ -193,7 +192,7 @@ export function NoLeEscribasSalesPage() {
 
   return (
     <main className="no-le-escribas-page" style={colorVariables}>
-      <SalesTopBar text="Acceso privado · Pago seguro con QR · Garantía 7 días" />
+      <SalesTopBar text="Hoy Bs 29 · Luego sube a Bs 97" />
 
       <section className="nle-hero" ref={heroRef}>
         <div className="nle-container nle-hero-content">
@@ -212,7 +211,7 @@ export function NoLeEscribasSalesPage() {
               volver a ti antes de buscarlo desde la ansiedad.
             </p>
             <SalesButton>{ctaLabel}</SalesButton>
-            <TrustMicrocopy>Pago por QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
+            <TrustMicrocopy>Pago con QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
           </div>
         </div>
       </section>
@@ -226,10 +225,10 @@ export function NoLeEscribasSalesPage() {
           <p>Es querer saber si todavía le importas.</p>
           <p>Es revisar si está en línea.</p>
           <p>Es abrir una puerta que tal vez ya te costó demasiado cerrar.</p>
-          <p className="nle-gold-line">Ese mensaje no siempre busca amor.</p>
-          <p className="nle-gold-line">A veces solo busca alivio.</p>
+          <p className="nle-gold-line">
+            Ese mensaje no siempre busca amor. A veces solo busca alivio.
+          </p>
           <p className="nle-gold-line">Y ahí es donde necesitas una pausa.</p>
-          <p>No una conversación más que te deje peor.</p>
         </div>
       </SalesSection>
 
@@ -242,9 +241,7 @@ export function NoLeEscribasSalesPage() {
           >
             <p>No tienes que prometer que nunca le vas a escribir.</p>
             <p>No tienes que bloquearlo ahora.</p>
-            <p>No tienes que eliminar su número.</p>
-            <strong>Solo esto:</strong>
-            <p className="nle-image-feature__highlight">10 minutos sin enviar el mensaje.</p>
+            <p className="nle-image-feature__highlight">Solo esto: 10 minutos sin enviar el mensaje.</p>
             <p>Durante esos 10 minutos, haces una P.A.U.S.A.</p>
           </SalesImageFeature>
         </div>
@@ -351,17 +348,20 @@ export function NoLeEscribasSalesPage() {
       </SalesSection>
 
       <SalesSection className="nle-guarantee-section" width="narrow">
-        <div className="nle-guarantee-card">
-          <ShieldCheck aria-hidden="true" />
-          <div>
-            <h2>Garantía “No era para mí” de 7 días</h2>
+        <SalesGuaranteeCard
+          body={
+            <>
             <p>Entra al reto. Haz el Módulo de Emergencia y el Día 1.</p>
             <p>
               Si no sientes que te ayudó a pausar antes de actuar en automático, nos escribes
               dentro de 7 días y te devolvemos tu dinero.
             </p>
-          </div>
-        </div>
+            </>
+          }
+          imageAlt="Sello visual de garantía de 7 días"
+          imageSrc="/assets/reconociendo-tu-poder/garantia.webp"
+          title="Garantía “No era para mí” de 7 días"
+        />
       </SalesSection>
 
       <SalesSection className="nle-faq-section" width="narrow">

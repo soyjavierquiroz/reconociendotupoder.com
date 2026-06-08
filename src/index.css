@@ -239,14 +239,24 @@
   .nle-announcement {
     position: relative;
     z-index: 3;
+    overflow: hidden;
     border-bottom: 1px solid rgb(var(--nle-champagne) / 0.12);
     background: rgb(var(--nle-deep-night) / 0.96);
     color: rgb(var(--nle-champagne));
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 900;
-    letter-spacing: 0.03em;
-    padding: 0.78rem 1.25rem;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    padding: 0.68rem 1.25rem;
     text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .nle-announcement span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .nle-container {
@@ -398,9 +408,9 @@
     line-height: 1.1;
     padding: 0.98rem 1.25rem;
     transition:
-      transform 0.18s ease,
-      box-shadow 0.18s ease,
-      background 0.18s ease;
+      transform 0.22s ease,
+      box-shadow 0.22s ease,
+      background 0.22s ease;
   }
 
   .nle-button::after,
@@ -421,7 +431,9 @@
   .nle-button--solid,
   .nle-sticky-cta button {
     background: linear-gradient(135deg, rgb(var(--nle-ritual-gold)), rgb(var(--nle-champagne)));
-    box-shadow: 0 18px 42px rgb(var(--nle-ritual-gold) / 0.28);
+    box-shadow:
+      0 18px 42px rgb(var(--nle-ritual-gold) / 0.3),
+      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.48);
     color: rgb(var(--nle-deep-night));
   }
 
@@ -433,8 +445,10 @@
 
   .nle-button:hover,
   .nle-sticky-cta button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 20px 48px rgb(var(--nle-ritual-gold) / 0.38);
+    transform: translateY(-2px);
+    box-shadow:
+      0 24px 54px rgb(var(--nle-ritual-gold) / 0.42),
+      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.55);
   }
 
   .nle-button:hover::after,
@@ -511,7 +525,7 @@
 
   .nle-flow-copy {
     display: grid;
-    gap: 1rem;
+    gap: 1.2rem;
   }
 
   .nle-flow-copy h2 {
@@ -529,6 +543,7 @@
     font-family: var(--font-sans);
     font-size: clamp(1.22rem, 5.2vw, 1.62rem);
     font-weight: 900;
+    line-height: 1.42;
   }
 
   .nle-ten-minute-section {
@@ -573,7 +588,7 @@
   .nle-image-feature__copy {
     grid-area: copy;
     display: grid;
-    gap: 0.68rem;
+    gap: 0.82rem;
   }
 
   .nle-image-feature__copy p {
@@ -647,7 +662,7 @@
 
   .nle-timeline {
     display: grid;
-    gap: 0;
+    gap: 0.45rem;
     margin: 0;
     padding: 0;
   }
@@ -656,9 +671,9 @@
     position: relative;
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 1rem;
+    gap: 1.1rem;
     list-style: none;
-    padding-bottom: 1.45rem;
+    padding-bottom: 1.75rem;
   }
 
   .nle-timeline-item::before {
@@ -683,24 +698,24 @@
     position: relative;
     z-index: 1;
     display: grid;
-    height: 3.6rem;
-    width: 3.6rem;
+    height: 3.9rem;
+    width: 3.9rem;
     place-items: center;
     border-radius: 999px;
     background: linear-gradient(135deg, rgb(var(--nle-ritual-gold)), rgb(var(--nle-champagne)));
     color: rgb(var(--nle-deep-night));
     font-family: var(--font-sans);
-    font-size: 1.75rem;
+    font-size: 1.9rem;
     font-weight: 900;
     box-shadow: 0 12px 34px rgb(var(--nle-ritual-gold) / 0.22);
   }
 
   .nle-timeline-item div {
     display: grid;
-    gap: 0.34rem;
+    gap: 0.48rem;
     border-radius: 1.2rem;
-    background: rgb(var(--nle-warm-white) / 0.035);
-    padding: 0.85rem 0.95rem;
+    background: rgb(var(--nle-warm-white) / 0.05);
+    padding: 1rem;
   }
 
   .nle-timeline-item h3 {
@@ -887,7 +902,7 @@
   }
 
   .nle-value-section {
-    padding-block: 5rem 7rem;
+    padding-block: 5rem 8rem;
   }
 
   .nle-honesty-section .nle-section-header {
@@ -935,7 +950,7 @@
 
   .nle-value-stack {
     display: grid;
-    gap: 1rem;
+    gap: 1.25rem;
     max-width: 940px;
     margin-inline: auto;
     border: 1px solid rgb(var(--nle-champagne) / 0.16);
@@ -945,12 +960,12 @@
       rgb(var(--nle-warm-white) / 0.045);
     box-shadow: 0 28px 90px rgb(var(--nle-deep-night) / 0.34);
     overflow: hidden;
-    padding: 1rem;
+    padding: 1.2rem;
   }
 
   .nle-value-stack__items {
     display: grid;
-    gap: 0.35rem;
+    gap: 0.5rem;
     margin: 0;
     padding: 0;
   }
@@ -960,9 +975,9 @@
     grid-template-columns: auto minmax(0, 1fr);
     gap: 0.55rem 0.75rem;
     align-items: start;
-    border-bottom: 1px solid rgb(var(--nle-champagne) / 0.1);
+    border-bottom: 1px solid rgb(var(--nle-champagne) / 0.2);
     list-style: none;
-    padding: 0.85rem 0.45rem;
+    padding: 1rem 0.45rem;
   }
 
   .nle-value-stack__items li:last-child {
@@ -993,11 +1008,11 @@
 
   .nle-value-stack__summary {
     display: grid;
-    gap: 0.45rem;
+    gap: 0.6rem;
     border-radius: 1.25rem;
     background: linear-gradient(135deg, rgb(var(--nle-champagne) / 0.96), rgb(var(--nle-ritual-gold) / 0.9));
     color: rgb(var(--nle-deep-night));
-    padding: 1.25rem;
+    padding: 1.4rem;
   }
 
   .nle-value-stack__summary p {
@@ -1008,7 +1023,8 @@
 
   .nle-value-stack__summary p:last-child {
     font-family: var(--font-sans);
-    font-size: 1.12rem;
+    font-size: 1.22rem;
+    font-weight: 900;
   }
 
   .nle-placeholder-mockup {
@@ -1159,12 +1175,17 @@
   }
 
   .nle-guarantee-card {
+    position: relative;
+    isolation: isolate;
+    grid-template-areas:
+      'copy'
+      'visual';
     align-items: flex-start;
+    overflow: hidden;
     border-radius: 1.65rem;
     padding: 1.35rem 1.25rem;
   }
 
-  .nle-guarantee-card svg,
   .nle-final-card svg {
     flex: 0 0 auto;
     height: 1.45rem;
@@ -1172,9 +1193,33 @@
     color: rgb(var(--nle-ritual-gold));
   }
 
-  .nle-guarantee-card > div {
+  .nle-guarantee-card__copy {
+    grid-area: copy;
     display: grid;
-    gap: 0.8rem;
+    gap: 0.9rem;
+  }
+
+  .nle-guarantee-card__visual {
+    grid-area: visual;
+    width: min(68%, 15rem);
+    margin: -0.3rem auto -1.5rem;
+    opacity: 0.72;
+  }
+
+  .nle-guarantee-card__visual::before {
+    content: '';
+    position: absolute;
+    inset: auto 4% -28% 34%;
+    z-index: -1;
+    height: 14rem;
+    border-radius: 999px;
+    background: rgb(var(--nle-ritual-gold) / 0.13);
+    filter: blur(32px);
+  }
+
+  .nle-guarantee-card__visual img {
+    display: block;
+    width: 100%;
   }
 
   .nle-faq-list {
@@ -1285,7 +1330,9 @@
     border: 1px solid rgb(var(--nle-champagne) / 0.18);
     border-radius: 1.3rem;
     background: rgb(var(--nle-deep-night) / 0.92);
-    box-shadow: 0 20px 64px rgb(var(--nle-deep-night) / 0.66);
+    box-shadow:
+      0 20px 64px rgb(var(--nle-deep-night) / 0.66),
+      0 0 34px rgb(var(--nle-ritual-gold) / 0.1);
     opacity: 0;
     padding: 0.75rem;
     pointer-events: none;
@@ -1317,6 +1364,7 @@
     color: rgb(var(--nle-moon-lavender));
     font-size: 0.78rem;
     font-weight: 800;
+    line-height: 1.25;
   }
 
   .nle-sticky-cta button {
@@ -1443,6 +1491,11 @@
     .nle-button {
       width: fit-content;
       min-width: 19rem;
+    }
+
+    .nle-announcement {
+      font-size: 0.78rem;
+      padding-block: 0.78rem;
     }
 
     .nle-price-card,
@@ -1665,6 +1718,20 @@
     .nle-payment-visual {
       width: 100%;
       justify-self: end;
+    }
+
+    .nle-guarantee-card {
+      grid-template-areas: 'copy visual';
+      grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.42fr);
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nle-guarantee-card__visual {
+      width: min(100%, 16rem);
+      margin: 0;
+      justify-self: end;
+      opacity: 0.68;
     }
 
     .nle-sticky-cta {
