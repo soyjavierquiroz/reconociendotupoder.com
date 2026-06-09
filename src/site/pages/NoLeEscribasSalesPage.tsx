@@ -1,4 +1,12 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import { Check, Pause, Sparkles } from 'lucide-react';
 import { resolveCurrentAttribution } from '../../core/attribution';
@@ -8,6 +16,7 @@ import { startPurchaseIntent } from '../purchase';
 import {
   SalesBadge,
   SalesButton,
+  SalesCheckoutDrawer,
   SalesFaq,
   SalesGuaranteeCard,
   SalesImageFeature,
@@ -189,20 +198,47 @@ export function NoLeEscribasSalesPage() {
   const heroRef = useRef<HTMLElement | null>(null);
   const tenMinuteRef = useRef<HTMLElement | null>(null);
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
+  const [checkoutSource, setCheckoutSource] = useState<{ source: string; ctaLabel: string } | null>(
+    null,
+  );
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
-  const handlePurchaseIntent = (source: string, clickedCtaLabel: string) => () => {
-    const result = startPurchaseIntent({
+  const openCheckoutDrawer = (source: string, clickedCtaLabel: string) => () => {
+    setCheckoutError(null);
+    setCheckoutSource({ source, ctaLabel: clickedCtaLabel });
+  };
+
+  const closeCheckoutDrawer = useCallback(() => {
+    if (!checkoutLoading) {
+      setCheckoutSource(null);
+      setCheckoutError(null);
+    }
+  }, [checkoutLoading]);
+
+  const handleCheckoutSubmit = async (customer: { name: string; whatsapp: string }) => {
+    if (!checkoutSource) {
+      return;
+    }
+
+    setCheckoutLoading(true);
+    setCheckoutError(null);
+
+    const result = await startPurchaseIntent({
       productId,
       offerId,
       productName: 'Mujer, No Le Escribas',
       value,
       currency,
-      source,
-      ctaLabel: clickedCtaLabel,
+      source: checkoutSource.source,
+      ctaLabel: checkoutSource.ctaLabel,
+      customer,
     });
 
     if (result.status !== 'opened') {
       console.warn(`[NoLeEscribasSalesPage] ${result.message}`);
+      setCheckoutError(result.message);
+      setCheckoutLoading(false);
     }
   };
 
@@ -270,7 +306,7 @@ export function NoLeEscribasSalesPage() {
               Un kit de emergencia emocional para calmar el impulso, ordenar lo que sientes y
               volver a ti antes de buscarlo desde la ansiedad.
             </p>
-            <SalesButton onClick={handlePurchaseIntent('hero_cta', ctaLabel)}>
+            <SalesButton onClick={openCheckoutDrawer('hero_cta', ctaLabel)}>
               {ctaLabel}
             </SalesButton>
             <TrustMicrocopy>Pago con QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
@@ -385,7 +421,7 @@ export function NoLeEscribasSalesPage() {
         <SalesPriceBox
           badge="Lanzamiento Bolivia"
           buttonLabel={ctaLabel}
-          onButtonClick={handlePurchaseIntent('price_desktop_cta', ctaLabel)}
+          onButtonClick={openCheckoutDrawer('price_desktop_cta', ctaLabel)}
           microcopy="Pago con QR · Sin tarjeta · Acceso al área de miembros premium"
           priceLabel={priceLabel}
           regularPriceLabel={regularPriceLabel}
@@ -404,7 +440,7 @@ export function NoLeEscribasSalesPage() {
           imageAlt="Pago seguro por QR desde WhatsApp en Bolivia"
           imageSrc="/assets/reconociendo-tu-poder/pago-seguro-por-qr.webp"
           microcopy="El QR se genera según tu orden. No te pediremos datos de tarjeta."
-          onButtonClick={handlePurchaseIntent('qr_desktop_cta', qrCtaLabel)}
+          onButtonClick={openCheckoutDrawer('qr_desktop_cta', qrCtaLabel)}
           steps={paymentSteps}
           subtitle="No necesitas tarjeta. Dejas tu WhatsApp, recibes tu QR seguro, pagas desde tu app bancaria y activamos tu acceso al área de miembros premium."
           title="Pagas con QR. Entras al área privada."
@@ -458,7 +494,7 @@ export function NoLeEscribasSalesPage() {
           </div>
           <SalesButton
             hideOnMobile
-            onClick={handlePurchaseIntent('final_desktop_cta', 'Quiero recibir mi QR seguro')}
+            onClick={openCheckoutDrawer('final_desktop_cta', 'Quiero recibir mi QR seguro')}
           >
             Quiero recibir mi QR seguro
           </SalesButton>
@@ -470,10 +506,21 @@ export function NoLeEscribasSalesPage() {
 
       <StickySalesCta
         ctaLabel="Recibir QR"
-        onClick={handlePurchaseIntent('sticky_cta', 'Recibir QR')}
+        onClick={openCheckoutDrawer('sticky_cta', 'Recibir QR')}
         priceLabel={priceLabel}
         regularPriceLabel={regularPriceLabel}
         visible={isStickyCtaVisible}
+      />
+      <SalesCheckoutDrawer
+        error={checkoutError}
+        loading={checkoutLoading}
+        onClose={closeCheckoutDrawer}
+        onSubmit={handleCheckoutSubmit}
+        open={checkoutSource !== null}
+        priceLabel={priceLabel}
+        productName="Mujer, No Le Escribas"
+        regularPriceLabel={regularPriceLabel}
+        submitLabel="Solicitar QR por Bs 29"
       />
     </main>
   );

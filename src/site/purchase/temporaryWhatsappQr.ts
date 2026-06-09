@@ -9,11 +9,24 @@ import type {
   StartPurchaseIntentResult,
 } from './types';
 
+const CHECKOUT_NOT_CONFIGURED_MESSAGE = 'El checkout temporal no está configurado.';
+const WHATSAPP_NOT_CONFIGURED_MESSAGE = 'WhatsApp de pedidos no está configurado.';
+const WEBHOOK_FAILED_MESSAGE = 'No pudimos crear tu pedido. Intenta de nuevo en unos segundos.';
+
+type TemporaryWhatsappQrDependencies = {
+  attribution?: ReturnType<typeof resolveCurrentAttribution>;
+  intentWebhookUrl?: string;
+  whatsappUrl?: string;
+  fetch?: typeof fetch;
+  navigate?: (url: string) => void;
+  track?: typeof trackEvent;
+};
+
 function getCurrentUrl(): string {
-  return typeof window === 'undefined' ? '' : window.location.href;
+  return typeof window === 'undefined' ? '' : window.location?.href ?? '';
 }
 
-function buildWhatsappUrl(baseUrl: string, message: string): string | null {
+export function buildTemporaryWhatsappQrUrl(baseUrl: string, message: string): string | null {
   try {
     const url = new URL(baseUrl);
 
@@ -28,22 +41,24 @@ function buildWhatsappUrl(baseUrl: string, message: string): string | null {
   }
 }
 
-function sendIntentToWebhook(intent: PurchaseIntent, webhookUrl: string): void {
-  if (!webhookUrl) {
-    return;
-  }
-
+async function sendIntentToWebhook(
+  intent: PurchaseIntent,
+  webhookUrl: string,
+  fetchImplementation: typeof fetch,
+): Promise<boolean> {
   try {
-    void fetch(webhookUrl, {
+    const response = await fetchImplementation(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(intent),
       keepalive: true,
-    }).catch(() => undefined);
+    });
+
+    return response.status === 200 || response.status === 201 || response.status === 202;
   } catch {
-    // The temporary webhook must never block the WhatsApp handoff.
+    return false;
   }
 }
 
@@ -51,72 +66,132 @@ export function buildTemporaryWhatsappQrMessage(
   productName: string,
   orderId: string,
   priceLabel: string,
+  customerName: string,
+  customerWhatsapp?: string,
 ): string {
   return [
     `Hola, quiero recibir mi QR para *${productName}.*`,
+    `Nombre: ${customerName}`,
     `Código de pedido: ${orderId}`,
     `Monto: ${priceLabel}`,
+    ...(customerWhatsapp ? [`WhatsApp: ${customerWhatsapp}`] : []),
   ].join('\n');
 }
 
-export function startTemporaryWhatsappQrIntent(
+export function buildTemporaryPurchaseIntent(
   input: StartPurchaseIntentInput,
-): StartPurchaseIntentResult {
-  const attribution = resolveCurrentAttribution();
-  const orderId = createTemporaryOrderId();
-  const intent: PurchaseIntent = {
+  attribution = resolveCurrentAttribution(),
+  orderId = createTemporaryOrderId(),
+  currentUrl = getCurrentUrl(),
+): PurchaseIntent {
+  return {
     ...input,
     orderId,
+    status: 'qr_requested',
+    purchaseFlow: 'temporary_whatsapp_qr',
     attribution,
     createdAt: new Date().toISOString(),
-    currentUrl: getCurrentUrl(),
+    currentUrl,
+    name: input.customer.name,
+    phone: input.customer.whatsapp,
+    whatsapp: input.customer.whatsapp,
+    traffic_channel: attribution.channel,
+    attribution_source: attribution.source,
+    paid_platform: attribution.paidPlatform,
+    fbclid: attribution.clickIds.fbclid ?? '',
+    ttclid: attribution.clickIds.ttclid ?? '',
+    gclid: attribution.clickIds.gclid ?? '',
+    landing_path: attribution.landingPath,
+    current_path: attribution.currentPath,
   };
+}
+
+function defaultNavigate(url: string): void {
+  window.location.assign(url);
+}
+
+export async function startTemporaryWhatsappQrIntent(
+  input: StartPurchaseIntentInput,
+  dependencies: TemporaryWhatsappQrDependencies = {},
+): Promise<StartPurchaseIntentResult> {
+  const intentWebhookUrl =
+    dependencies.intentWebhookUrl ?? DNA.noLeEscribas.purchase.intentWebhookUrl;
+
+  if (!intentWebhookUrl) {
+    return {
+      status: 'not_configured',
+      orderId: null,
+      message: CHECKOUT_NOT_CONFIGURED_MESSAGE,
+    };
+  }
+
+  const attribution = dependencies.attribution ?? resolveCurrentAttribution();
+  const intent = buildTemporaryPurchaseIntent(input, attribution);
 
   storePurchaseIntent(intent);
 
-  void trackEvent('InitiateCheckout', {
+  const fetchImplementation = dependencies.fetch ?? globalThis.fetch;
+  const webhookSucceeded = await sendIntentToWebhook(intent, intentWebhookUrl, fetchImplementation);
+
+  if (!webhookSucceeded) {
+    return {
+      status: 'webhook_failed',
+      orderId: intent.orderId,
+      message: WEBHOOK_FAILED_MESSAGE,
+    };
+  }
+
+  const whatsappUrl = buildTemporaryWhatsappQrUrl(
+    dependencies.whatsappUrl ?? DNA.noLeEscribas.purchase.whatsappUrl,
+    buildTemporaryWhatsappQrMessage(
+      input.productName,
+      intent.orderId,
+      DNA.noLeEscribas.offer.priceLabel,
+      input.customer.name,
+      input.customer.whatsapp,
+    ),
+  );
+
+  if (!whatsappUrl || typeof window === 'undefined') {
+    return {
+      status: 'not_configured',
+      orderId: intent.orderId,
+      message: WHATSAPP_NOT_CONFIGURED_MESSAGE,
+    };
+  }
+
+  const track = dependencies.track ?? trackEvent;
+
+  await track('InitiateCheckout', {
+    event_name: 'InitiateCheckout',
     content_name: input.productName,
+    content_ids: [input.productId],
     content_category: 'sales_page',
     content_type: 'product',
     product_id: input.productId,
     offer_id: input.offerId,
-    order_id: orderId,
+    order_id: intent.orderId,
     value: input.value,
     currency: input.currency,
+    customer_name: input.customer.name,
+    customer_whatsapp: input.customer.whatsapp,
     source: input.source,
     cta_label: input.ctaLabel,
     attribution,
   }).catch(() => undefined);
 
-  sendIntentToWebhook(intent, DNA.noLeEscribas.purchase.intentWebhookUrl);
-
-  const message = buildTemporaryWhatsappQrMessage(
-    input.productName,
-    orderId,
-    DNA.noLeEscribas.offer.priceLabel,
-  );
-  const whatsappUrl = buildWhatsappUrl(DNA.noLeEscribas.purchase.whatsappUrl, message);
-
-  if (!whatsappUrl || typeof window === 'undefined') {
-    return {
-      status: 'not_configured',
-      orderId,
-      message: 'WhatsApp temporal no está configurado.',
-    };
-  }
-
   try {
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    (dependencies.navigate ?? defaultNavigate)(whatsappUrl);
   } catch {
     return {
-      status: 'not_configured',
-      orderId,
+      status: 'navigation_failed',
+      orderId: intent.orderId,
       message: 'No se pudo abrir WhatsApp de forma segura.',
     };
   }
 
   return {
     status: 'opened',
-    orderId,
+    orderId: intent.orderId,
   };
 }
