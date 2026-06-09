@@ -20,14 +20,17 @@ Status: neutral parent baseline.
 - `temporary_whatsapp_qr` is a temporary adapter for validating sales through a
   manual WhatsApp and QR handoff. The intended final destination is the
   Jakawi/Drenvex checkout.
-- Every No Le Escribas purchase CTA opens a temporary checkout drawer for name
-  and WhatsApp. On valid submit, `startPurchaseIntent` creates an
+- Every No Le Escribas purchase CTA opens a checkout-styled drawer for full
+  name and phone. The phone field reuses `SmartPhoneInput` and
+  `VisitorContext` for IP-based country detection, with `BO/+591` as fallback.
+  On valid submit, `startPurchaseIntent` creates an
   `NLE-MMDD-XXXX` order id, resolves current attribution, stores the
   `qr_requested` intent and customer in local and session storage, and sends
   the enriched payload to the configured n8n webhook.
 - The webhook payload keeps structured attribution and includes flat CRM fields
-  for name, phone, WhatsApp, traffic channel, attribution source, paid
-  platform, click ids, landing path, and current path.
+  for name, phone, WhatsApp, national phone, country code, calling code, E.164,
+  traffic channel, attribution source, paid platform, click ids, landing path,
+  and current path.
 - `InitiateCheckout` receives explicit attribution and follows
   `ResolvedAttribution.shouldTrackAds`; it fires only after the n8n webhook
   responds with HTTP `200`, `201`, or `202`. Failed or missing configuration

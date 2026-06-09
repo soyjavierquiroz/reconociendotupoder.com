@@ -5,6 +5,11 @@ export type PurchaseFlow = 'temporary_whatsapp_qr' | 'jakawi_drenvex_checkout';
 export interface PurchaseCustomer {
   name: string;
   whatsapp: string;
+  phone: string;
+  phoneNational: string;
+  phoneCountryCode: string;
+  phoneCallingCode: string;
+  phoneE164: string;
 }
 
 export interface StartPurchaseIntentInput {
@@ -28,6 +33,10 @@ export interface PurchaseIntent extends StartPurchaseIntentInput {
   name: string;
   phone: string;
   whatsapp: string;
+  phone_national: string;
+  phone_country_code: string;
+  phone_calling_code: string;
+  phone_e164: string;
   traffic_channel: ResolvedAttribution['channel'];
   attribution_source: ResolvedAttribution['source'];
   paid_platform: ResolvedAttribution['paidPlatform'];

@@ -12,7 +12,7 @@ import { Check, Pause, Sparkles } from 'lucide-react';
 import { resolveCurrentAttribution } from '../../core/attribution';
 import { trackEvent } from '../../core/services/analytics';
 import { DNA } from '../current';
-import { startPurchaseIntent } from '../purchase';
+import { startPurchaseIntent, type PurchaseCustomer } from '../purchase';
 import {
   SalesBadge,
   SalesButton,
@@ -216,7 +216,7 @@ export function NoLeEscribasSalesPage() {
     }
   }, [checkoutLoading]);
 
-  const handleCheckoutSubmit = async (customer: { name: string; whatsapp: string }) => {
+  const handleCheckoutSubmit = async (customer: PurchaseCustomer) => {
     if (!checkoutSource) {
       return;
     }
@@ -520,7 +520,7 @@ export function NoLeEscribasSalesPage() {
         priceLabel={priceLabel}
         productName="Mujer, No Le Escribas"
         regularPriceLabel={regularPriceLabel}
-        submitLabel="Solicitar QR por Bs 29"
+        submitLabel="Solicitar QR · Bs 29"
       />
     </main>
   );

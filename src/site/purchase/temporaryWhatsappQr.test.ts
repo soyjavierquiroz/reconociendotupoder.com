@@ -27,7 +27,12 @@ const input = {
   ctaLabel: 'Solicitar QR por Bs 29',
   customer: {
     name: 'Test RTP',
-    whatsapp: '69430776',
+    whatsapp: '59169430776',
+    phone: '59169430776',
+    phoneNational: '69430776',
+    phoneCountryCode: 'BO',
+    phoneCallingCode: '+591',
+    phoneE164: '+59169430776',
   },
 };
 
@@ -51,7 +56,7 @@ describe('buildTemporaryWhatsappQrMessage', () => {
         'NLE-0608-LW55',
         'Bs 29',
         'Test RTP',
-        '69430776',
+        '+59169430776',
       ),
     ).toBe(
       [
@@ -59,7 +64,7 @@ describe('buildTemporaryWhatsappQrMessage', () => {
         'Nombre: Test RTP',
         'Código de pedido: NLE-0608-LW55',
         'Monto: Bs 29',
-        'WhatsApp: 69430776',
+        'WhatsApp: +59169430776',
       ].join('\n'),
     );
   });
@@ -80,8 +85,12 @@ describe('buildTemporaryPurchaseIntent', () => {
       purchaseFlow: 'temporary_whatsapp_qr',
       customer: input.customer,
       name: 'Test RTP',
-      phone: '69430776',
-      whatsapp: '69430776',
+      phone: '59169430776',
+      whatsapp: '59169430776',
+      phone_national: '69430776',
+      phone_country_code: 'BO',
+      phone_calling_code: '+591',
+      phone_e164: '+59169430776',
       traffic_channel: 'ads',
       attribution_source: 'clickid',
       paid_platform: 'meta',
@@ -143,7 +152,10 @@ describe('startTemporaryWhatsappQrIntent', () => {
       'InitiateCheckout',
       expect.objectContaining({
         customer_name: 'Test RTP',
-        customer_whatsapp: '69430776',
+        customer_whatsapp: '59169430776',
+        phone_country_code: 'BO',
+        phone_calling_code: '+591',
+        phone_e164: '+59169430776',
         order_id: expect.stringMatching(/^NLE-\d{4}-[A-HJ-NP-Z2-9]{4}$/),
       }),
     );

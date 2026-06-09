@@ -1,12 +1,28 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeCheckoutWhatsapp } from './checkoutCustomer';
+import { normalizeCheckoutPhone, validateCheckoutCustomer } from './checkoutCustomer';
 
-describe('normalizeCheckoutWhatsapp', () => {
-  it('keeps an international prefix and removes presentation characters', () => {
-    expect(normalizeCheckoutWhatsapp('+591 (694) 30-776')).toBe('+59169430776');
+describe('normalizeCheckoutPhone', () => {
+  it.each([
+    ['79790873', '+59179790873'],
+    ['59179790873', '+59179790873'],
+    ['+591 79790873', '+59179790873'],
+    ['+59159179790873', '+59179790873'],
+  ])('normalizes Bolivia phone %s to %s without duplicating its prefix', (input, expected) => {
+    expect(normalizeCheckoutPhone(input, 'BO')).toEqual({
+      whatsapp: '59179790873',
+      phone: '59179790873',
+      phoneNational: '79790873',
+      phoneCountryCode: 'BO',
+      phoneCallingCode: '+591',
+      phoneE164: expected,
+    });
   });
+});
 
-  it('normalizes a local number to digits', () => {
-    expect(normalizeCheckoutWhatsapp('694 30-776')).toBe('69430776');
+describe('validateCheckoutCustomer', () => {
+  it('rejects a short phone number', () => {
+    expect(validateCheckoutCustomer('Javier Sueldo', '12345')).toMatchObject({
+      whatsapp: 'Ingresa un WhatsApp válido de al menos 7 dígitos.',
+    });
   });
 });

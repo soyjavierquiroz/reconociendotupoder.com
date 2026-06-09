@@ -44,8 +44,13 @@ Do not put secrets, real tokens, or private webhook URLs in committed files.
 `temporary_whatsapp_qr` purchase adapter to validate paid demand before the
 Jakawi/Drenvex checkout is ready.
 
-- Every sales CTA opens a temporary checkout drawer that captures name and
-  WhatsApp. The landing then calls only `startPurchaseIntent`; WhatsApp
+- Every sales CTA opens a premium-styled temporary checkout drawer that
+  captures full name and phone. Its reusable phone field uses the existing
+  visitor/IP country detection and country selector, with Bolivia (`BO`,
+  `+591`) as the fallback.
+- Phone input is normalized into national, country, calling-code, E.164, and
+  digits-only CRM fields without removing the existing `phone` and `whatsapp`
+  fields. The landing then calls only `startPurchaseIntent`; WhatsApp
   navigation and QR handoff details stay isolated in `src/site/purchase`.
 - `VITE_TEMPORARY_QR_WHATSAPP_URL` configures the public WhatsApp destination.
   An empty value leaves every CTA safe and non-navigating.
@@ -57,8 +62,8 @@ Jakawi/Drenvex checkout is ready.
   does not fire `InitiateCheckout` or navigate to WhatsApp.
 - A successful QR request fires `InitiateCheckout` after the webhook responds
   with HTTP `200`, `201`, or `202`, then redirects to WhatsApp with the customer
-  name and short `NLE-MMDD-XXXX` order id. It never fires `Purchase`, `Lead`, or
-  `CompleteRegistration`.
+  name, E.164 phone, and short `NLE-MMDD-XXXX` order id. It never fires
+  `Purchase`, `Lead`, or `CompleteRegistration`.
 - Confirmed `Purchase` events must come later from n8n or the final
   Jakawi/Drenvex checkout after payment confirmation.
 - `CompleteRegistration` remains a capture conversion only and requires a

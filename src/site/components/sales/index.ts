@@ -1,6 +1,7 @@
 export { SalesBadge } from './SalesBadge';
 export { SalesButton } from './SalesButton';
 export { SalesCheckoutDrawer } from './SalesCheckoutDrawer';
+export { SalesPhoneField } from './SalesPhoneField';
 export { SalesFaq } from './SalesFaq';
 export { SalesGuaranteeCard } from './SalesGuaranteeCard';
 export { SalesImageFeature } from './SalesImageFeature';
