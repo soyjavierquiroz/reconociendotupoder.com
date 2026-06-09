@@ -61,6 +61,7 @@ describe('buildTemporaryWhatsappQrMessage', () => {
     ).toBe(
       [
         'Hola, quiero recibir mi QR para *Mujer, No Le Escribas.*',
+        '',
         'Nombre: Test RTP',
         'Código de pedido: NLE-0608-LW55',
         'Monto: Bs 29',

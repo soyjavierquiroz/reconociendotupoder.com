@@ -71,6 +71,7 @@ export function buildTemporaryWhatsappQrMessage(
 ): string {
   return [
     `Hola, quiero recibir mi QR para *${productName}.*`,
+    '',
     `Nombre: ${customerName}`,
     `Código de pedido: ${orderId}`,
     `Monto: ${priceLabel}`,
