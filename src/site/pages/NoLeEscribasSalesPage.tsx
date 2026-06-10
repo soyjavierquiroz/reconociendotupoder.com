@@ -2,7 +2,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type CSSProperties,
   type ReactNode,
@@ -104,14 +103,14 @@ const paymentSteps = [
 ] as const;
 
 const valueStackItems = [
-  { name: 'Módulo de Emergencia “No le escribas todavía”', value: 'Bs 27' },
-  { name: 'Reto guiado de 7 días para volver a ti', value: 'Bs 67' },
-  { name: 'Videos explicativos por módulo', value: 'Bs 47' },
-  { name: 'PDFs + Workbook diario', value: 'Bs 37' },
-  { name: 'Audios descargables de acompañamiento', value: 'Bs 47' },
-  { name: 'Checklist antes de escribirle', value: 'Bs 17' },
-  { name: 'Carta que no vas a enviar', value: 'Bs 17' },
-  { name: 'Plan anti-recaída para noches y fines de semana', value: 'Bs 27' },
+  'Módulo de Emergencia “No le escribas todavía”',
+  'Reto guiado de 7 días para volver a ti',
+  'Videos explicativos por módulo',
+  'PDFs + Workbook diario',
+  'Audios descargables de acompañamiento',
+  'Checklist antes de escribirle',
+  'Carta que no vas a enviar',
+  'Plan anti-recaída para noches y fines de semana',
 ] as const;
 
 const faqs = [
@@ -191,16 +190,12 @@ export function NoLeEscribasSalesPage() {
     offerId,
     priceLabel,
     productId,
-    qrCtaLabel,
     regularPriceLabel,
-    topBarLabel,
-    topBarMobileLabel,
     value,
     valueTotalLabel,
   } = DNA.noLeEscribas.offer;
-  const heroRef = useRef<HTMLElement | null>(null);
-  const tenMinuteRef = useRef<HTMLElement | null>(null);
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
+  const [isOfferReached, setIsOfferReached] = useState(false);
   const [checkoutSource, setCheckoutSource] = useState<{ source: string; ctaLabel: string } | null>(
     null,
   );
@@ -274,50 +269,60 @@ export function NoLeEscribasSalesPage() {
   }, [attribution, attribution.shouldTrackAds, currency, productId, value]);
 
   useEffect(() => {
-    const updateStickyCtaVisibility = () => {
-      if (window.matchMedia('(max-width: 767px)').matches) {
-        setIsStickyCtaVisible(window.scrollY >= 360);
-        return;
-      }
+    const updateStickyCta = () => {
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+      const offerTop = document.getElementById('oferta')?.getBoundingClientRect().top;
 
-      const tenMinuteBottom = tenMinuteRef.current?.getBoundingClientRect().bottom ?? 0;
-      setIsStickyCtaVisible(tenMinuteBottom <= 0);
+      setIsStickyCtaVisible(isMobile && window.scrollY >= 360);
+      setIsOfferReached(
+        isMobile && offerTop !== undefined && offerTop <= window.innerHeight * 0.72,
+      );
     };
 
-    updateStickyCtaVisibility();
-    window.addEventListener('scroll', updateStickyCtaVisibility, { passive: true });
-    window.addEventListener('resize', updateStickyCtaVisibility);
+    updateStickyCta();
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    window.addEventListener('resize', updateStickyCta);
 
     return () => {
-      window.removeEventListener('scroll', updateStickyCtaVisibility);
-      window.removeEventListener('resize', updateStickyCtaVisibility);
+      window.removeEventListener('scroll', updateStickyCta);
+      window.removeEventListener('resize', updateStickyCta);
     };
   }, []);
 
   return (
     <main className="no-le-escribas-page" style={colorVariables}>
-      <SalesTopBar mobileText={topBarMobileLabel} text={topBarLabel} />
+      <SalesTopBar text="Reto guiado de 7 días · Método P.A.U.S.A." />
 
-      <section className="nle-hero" ref={heroRef}>
+      <section className="nle-hero">
         <div className="nle-container nle-hero-content">
           <div className="nle-hero-copy">
-            <SalesBadge icon={<Pause aria-hidden="true" />}>
-              Método P.A.U.S.A. · Reto 7 días
-            </SalesBadge>
+            <SalesBadge icon={<Pause aria-hidden="true" />}>Reto guiado de 7 días</SalesBadge>
             <h1>
               No le escribas <span>todavía.</span>
             </h1>
             <p className="nle-hero-subheadline">
-              Haz una P.A.U.S.A. antes de mandar ese mensaje que mañana puede dolerte.
+              Haz una P.A.U.S.A. antes de mandar ese mensaje que mañana puede doler más.
             </p>
             <p className="nle-hero-text">
-              Un kit de emergencia emocional para calmar el impulso, ordenar lo que sientes y
-              volver a ti antes de buscarlo desde la ansiedad.
+              Un reto guiado de 7 días para calmar el impulso, ordenar lo que sientes y volver a ti
+              antes de escribir desde la ansiedad.
             </p>
-            <SalesButton onClick={openCheckoutDrawer('hero_cta', ctaLabel)}>
-              {ctaLabel}
+            <SalesButton
+              clarityLabel="hero-ver-como-funciona"
+              dataCta="hero-ver-como-funciona"
+              href="#como-funciona"
+            >
+              Ver cómo funciona
             </SalesButton>
-            <TrustMicrocopy>Pago con QR · Sin tarjeta · Acceso al área privada</TrustMicrocopy>
+            <TrustMicrocopy>Método P.A.U.S.A. · Regla de los 10 minutos · Área privada</TrustMicrocopy>
+            <a
+              className="nle-secondary-link"
+              data-clarity-label="hero-ver-oferta"
+              data-cta="hero-ver-oferta"
+              href="#oferta"
+            >
+              Ya conozco el reto, quiero ver la oferta
+            </a>
           </div>
         </div>
       </section>
@@ -335,58 +340,14 @@ export function NoLeEscribasSalesPage() {
             Ese mensaje no siempre busca amor. A veces solo busca alivio.
           </p>
           <p className="nle-gold-line">Y ahí es donde necesitas una pausa.</p>
-        </div>
-      </SalesSection>
-
-      <section className="nle-section nle-ten-minute-section" ref={tenMinuteRef}>
-        <div className="nle-container">
-          <SalesImageFeature
-            imageAlt="Visual de la regla de los 10 minutos antes de escribirle"
-            imageSrc="/assets/reconociendo-tu-poder/visual-regla-10-minutos.png.webp"
-            title="Antes de escribirle, date 10 minutos."
+          <SalesButton
+            clarityLabel="problema-entender-como-funciona"
+            dataCta="problema-entender-como-funciona"
+            href="#como-funciona"
+            variant="outline"
           >
-            <p>No tienes que prometer que nunca le vas a escribir.</p>
-            <p>No tienes que bloquearlo ahora.</p>
-            <p className="nle-image-feature__highlight">Solo esto: 10 minutos sin enviar el mensaje.</p>
-            <p>Durante esos 10 minutos, haces una P.A.U.S.A.</p>
-          </SalesImageFeature>
-        </div>
-      </section>
-
-      <SalesSection className="nle-method-section">
-        <SectionHeader
-          title={
-            <>
-              El método P.A.U.S.A.: <span>qué hacer en los 10 minutos antes de escribirle</span>
-            </>
-          }
-          subtitle="No necesitas más fuerza de voluntad. Necesitas un proceso simple para no actuar desde la ansiedad."
-        />
-        <SalesTimeline items={pauseSteps} />
-      </SalesSection>
-
-      <SalesSection className="nle-includes-section">
-        <div className="nle-includes-layout">
-          <div className="nle-includes-header">
-            <SectionHeader
-              title={
-                <>
-                  <span>No es solo un PDF.</span>
-                  <span>Es un kit completo para volver a ti.</span>
-                </>
-              }
-              subtitle="Dentro del área de miembros premium tendrás videos, PDFs, workbook, audios descargables y ejercicios guiados para acompañarte paso a paso durante 7 días."
-            />
-          </div>
-          <SalesMediaShowcase
-            alt="Mockup del kit Mujer, No Le Escribas con área de miembros, workbook, audios, checklist y reto de 7 días"
-            caption="Esto es lo que verás dentro del área privada."
-            className="nle-includes-showcase"
-            src="/assets/reconociendo-tu-poder/mockup-producto-mujer-no-le-escribas.webp"
-          />
-          <div className="nle-includes-list">
-            <CheckList items={receives} />
-          </div>
+            Entiendo lo que siento
+          </SalesButton>
         </div>
       </SalesSection>
 
@@ -412,25 +373,105 @@ export function NoLeEscribasSalesPage() {
         </p>
       </SalesSection>
 
-      <SalesSection className="nle-value-section">
+      <section className="nle-section nle-ten-minute-section" id="como-funciona">
+        <div className="nle-container">
+          <SalesImageFeature
+            imageAlt="Visual de la regla de los 10 minutos antes de escribirle"
+            imageSrc="/assets/reconociendo-tu-poder/visual-regla-10-minutos.png.webp"
+            title="Antes de escribirle, date 10 minutos."
+          >
+            <p>No tienes que prometer que nunca le vas a escribir.</p>
+            <p>No tienes que bloquearlo ahora.</p>
+            <p className="nle-image-feature__highlight">Solo esto: 10 minutos sin enviar el mensaje.</p>
+            <p>Durante esos 10 minutos, haces una P.A.U.S.A.</p>
+          </SalesImageFeature>
+          <SalesButton
+            clarityLabel="como-funciona-ver-metodo"
+            dataCta="como-funciona-ver-metodo"
+            href="#metodo-pausa"
+            variant="outline"
+          >
+            Conocer el método P.A.U.S.A.
+          </SalesButton>
+        </div>
+      </section>
+
+      <SalesSection className="nle-method-section" id="metodo-pausa">
+        <SectionHeader
+          title={
+            <>
+              El método P.A.U.S.A.: <span>qué hacer en los 10 minutos antes de escribirle</span>
+            </>
+          }
+          subtitle="No necesitas más fuerza de voluntad. Necesitas un proceso simple para no actuar desde la ansiedad."
+        />
+        <SalesTimeline items={pauseSteps} />
+        <SalesButton
+          clarityLabel="metodo-ver-que-incluye"
+          dataCta="metodo-ver-que-incluye"
+          href="#que-incluye"
+          variant="outline"
+        >
+          Ver qué incluye el reto
+        </SalesButton>
+      </SalesSection>
+
+      <SalesSection className="nle-includes-section" id="que-incluye">
+        <div className="nle-includes-layout">
+          <div className="nle-includes-header">
+            <SectionHeader
+              title={
+                <>
+                  <span>No es solo un PDF.</span>
+                  <span>Es un kit completo para volver a ti.</span>
+                </>
+              }
+              subtitle="Dentro del área de miembros premium tendrás videos, PDFs, workbook, audios descargables y ejercicios guiados para acompañarte paso a paso durante 7 días."
+            />
+          </div>
+          <SalesMediaShowcase
+            alt="Mockup del kit Mujer, No Le Escribas con área de miembros, workbook, audios, checklist y reto de 7 días"
+            caption="Esto es lo que verás dentro del área privada."
+            className="nle-includes-showcase"
+            src="/assets/reconociendo-tu-poder/mockup-producto-mujer-no-le-escribas.webp"
+          />
+          <div className="nle-includes-list">
+            <CheckList items={receives} />
+            <SalesButton
+              clarityLabel="kit-ver-todo-incluido"
+              dataCta="kit-ver-todo-incluido"
+              href="#incluye"
+              variant="outline"
+            >
+              Ver todo lo incluido
+            </SalesButton>
+          </div>
+        </div>
+      </SalesSection>
+
+      <SalesSection className="nle-value-section" id="incluye">
         <SectionHeader
           title="Todo esto está incluido hoy"
           subtitle="No estás comprando un PDF. Estás entrando a un sistema completo para pausar, ordenar lo que sientes y volver a ti."
         />
-        <SalesValueStack
-          items={valueStackItems}
-          priceLabel={priceLabel}
-          regularPriceLabel={regularPriceLabel}
-          valueTotalLabel={valueTotalLabel}
-        />
+        <SalesValueStack items={valueStackItems} />
+        <SalesButton
+          clarityLabel="incluye-ver-oferta"
+          dataCta="incluye-ver-oferta"
+          href="#oferta"
+        >
+          Ver la oferta
+        </SalesButton>
       </SalesSection>
 
-      <SalesSection className="nle-price-section" id="pago-qr" width="narrow">
+      <SalesSection className="nle-price-section" id="oferta" width="narrow">
         <SalesPriceBox
           badge="Lanzamiento Bolivia"
           buttonLabel={ctaLabel}
-          onButtonClick={openCheckoutDrawer('price_desktop_cta', ctaLabel)}
-          microcopy="Pago con QR · Sin tarjeta · Acceso al área de miembros premium"
+          buttonClarityLabel="oferta-ir-pago-qr"
+          buttonDataCta="oferta-ir-pago-qr"
+          buttonHref="#pago-qr"
+          microcopy="Acceso completo al reto de 7 días y al área privada."
           priceLabel={priceLabel}
           regularPriceLabel={regularPriceLabel}
           title="Hoy puedes entrar por:"
@@ -442,13 +483,15 @@ export function NoLeEscribasSalesPage() {
         </SalesPriceBox>
       </SalesSection>
 
-      <SalesSection className="nle-payment-section">
+      <SalesSection className="nle-payment-section" id="pago-qr">
         <SalesQrPayment
-          buttonLabel={qrCtaLabel}
+          buttonClarityLabel="pago-qr-open-checkout"
+          buttonDataCta="pago-qr-open-checkout"
+          buttonLabel="Pagar con QR y entrar"
           imageAlt="Pago seguro por QR desde WhatsApp en Bolivia"
           imageSrc="/assets/reconociendo-tu-poder/pago-seguro-por-qr.webp"
           microcopy="El QR se genera según tu orden. No te pediremos datos de tarjeta."
-          onButtonClick={openCheckoutDrawer('qr_desktop_cta', qrCtaLabel)}
+          onButtonClick={openCheckoutDrawer('pago_qr_cta', 'Pagar con QR y entrar')}
           steps={paymentSteps}
           subtitle="No necesitas tarjeta. Dejas tu WhatsApp, recibes tu QR seguro, pagas desde tu app bancaria y activamos tu acceso al área de miembros premium."
           title="Pagas con QR. Entras al área privada."
@@ -501,10 +544,12 @@ export function NoLeEscribasSalesPage() {
             <span>Precio regular: {regularPriceLabel}</span>
           </div>
           <SalesButton
+            clarityLabel="final-open-checkout"
+            dataCta="final-open-checkout"
             hideOnMobile
-            onClick={openCheckoutDrawer('final_desktop_cta', 'Quiero recibir mi QR seguro')}
+            onClick={openCheckoutDrawer('final_desktop_cta', 'Pagar con QR y entrar')}
           >
-            Quiero recibir mi QR seguro
+            Pagar con QR y entrar
           </SalesButton>
           <TrustMicrocopy>
             Pago con QR · Sin tarjeta · Acceso al área de miembros premium
@@ -513,10 +558,11 @@ export function NoLeEscribasSalesPage() {
       </SalesSection>
 
       <StickySalesCta
-        ctaLabel="Recibir QR"
-        onClick={openCheckoutDrawer('sticky_cta', 'Recibir QR')}
-        priceLabel={priceLabel}
-        regularPriceLabel={regularPriceLabel}
+        ctaLabel={isOfferReached ? ctaLabel : 'Ver cómo funciona'}
+        dataCta={isOfferReached ? 'sticky-ir-pago-qr' : 'sticky-ver-como-funciona'}
+        href={isOfferReached ? '#pago-qr' : '#como-funciona'}
+        subtitle={isOfferReached ? 'Acceso completo al reto' : 'Empieza por una pausa'}
+        title={isOfferReached ? `Hoy ${priceLabel}` : 'Reto guiado de 7 días'}
         visible={isStickyCtaVisible}
       />
       <SalesCheckoutDrawer

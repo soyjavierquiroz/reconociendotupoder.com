@@ -1,11 +1,14 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 type SalesButtonProps = {
   children: ReactNode;
   variant?: 'primary' | 'outline';
   className?: string;
   hideOnMobile?: boolean;
-  onClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+  href?: string;
+  onClick?: () => void;
+  dataCta?: string;
+  clarityLabel?: string;
 };
 
 export function SalesButton({
@@ -13,7 +16,10 @@ export function SalesButton({
   variant = 'primary',
   className = '',
   hideOnMobile = false,
+  href,
   onClick,
+  dataCta,
+  clarityLabel,
 }: SalesButtonProps) {
   const styleVariant = variant === 'primary' ? 'solid' : 'outline';
   const classes = [
@@ -25,8 +31,21 @@ export function SalesButton({
     .filter(Boolean)
     .join(' ');
 
+  const trackingAttributes = {
+    'data-clarity-label': clarityLabel,
+    'data-cta': dataCta,
+  };
+
+  if (href) {
+    return (
+      <a className={classes} href={href} {...trackingAttributes}>
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <button className={classes} onClick={onClick} type="button">
+    <button className={classes} onClick={onClick} type="button" {...trackingAttributes}>
       {children}
     </button>
   );

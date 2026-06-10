@@ -1,11 +1,12 @@
-import type { ButtonHTMLAttributes } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { SalesButton } from './SalesButton';
 import { TrustMicrocopy } from './TrustMicrocopy';
 
 type SalesQrPaymentProps = {
   buttonLabel: string;
-  onButtonClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+  buttonDataCta?: string;
+  buttonClarityLabel?: string;
+  onButtonClick?: () => void;
   imageAlt: string;
   imageSrc: string;
   microcopy: string;
@@ -16,6 +17,8 @@ type SalesQrPaymentProps = {
 
 export function SalesQrPayment({
   buttonLabel,
+  buttonDataCta,
+  buttonClarityLabel,
   onButtonClick,
   imageAlt,
   imageSrc,
@@ -43,7 +46,13 @@ export function SalesQrPayment({
             <li key={step}>{step}</li>
           ))}
         </ol>
-        <SalesButton hideOnMobile onClick={onButtonClick}>{buttonLabel}</SalesButton>
+        <SalesButton
+          clarityLabel={buttonClarityLabel}
+          dataCta={buttonDataCta}
+          onClick={onButtonClick}
+        >
+          {buttonLabel}
+        </SalesButton>
         <TrustMicrocopy>{microcopy}</TrustMicrocopy>
       </div>
     </div>

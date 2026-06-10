@@ -6,6 +6,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   :root[data-theme='theme-expert'] {
     --color-page: 255 255 255;
     --color-surface: 255 255 255;
@@ -277,6 +281,7 @@
   .nle-section {
     position: relative;
     padding-block: 4.4rem;
+    scroll-margin-top: 1rem;
   }
 
   .nle-hero {
@@ -410,9 +415,12 @@
   }
 
   .nle-button,
-  .nle-sticky-cta button {
+  .nle-sticky-cta a {
     position: relative;
     isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
     min-height: 3.5rem;
     width: 100%;
@@ -424,6 +432,8 @@
     font-weight: 900;
     line-height: 1.1;
     padding: 0.98rem 1.25rem;
+    text-align: center;
+    text-decoration: none;
     transition:
       transform 0.22s ease,
       box-shadow 0.22s ease,
@@ -431,7 +441,7 @@
   }
 
   .nle-button::after,
-  .nle-sticky-cta button::after {
+  .nle-sticky-cta a::after {
     content: '';
     position: absolute;
     inset: -30% auto -30% -35%;
@@ -446,7 +456,7 @@
   }
 
   .nle-button--solid,
-  .nle-sticky-cta button {
+  .nle-sticky-cta a {
     background: linear-gradient(135deg, rgb(var(--nle-ritual-gold)), rgb(var(--nle-champagne)));
     box-shadow:
       0 18px 42px rgb(var(--nle-ritual-gold) / 0.3),
@@ -461,7 +471,7 @@
   }
 
   .nle-button:hover,
-  .nle-sticky-cta button:hover {
+  .nle-sticky-cta a:hover {
     transform: translateY(-2px);
     box-shadow:
       0 24px 54px rgb(var(--nle-ritual-gold) / 0.42),
@@ -469,13 +479,13 @@
   }
 
   .nle-button:hover::after,
-  .nle-sticky-cta button:hover::after {
+  .nle-sticky-cta a:hover::after {
     left: 112%;
     opacity: 1;
   }
 
   .nle-button:focus-visible,
-  .nle-sticky-cta button:focus-visible {
+  .nle-sticky-cta a:focus-visible {
     outline: 3px solid rgb(var(--nle-champagne) / 0.72);
     outline-offset: 3px;
   }
@@ -485,6 +495,25 @@
     font-size: 0.82rem;
     font-weight: 800;
     line-height: 1.45;
+  }
+
+  .nle-secondary-link {
+    width: fit-content;
+    justify-self: center;
+    color: rgb(var(--nle-champagne));
+    font-size: 0.76rem;
+    font-weight: 800;
+    line-height: 1.35;
+    text-align: center;
+    text-decoration: underline;
+    text-underline-offset: 0.22rem;
+  }
+
+  .nle-ten-minute-section .nle-button,
+  .nle-method-section > .nle-container > .nle-button,
+  .nle-includes-list .nle-button,
+  .nle-value-section > .nle-container > .nle-button {
+    margin: 1.6rem auto 0;
   }
 
   .nle-desktop-only {
@@ -1014,34 +1043,6 @@
     color: rgb(var(--nle-warm-white));
     font-weight: 800;
     line-height: 1.4;
-  }
-
-  .nle-value-stack__items strong {
-    grid-column: 2;
-    color: rgb(var(--nle-champagne));
-    font-size: 0.86rem;
-    line-height: 1.3;
-  }
-
-  .nle-value-stack__summary {
-    display: grid;
-    gap: 0.6rem;
-    border-radius: 1.25rem;
-    background: linear-gradient(135deg, rgb(var(--nle-champagne) / 0.96), rgb(var(--nle-ritual-gold) / 0.9));
-    color: rgb(var(--nle-deep-night));
-    padding: 1.4rem;
-  }
-
-  .nle-value-stack__summary p {
-    color: rgb(var(--nle-deep-night));
-    font-weight: 800;
-    line-height: 1.35;
-  }
-
-  .nle-value-stack__summary p:last-child {
-    font-family: var(--font-sans);
-    font-size: 1.22rem;
-    font-weight: 900;
   }
 
   .nle-placeholder-mockup {
@@ -1746,19 +1747,23 @@
     line-height: 1.25;
   }
 
-  .nle-sticky-cta button {
+  .nle-sticky-cta a {
     min-height: 2.55rem;
     font-size: 0.86rem;
     padding-block: 0.62rem;
   }
 
   @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
     .nle-button,
     .nle-button::after,
     .nle-checkout-drawer,
     .nle-sticky-cta,
-    .nle-sticky-cta button,
-    .nle-sticky-cta button::after {
+    .nle-sticky-cta a,
+    .nle-sticky-cta a::after {
       animation: none;
       transition: none;
     }
@@ -2166,13 +2171,6 @@
 
     .nle-value-stack__items li:nth-last-child(2) {
       border-bottom: 0;
-    }
-
-    .nle-value-stack__summary {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      align-items: center;
-      text-align: center;
-      padding: 1.5rem;
     }
 
     .nle-honesty-points {

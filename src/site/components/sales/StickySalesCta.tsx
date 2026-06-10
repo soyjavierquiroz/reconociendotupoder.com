@@ -1,19 +1,19 @@
-import type { ButtonHTMLAttributes } from 'react';
-
 type StickySalesCtaProps = {
   visible: boolean;
-  priceLabel: string;
-  regularPriceLabel?: string;
+  title: string;
+  subtitle: string;
   ctaLabel: string;
-  onClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+  href: string;
+  dataCta: string;
 };
 
 export function StickySalesCta({
   visible,
-  priceLabel,
-  regularPriceLabel,
+  title,
+  subtitle,
   ctaLabel,
-  onClick,
+  href,
+  dataCta,
 }: StickySalesCtaProps) {
   return (
     <div
@@ -21,10 +21,12 @@ export function StickySalesCta({
       aria-label="Acceso rápido a la oferta"
     >
       <div>
-        <strong>Hoy {priceLabel}</strong>
-        <span>{regularPriceLabel ? `Luego ${regularPriceLabel}` : 'Acceso privado'}</span>
+        <strong>{title}</strong>
+        <span>{subtitle}</span>
       </div>
-      <button onClick={onClick} type="button">{ctaLabel}</button>
+      <a data-clarity-label={dataCta} data-cta={dataCta} href={href}>
+        {ctaLabel}
+      </a>
     </div>
   );
 }
