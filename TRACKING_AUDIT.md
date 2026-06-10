@@ -15,6 +15,14 @@ Status: neutral parent baseline.
 - Paid attribution can come from an ads route, `fbclid`, `ttclid`, `gclid`, paid-like `utm_medium`, or fresh stored attribution.
 - New forms should use `resolveCurrentAttribution` and include `buildAttributionEventFields(attribution)` in capture payloads. Legacy VSL capture/checkout helpers are documentation-only starting points until adapted to the resolver contract.
 
+## Microsoft Clarity
+
+- Env: `VITE_CLARITY_PROJECT_ID`.
+- RTP actual: `x4tqk0ij4s` en `.env.local`.
+- Carga global client-side.
+- No emite `Purchase`, `Lead` ni `CompleteRegistration`.
+- No reemplaza Meta Pixel/CAPI.
+
 ## No Le Escribas Temporary Sales Flow
 
 - `temporary_whatsapp_qr` is a temporary adapter for validating sales through a
