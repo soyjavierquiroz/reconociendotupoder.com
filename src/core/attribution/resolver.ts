@@ -82,6 +82,7 @@ export function resolveAttribution(input: ResolveAttributionInput): ResolvedAttr
   const now = input.now ?? Date.now();
   const parsedUrl = parseUrl(input.url);
   const currentPath = parsedUrl.pathname || '/';
+  const shouldTrackAds = isAdsRoutePath(currentPath, input.adsRoutePrefix);
   const clickIds = extractClickIds(parsedUrl.searchParams);
   const utms = extractUtms(parsedUrl.searchParams);
   const clickIdPlatform = getPaidPlatformFromClickIds(clickIds);
@@ -92,7 +93,7 @@ export function resolveAttribution(input: ResolveAttributionInput): ResolvedAttr
   let source: AttributionSource = 'default';
   let paidPlatform: PaidPlatform = null;
 
-  if (isAdsRoutePath(currentPath, input.adsRoutePrefix)) {
+  if (shouldTrackAds) {
     source = 'route';
     paidPlatform = clickIdPlatform;
   } else if (clickIds.fbclid) {
@@ -126,6 +127,6 @@ export function resolveAttribution(input: ResolveAttributionInput): ResolvedAttr
         ? { ...freshStoredAttribution.clickIds }
         : clickIds,
     utms: source === 'stored' && freshStoredAttribution ? { ...freshStoredAttribution.utms } : utms,
-    shouldTrackAds: channel === 'ads',
+    shouldTrackAds,
   };
 }

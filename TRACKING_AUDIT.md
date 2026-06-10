@@ -11,7 +11,7 @@ Status: neutral parent baseline.
 - Capture relay settings are controlled by server `CAPTURE_*` variables.
 - `src/core/attribution` is the canonical source for traffic channel, attribution source, paid platform, click IDs, UTMs, landing path, current path, and ads tracking eligibility.
 - `src/core/services/analytics.ts` enriches browser pixel and CAPI event data from `ResolvedAttribution`; it should not parse click IDs or UTMs directly.
-- An explicit analytics `trackingEnabled` value wins over `ResolvedAttribution.shouldTrackAds`. Without that explicit flag, organic/default attribution does not fire Meta, TikTok, or CAPI ads tracking.
+- Meta Pixel, TikTok Pixel, and CAPI relay are hard-gated by the current `VITE_ADS_ROUTE_PREFIX` path. Click IDs, paid UTMs, stored attribution, and explicit `trackingEnabled` values cannot enable ads tracking on an organic route.
 - Paid attribution can come from an ads route, `fbclid`, `ttclid`, `gclid`, paid-like `utm_medium`, or fresh stored attribution.
 - New forms should use `resolveCurrentAttribution` and include `buildAttributionEventFields(attribution)` in capture payloads. Legacy VSL capture/checkout helpers are documentation-only starting points until adapted to the resolver contract.
 
@@ -43,12 +43,12 @@ Status: neutral parent baseline.
   `fbc` browser identifiers, landing path, and current path.
 - n8n should store `fbp` and `fbc` in the orders Sheet and include them as
   `user_data.fbp` and `user_data.fbc` in the mark-paid relay payload.
-- `InitiateCheckout` receives explicit attribution and follows
-  `ResolvedAttribution.shouldTrackAds`; it fires only after the n8n webhook
+- `InitiateCheckout` receives explicit attribution and follows the ads-route
+  gate; it fires only after the n8n webhook
   responds with HTTP `200`, `201`, or `202`. Failed or missing configuration
   does not navigate to WhatsApp or emit the event.
 - `ViewContent` uses explicit attribution and is emitted once per session only
-  when `shouldTrackAds` is true.
+  on the ads-prefixed route.
 - The landing does not emit `Lead`, `Purchase`, or `CompleteRegistration`.
   Confirmed `Purchase` must be emitted server-side by n8n or the final checkout.
 - WhatsApp navigation remains encapsulated in the temporary purchase adapter.

@@ -72,7 +72,7 @@ describe('resolveAttribution', () => {
       source: 'clickid',
       paidPlatform: 'meta',
       clickIds: { fbclid: 'abc' },
-      shouldTrackAds: true,
+      shouldTrackAds: false,
     });
 
     expect(resolve('/oferta?ttclid=abc')).toMatchObject({
@@ -80,6 +80,7 @@ describe('resolveAttribution', () => {
       source: 'clickid',
       paidPlatform: 'tiktok',
       clickIds: { ttclid: 'abc' },
+      shouldTrackAds: false,
     });
 
     expect(resolve('/oferta?gclid=abc')).toMatchObject({
@@ -87,6 +88,7 @@ describe('resolveAttribution', () => {
       source: 'clickid',
       paidPlatform: 'google',
       clickIds: { gclid: 'abc' },
+      shouldTrackAds: false,
     });
   });
 
@@ -96,7 +98,7 @@ describe('resolveAttribution', () => {
       source: 'utm',
       paidPlatform: null,
       utms: { utm_medium: 'paid' },
-      shouldTrackAds: true,
+      shouldTrackAds: false,
     });
 
     expect(resolve('/oferta?utm_medium=cpc')).toMatchObject({
@@ -104,6 +106,7 @@ describe('resolveAttribution', () => {
       source: 'utm',
       paidPlatform: null,
       utms: { utm_medium: 'cpc' },
+      shouldTrackAds: false,
     });
   });
 
@@ -127,7 +130,7 @@ describe('resolveAttribution', () => {
       currentPath: '/oferta',
       clickIds: { fbclid: 'stored_fbclid' },
       utms: { utm_campaign: 'stored_campaign' },
-      shouldTrackAds: true,
+      shouldTrackAds: false,
     });
   });
 
@@ -151,6 +154,12 @@ describe('resolveAttribution', () => {
       landingPath: '/oferta',
       clickIds: { ttclid: 'current' },
       utms: {},
+      shouldTrackAds: false,
     });
+  });
+
+  it('uses the ads route exclusively to enable ads tracking', () => {
+    expect(resolve('/no-le-escribas?fbclid=abc', freshStoredAttribution).shouldTrackAds).toBe(false);
+    expect(resolve('/x9m/no-le-escribas').shouldTrackAds).toBe(true);
   });
 });

@@ -57,6 +57,15 @@ describe('initMicrosoftClarity', () => {
     });
   });
 
+  it('inserts the script on an organic route', () => {
+    const { appendChild, windowMock } = installBrowserMocks();
+    Object.assign(windowMock, { location: { pathname: '/no-le-escribas' } });
+
+    initMicrosoftClarity('x4tqk0ij4s');
+
+    expect(appendChild).toHaveBeenCalledOnce();
+  });
+
   it('does not insert the script twice', () => {
     const { appendChild } = installBrowserMocks();
 
