@@ -20,13 +20,13 @@ function sourceBetween(start: string, end: string) {
   return pageSource.slice(startIndex, endIndex);
 }
 
-describe('NoLeEscribasSalesPage value-first flow', () => {
-  it('keeps the hero educational and points its CTAs to content anchors', () => {
+describe('NoLeEscribasSalesPage offer-focused flow', () => {
+  it('keeps the hero educational and points its only CTA to content', () => {
     const hero = sourceBetween('<section className="nle-hero">', '<SalesSection className="nle-identification"');
 
     expect(hero).toContain('href="#como-funciona"');
-    expect(hero).toContain('href="#oferta"');
     expect(hero).toContain('Ver cómo funciona');
+    expect(hero).not.toContain('href="#oferta"');
     expect(hero).not.toContain('openCheckoutDrawer');
     expect(hero).not.toContain('priceLabel');
     expect(hero).not.toContain('QR');
@@ -47,27 +47,41 @@ describe('NoLeEscribasSalesPage value-first flow', () => {
     expect(positions).toEqual([...positions].sort((a, b) => a - b));
   });
 
-  it('reveals the centralized price in offer and opens checkout from payment', () => {
+  it('reveals the centralized price and opens checkout only from offer', () => {
     const beforeOffer = pageSource.slice(0, pageSource.indexOf('id="oferta"'));
     const offer = sourceBetween('id="oferta"', 'id="pago-qr"');
     const payment = sourceBetween('id="pago-qr"', 'className="nle-guarantee-section"');
+    const final = sourceBetween('className="nle-final-cta"', '<StickySalesCta');
     const checkoutOpenCalls = pageSource.match(/openCheckoutDrawer\('/g) ?? [];
 
     expect(beforeOffer).not.toMatch(/Bs \d/);
     expect(offer).toContain('priceLabel={priceLabel}');
-    expect(offer).toContain('buttonHref="#pago-qr"');
-    expect(offer).not.toContain('openCheckoutDrawer');
-    expect(payment).toContain("openCheckoutDrawer('pago_qr_cta'");
-    expect(checkoutOpenCalls).toHaveLength(2);
+    expect(offer).toContain('buttonDataCta="oferta-open-checkout"');
+    expect(offer).toContain("openCheckoutDrawer('oferta_cta'");
+    expect(offer).toContain('`Quiero mi QR por ${priceLabel}`');
+    expect(payment).toContain('buttonHref="#oferta"');
+    expect(payment).toContain('buttonDataCta="qr-ver-oferta"');
+    expect(payment).not.toContain('openCheckoutDrawer');
+    expect(final).toContain('href="#oferta"');
+    expect(final).not.toContain('openCheckoutDrawer');
+    expect(checkoutOpenCalls).toHaveLength(1);
     expect(pageSource).not.toContain('Bs 39');
   });
 
-  it('keeps the mobile sticky educational before offer and price-aware after offer', () => {
-    expect(pageSource).toContain("ctaLabel={isOfferReached ? ctaLabel : 'Ver cómo funciona'}");
-    expect(pageSource).toContain("href={isOfferReached ? '#pago-qr' : '#como-funciona'}");
-    expect(pageSource).toContain("title={isOfferReached ? `Hoy ${priceLabel}` : 'Reto guiado de 7 días'}");
-    expect(stickySource).toContain('href={href}');
+  it('keeps the sticky focused on offer without opening checkout', () => {
+    expect(stickySource).toContain('data-cta="sticky-ver-oferta"');
+    expect(stickySource).toContain('href="#oferta"');
+    expect(stickySource).toContain('Ver la oferta');
     expect(stickySource).not.toContain('onClick');
+    expect(stickySource).not.toContain('openCheckout');
+  });
+
+  it('removes redundant intermediate buttons', () => {
+    expect(pageSource).not.toContain('Entiendo lo que siento');
+    expect(pageSource).not.toContain('Conocer el método P.A.U.S.A.');
+    expect(pageSource).not.toContain('Ver qué incluye el reto');
+    expect(pageSource).not.toContain('Ver todo lo incluido');
+    expect(pageSource).not.toContain('incluye-ver-oferta');
   });
 
   it('does not add forbidden standard frontend events', () => {

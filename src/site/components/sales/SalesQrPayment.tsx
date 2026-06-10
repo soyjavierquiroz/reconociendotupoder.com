@@ -6,6 +6,7 @@ type SalesQrPaymentProps = {
   buttonLabel: string;
   buttonDataCta?: string;
   buttonClarityLabel?: string;
+  buttonHref?: string;
   onButtonClick?: () => void;
   imageAlt: string;
   imageSrc: string;
@@ -19,6 +20,7 @@ export function SalesQrPayment({
   buttonLabel,
   buttonDataCta,
   buttonClarityLabel,
+  buttonHref,
   onButtonClick,
   imageAlt,
   imageSrc,
@@ -49,7 +51,9 @@ export function SalesQrPayment({
         <SalesButton
           clarityLabel={buttonClarityLabel}
           dataCta={buttonDataCta}
+          href={buttonHref}
           onClick={onButtonClick}
+          variant="outline"
         >
           {buttonLabel}
         </SalesButton>

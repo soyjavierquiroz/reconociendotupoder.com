@@ -185,17 +185,14 @@ export function NoLeEscribasSalesPage() {
   const attribution = useMemo(() => resolveCurrentAttribution(location), [location]);
   const {
     checkoutSubmitLabel,
-    ctaLabel,
     currency,
     offerId,
     priceLabel,
     productId,
     regularPriceLabel,
     value,
-    valueTotalLabel,
   } = DNA.noLeEscribas.offer;
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
-  const [isOfferReached, setIsOfferReached] = useState(false);
   const [checkoutSource, setCheckoutSource] = useState<{ source: string; ctaLabel: string } | null>(
     null,
   );
@@ -270,13 +267,7 @@ export function NoLeEscribasSalesPage() {
 
   useEffect(() => {
     const updateStickyCta = () => {
-      const isMobile = window.matchMedia('(max-width: 767px)').matches;
-      const offerTop = document.getElementById('oferta')?.getBoundingClientRect().top;
-
-      setIsStickyCtaVisible(isMobile && window.scrollY >= 360);
-      setIsOfferReached(
-        isMobile && offerTop !== undefined && offerTop <= window.innerHeight * 0.72,
-      );
+      setIsStickyCtaVisible(window.scrollY >= 420);
     };
 
     updateStickyCta();
@@ -315,14 +306,6 @@ export function NoLeEscribasSalesPage() {
               Ver cómo funciona
             </SalesButton>
             <TrustMicrocopy>Método P.A.U.S.A. · Regla de los 10 minutos · Área privada</TrustMicrocopy>
-            <a
-              className="nle-secondary-link"
-              data-clarity-label="hero-ver-oferta"
-              data-cta="hero-ver-oferta"
-              href="#oferta"
-            >
-              Ya conozco el reto, quiero ver la oferta
-            </a>
           </div>
         </div>
       </section>
@@ -340,14 +323,6 @@ export function NoLeEscribasSalesPage() {
             Ese mensaje no siempre busca amor. A veces solo busca alivio.
           </p>
           <p className="nle-gold-line">Y ahí es donde necesitas una pausa.</p>
-          <SalesButton
-            clarityLabel="problema-entender-como-funciona"
-            dataCta="problema-entender-como-funciona"
-            href="#como-funciona"
-            variant="outline"
-          >
-            Entiendo lo que siento
-          </SalesButton>
         </div>
       </SalesSection>
 
@@ -385,14 +360,6 @@ export function NoLeEscribasSalesPage() {
             <p className="nle-image-feature__highlight">Solo esto: 10 minutos sin enviar el mensaje.</p>
             <p>Durante esos 10 minutos, haces una P.A.U.S.A.</p>
           </SalesImageFeature>
-          <SalesButton
-            clarityLabel="como-funciona-ver-metodo"
-            dataCta="como-funciona-ver-metodo"
-            href="#metodo-pausa"
-            variant="outline"
-          >
-            Conocer el método P.A.U.S.A.
-          </SalesButton>
         </div>
       </section>
 
@@ -406,14 +373,6 @@ export function NoLeEscribasSalesPage() {
           subtitle="No necesitas más fuerza de voluntad. Necesitas un proceso simple para no actuar desde la ansiedad."
         />
         <SalesTimeline items={pauseSteps} />
-        <SalesButton
-          clarityLabel="metodo-ver-que-incluye"
-          dataCta="metodo-ver-que-incluye"
-          href="#que-incluye"
-          variant="outline"
-        >
-          Ver qué incluye el reto
-        </SalesButton>
       </SalesSection>
 
       <SalesSection className="nle-includes-section" id="que-incluye">
@@ -437,14 +396,6 @@ export function NoLeEscribasSalesPage() {
           />
           <div className="nle-includes-list">
             <CheckList items={receives} />
-            <SalesButton
-              clarityLabel="kit-ver-todo-incluido"
-              dataCta="kit-ver-todo-incluido"
-              href="#incluye"
-              variant="outline"
-            >
-              Ver todo lo incluido
-            </SalesButton>
           </div>
         </div>
       </SalesSection>
@@ -455,43 +406,32 @@ export function NoLeEscribasSalesPage() {
           subtitle="No estás comprando un PDF. Estás entrando a un sistema completo para pausar, ordenar lo que sientes y volver a ti."
         />
         <SalesValueStack items={valueStackItems} />
-        <SalesButton
-          clarityLabel="incluye-ver-oferta"
-          dataCta="incluye-ver-oferta"
-          href="#oferta"
-        >
-          Ver la oferta
-        </SalesButton>
       </SalesSection>
 
       <SalesSection className="nle-price-section" id="oferta" width="narrow">
         <SalesPriceBox
           badge="Lanzamiento Bolivia"
-          buttonLabel={ctaLabel}
-          buttonClarityLabel="oferta-ir-pago-qr"
-          buttonDataCta="oferta-ir-pago-qr"
-          buttonHref="#pago-qr"
-          microcopy="Acceso completo al reto de 7 días y al área privada."
+          buttonLabel={`Quiero mi QR por ${priceLabel}`}
+          buttonClarityLabel="oferta-open-checkout"
+          buttonDataCta="oferta-open-checkout"
+          microcopy="Pago por QR · Recibes instrucciones por WhatsApp"
+          onButtonClick={openCheckoutDrawer('oferta_cta', `Quiero mi QR por ${priceLabel}`)}
           priceLabel={priceLabel}
-          regularPriceLabel={regularPriceLabel}
           title="Hoy puedes entrar por:"
-          valueTotalLabel={valueTotalLabel}
         >
-          <p className="nle-price-urgency">
-            Este precio es solo para la etapa de lanzamiento en Bolivia.
-          </p>
+          <p>Acceso completo al reto de 7 días y al área privada.</p>
         </SalesPriceBox>
       </SalesSection>
 
       <SalesSection className="nle-payment-section" id="pago-qr">
         <SalesQrPayment
-          buttonClarityLabel="pago-qr-open-checkout"
-          buttonDataCta="pago-qr-open-checkout"
-          buttonLabel="Pagar con QR y entrar"
+          buttonClarityLabel="qr-ver-oferta"
+          buttonDataCta="qr-ver-oferta"
+          buttonHref="#oferta"
+          buttonLabel="Ver la oferta"
           imageAlt="Pago seguro por QR desde WhatsApp en Bolivia"
           imageSrc="/assets/reconociendo-tu-poder/pago-seguro-por-qr.webp"
           microcopy="El QR se genera según tu orden. No te pediremos datos de tarjeta."
-          onButtonClick={openCheckoutDrawer('pago_qr_cta', 'Pagar con QR y entrar')}
           steps={paymentSteps}
           subtitle="No necesitas tarjeta. Dejas tu WhatsApp, recibes tu QR seguro, pagas desde tu app bancaria y activamos tu acceso al área de miembros premium."
           title="Pagas con QR. Entras al área privada."
@@ -539,17 +479,13 @@ export function NoLeEscribasSalesPage() {
           <Sparkles aria-hidden="true" />
           <h2>Antes de volver a él, vuelve a ti.</h2>
           <p>No tienes que decidir toda tu historia hoy. Solo empieza con 10 minutos.</p>
-          <div className="nle-final-prices">
-            <strong>Acceso de lanzamiento: {priceLabel}</strong>
-            <span>Precio regular: {regularPriceLabel}</span>
-          </div>
           <SalesButton
-            clarityLabel="final-open-checkout"
-            dataCta="final-open-checkout"
-            hideOnMobile
-            onClick={openCheckoutDrawer('final_desktop_cta', 'Pagar con QR y entrar')}
+            clarityLabel="final-ver-oferta"
+            dataCta="final-ver-oferta"
+            href="#oferta"
+            variant="outline"
           >
-            Pagar con QR y entrar
+            Ver la oferta
           </SalesButton>
           <TrustMicrocopy>
             Pago con QR · Sin tarjeta · Acceso al área de miembros premium
@@ -557,14 +493,7 @@ export function NoLeEscribasSalesPage() {
         </div>
       </SalesSection>
 
-      <StickySalesCta
-        ctaLabel={isOfferReached ? ctaLabel : 'Ver cómo funciona'}
-        dataCta={isOfferReached ? 'sticky-ir-pago-qr' : 'sticky-ver-como-funciona'}
-        href={isOfferReached ? '#pago-qr' : '#como-funciona'}
-        subtitle={isOfferReached ? 'Acceso completo al reto' : 'Empieza por una pausa'}
-        title={isOfferReached ? `Hoy ${priceLabel}` : 'Reto guiado de 7 días'}
-        visible={isStickyCtaVisible}
-      />
+      <StickySalesCta visible={isStickyCtaVisible} />
       <SalesCheckoutDrawer
         error={checkoutError}
         loading={checkoutLoading}

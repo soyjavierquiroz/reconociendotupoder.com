@@ -280,7 +280,7 @@
 
   .nle-section {
     position: relative;
-    padding-block: 4.4rem;
+    padding-block: 3.6rem;
     scroll-margin-top: 1rem;
   }
 
@@ -326,13 +326,13 @@
 
   .nle-hero-copy {
     display: grid;
-    gap: 0.5rem;
+    gap: 0.65rem;
     width: 100%;
     border: 1px solid rgb(var(--nle-champagne) / 0.13);
-    border-radius: 1.2rem;
+    border-radius: 1.35rem;
     background: linear-gradient(180deg, rgb(var(--nle-deep-night) / 0.44), rgb(var(--nle-deep-night) / 0.76));
     box-shadow: 0 22px 80px rgb(var(--nle-deep-night) / 0.48);
-    padding: 0.78rem;
+    padding: 1rem;
   }
 
   .nle-badge,
@@ -497,25 +497,6 @@
     line-height: 1.45;
   }
 
-  .nle-secondary-link {
-    width: fit-content;
-    justify-self: center;
-    color: rgb(var(--nle-champagne));
-    font-size: 0.76rem;
-    font-weight: 800;
-    line-height: 1.35;
-    text-align: center;
-    text-decoration: underline;
-    text-underline-offset: 0.22rem;
-  }
-
-  .nle-ten-minute-section .nle-button,
-  .nle-method-section > .nle-container > .nle-button,
-  .nle-includes-list .nle-button,
-  .nle-value-section > .nle-container > .nle-button {
-    margin: 1.6rem auto 0;
-  }
-
   .nle-desktop-only {
     display: none;
   }
@@ -541,7 +522,7 @@
   .nle-final-card {
     display: grid;
     gap: 1.3rem;
-    border-radius: 1.65rem;
+    border-radius: 1.5rem;
     padding: 1.35rem 1.25rem;
   }
 
@@ -948,7 +929,7 @@
   }
 
   .nle-value-section {
-    padding-block: 5rem 8rem;
+    padding-block: 4rem 5rem;
   }
 
   .nle-honesty-section .nle-section-header {
@@ -1061,14 +1042,25 @@
   }
 
   .nle-price-section {
-    padding-block: 3.6rem;
+    padding-block: 4.5rem;
+    background:
+      radial-gradient(circle at 50% 48%, rgb(var(--nle-ritual-gold) / 0.15), transparent 23rem),
+      linear-gradient(180deg, transparent, rgb(var(--nle-royal-plum) / 0.12), transparent);
   }
 
   .nle-price-card {
     position: relative;
     overflow: hidden;
+    border: 1px solid rgb(var(--nle-ritual-gold) / 0.5);
+    background:
+      radial-gradient(circle at 50% -8%, rgb(var(--nle-ritual-gold) / 0.22), transparent 18rem),
+      linear-gradient(145deg, rgb(var(--nle-warm-white) / 0.11), rgb(var(--nle-royal-plum) / 0.16));
+    box-shadow:
+      0 34px 100px rgb(var(--nle-deep-night) / 0.58),
+      0 0 50px rgb(var(--nle-ritual-gold) / 0.12),
+      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.18);
     text-align: center;
-    padding: 1.75rem 1.35rem;
+    padding: 2rem 1.35rem;
   }
 
   .nle-price-card::before {
@@ -1077,8 +1069,8 @@
     inset: -18% 8% auto;
     height: 12rem;
     border-radius: 999px;
-    background: rgb(var(--nle-ritual-gold) / 0.16);
-    filter: blur(34px);
+    background: rgb(var(--nle-ritual-gold) / 0.22);
+    filter: blur(38px);
   }
 
   .nle-price-card > * {
@@ -1087,6 +1079,8 @@
 
   .nle-price-card .nle-badge {
     justify-self: center;
+    border-color: rgb(var(--nle-ritual-gold) / 0.62);
+    background: rgb(var(--nle-deep-night) / 0.34);
   }
 
   .nle-price-copy {
@@ -1116,11 +1110,48 @@
   .nle-big-price {
     color: rgb(var(--nle-champagne));
     font-family: var(--font-sans);
-    font-size: clamp(4.8rem, 22vw, 7.2rem);
+    font-size: clamp(5rem, 23vw, 7.4rem);
     font-weight: 900;
     letter-spacing: 0;
     line-height: 0.92;
     text-shadow: 0 12px 42px rgb(var(--nle-ritual-gold) / 0.24);
+  }
+
+  .nle-price-card .nle-button {
+    min-height: 4rem;
+    width: 100%;
+    border: 1px solid rgb(var(--nle-warm-white) / 0.34);
+    box-shadow:
+      0 22px 56px rgb(var(--nle-ritual-gold) / 0.42),
+      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.68);
+    font-size: 1rem;
+  }
+
+  .nle-price-card .nle-microcopy {
+    color: rgb(var(--nle-champagne));
+    font-size: 0.76rem;
+  }
+
+  .nle-payment-section {
+    padding-top: 2.5rem;
+  }
+
+  .nle-payment-card {
+    border-color: rgb(var(--nle-champagne) / 0.1);
+    background: rgb(var(--nle-warm-white) / 0.035);
+    box-shadow: none;
+  }
+
+  .nle-payment-card .nle-button {
+    min-height: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: rgb(var(--nle-champagne));
+    font-size: 0.86rem;
+    padding: 0.5rem;
+    text-decoration: underline;
+    text-underline-offset: 0.25rem;
   }
 
   .nle-payment-card {
@@ -1300,7 +1331,7 @@
   }
 
   .nle-final-cta {
-    padding-bottom: 5.4rem;
+    padding-bottom: 6.5rem;
   }
 
   .nle-final-card {
@@ -1704,7 +1735,7 @@
     bottom: 0.55rem;
     left: 0.55rem;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.55rem;
     border: 1px solid rgb(var(--nle-champagne) / 0.18);
@@ -1748,6 +1779,8 @@
   }
 
   .nle-sticky-cta a {
+    width: auto;
+    min-width: 8rem;
     min-height: 2.55rem;
     font-size: 0.86rem;
     padding-block: 0.62rem;
@@ -1784,7 +1817,7 @@
     }
 
     .nle-section {
-      padding-block: 6.2rem;
+      padding-block: 5rem;
     }
 
     .nle-badge,
@@ -2089,7 +2122,9 @@
     }
 
     .nle-price-card {
-      padding: 3rem;
+      max-width: 680px;
+      margin-inline: auto;
+      padding: 3.5rem;
     }
 
     .nle-final-card {
@@ -2185,7 +2220,7 @@
     }
 
     .nle-includes-section {
-      padding-block: 7rem;
+      padding-block: 5.5rem;
     }
 
     .nle-includes-layout {
@@ -2311,7 +2346,12 @@
     }
 
     .nle-sticky-cta {
-      display: none;
+      right: 1.25rem;
+      bottom: 1.25rem;
+      left: auto;
+      width: min(100% - 2.5rem, 27rem);
+      border-radius: 1.1rem;
+      padding: 0.55rem;
     }
   }
 }
