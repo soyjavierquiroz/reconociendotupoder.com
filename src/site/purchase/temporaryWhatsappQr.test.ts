@@ -79,6 +79,10 @@ describe('buildTemporaryPurchaseIntent', () => {
         attribution,
         'NLE-0608-LW55',
         'https://reconociendotupoder.com/x9m/no-le-escribas',
+        {
+          fbp: 'fb.1.1710000000000.1234567890',
+          fbc: 'fb.1.1710000000000.fb-test',
+        },
       ),
     ).toMatchObject({
       orderId: 'NLE-0608-LW55',
@@ -96,6 +100,12 @@ describe('buildTemporaryPurchaseIntent', () => {
       attribution_source: 'clickid',
       paid_platform: 'meta',
       fbclid: 'fb-test',
+      fbp: 'fb.1.1710000000000.1234567890',
+      fbc: 'fb.1.1710000000000.fb-test',
+      metaBrowserIds: {
+        fbp: 'fb.1.1710000000000.1234567890',
+        fbc: 'fb.1.1710000000000.fb-test',
+      },
       landing_path: '/x9m/no-le-escribas',
       current_path: '/x9m/no-le-escribas',
     });
@@ -126,15 +136,25 @@ describe('startTemporaryWhatsappQrIntent', () => {
   });
 
   it('tracks InitiateCheckout and navigates only after a 202 webhook response', async () => {
-    vi.stubGlobal('window', {});
+    const localStorage = {
+      getItem: vi.fn(() => null),
+      setItem: vi.fn(),
+    };
+    const sessionStorage = {
+      getItem: vi.fn(() => null),
+      setItem: vi.fn(),
+    };
+    vi.stubGlobal('window', { localStorage, sessionStorage });
     const calls: string[] = [];
     const track = vi.fn(async () => {
       calls.push('track');
       return trackResult;
     });
     const navigate = vi.fn(() => calls.push('navigate'));
-    const fetchImplementation = vi.fn(async () => {
+    let webhookBody: unknown;
+    const fetchImplementation = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
       calls.push('webhook');
+      webhookBody = JSON.parse(String(init?.body));
       return new Response(null, { status: 202 });
     });
 
@@ -145,10 +165,31 @@ describe('startTemporaryWhatsappQrIntent', () => {
       fetch: fetchImplementation,
       navigate,
       track,
+      metaBrowserIds: {
+        fbp: 'fb.1.1710000000000.1234567890',
+        fbc: 'fb.1.1710000000000.fb-test',
+      },
     });
 
     expect(result.status).toBe('opened');
     expect(calls).toEqual(['webhook', 'track', 'navigate']);
+    expect(webhookBody).toMatchObject({
+      fbclid: 'fb-test',
+      fbp: 'fb.1.1710000000000.1234567890',
+      fbc: 'fb.1.1710000000000.fb-test',
+      metaBrowserIds: {
+        fbp: 'fb.1.1710000000000.1234567890',
+        fbc: 'fb.1.1710000000000.fb-test',
+      },
+    });
+    expect(JSON.parse(String(localStorage.setItem.mock.calls[0]?.[1]))[0]).toMatchObject({
+      fbp: 'fb.1.1710000000000.1234567890',
+      fbc: 'fb.1.1710000000000.fb-test',
+    });
+    expect(JSON.parse(String(sessionStorage.setItem.mock.calls[0]?.[1]))[0]).toMatchObject({
+      fbp: 'fb.1.1710000000000.1234567890',
+      fbc: 'fb.1.1710000000000.fb-test',
+    });
     expect(track).toHaveBeenCalledWith(
       'InitiateCheckout',
       expect.objectContaining({

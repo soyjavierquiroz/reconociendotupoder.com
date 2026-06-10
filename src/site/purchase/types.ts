@@ -1,4 +1,5 @@
 import type { ResolvedAttribution } from '../../core/attribution';
+import type { MetaBrowserIds } from '../tracking/metaBrowserIds';
 
 export type PurchaseFlow = 'temporary_whatsapp_qr' | 'jakawi_drenvex_checkout';
 
@@ -43,6 +44,9 @@ export interface PurchaseIntent extends StartPurchaseIntentInput {
   fbclid: string;
   ttclid: string;
   gclid: string;
+  fbp: string;
+  fbc: string;
+  metaBrowserIds: MetaBrowserIds;
   landing_path: string;
   current_path: string;
 }

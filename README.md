@@ -56,7 +56,11 @@ Jakawi/Drenvex checkout is ready.
   An empty value leaves every CTA safe and non-navigating.
 - `VITE_PURCHASE_INTENT_WEBHOOK_URL` must accept the `qr_requested` order before
   the adapter can continue. It receives customer data, order metadata, current
-  URL, structured attribution, and flat n8n/CRM attribution fields.
+  URL, structured attribution, and flat n8n/CRM attribution fields, including
+  Meta's `fbp` and `fbc` browser identifiers when available.
+- n8n should persist `fbp` and `fbc` with the order in Sheets and pass them as
+  `user_data.fbp` and `user_data.fbc` from the mark-paid workflow to the relay.
+  `Purchase` continues to be emitted only by n8n after payment confirmation.
 - The order and customer data are stored in local and session storage before
   the webhook request. A missing or failed webhook leaves the drawer open and
   does not fire `InitiateCheckout` or navigate to WhatsApp.

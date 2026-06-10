@@ -29,8 +29,10 @@ Status: neutral parent baseline.
   the enriched payload to the configured n8n webhook.
 - The webhook payload keeps structured attribution and includes flat CRM fields
   for name, phone, WhatsApp, national phone, country code, calling code, E.164,
-  traffic channel, attribution source, paid platform, click ids, landing path,
-  and current path.
+  traffic channel, attribution source, paid platform, click ids, Meta `fbp` and
+  `fbc` browser identifiers, landing path, and current path.
+- n8n should store `fbp` and `fbc` in the orders Sheet and include them as
+  `user_data.fbp` and `user_data.fbc` in the mark-paid relay payload.
 - `InitiateCheckout` receives explicit attribution and follows
   `ResolvedAttribution.shouldTrackAds`; it fires only after the n8n webhook
   responds with HTTP `200`, `201`, or `202`. Failed or missing configuration

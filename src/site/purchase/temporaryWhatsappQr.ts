@@ -1,6 +1,7 @@
 import { resolveCurrentAttribution } from '../../core/attribution';
 import { trackEvent } from '../../core/services/analytics';
 import { DNA } from '../current';
+import { getMetaBrowserIds, type MetaBrowserIds } from '../tracking/metaBrowserIds';
 import { createTemporaryOrderId } from './orderId';
 import { storePurchaseIntent } from './storage';
 import type {
@@ -20,6 +21,7 @@ type TemporaryWhatsappQrDependencies = {
   fetch?: typeof fetch;
   navigate?: (url: string) => void;
   track?: typeof trackEvent;
+  metaBrowserIds?: MetaBrowserIds;
 };
 
 function getCurrentUrl(): string {
@@ -84,6 +86,7 @@ export function buildTemporaryPurchaseIntent(
   attribution = resolveCurrentAttribution(),
   orderId = createTemporaryOrderId(),
   currentUrl = getCurrentUrl(),
+  metaBrowserIds = getMetaBrowserIds(attribution.clickIds.fbclid),
 ): PurchaseIntent {
   return {
     ...input,
@@ -106,6 +109,9 @@ export function buildTemporaryPurchaseIntent(
     fbclid: attribution.clickIds.fbclid ?? '',
     ttclid: attribution.clickIds.ttclid ?? '',
     gclid: attribution.clickIds.gclid ?? '',
+    fbp: metaBrowserIds.fbp,
+    fbc: metaBrowserIds.fbc,
+    metaBrowserIds,
     landing_path: attribution.landingPath,
     current_path: attribution.currentPath,
   };
@@ -131,7 +137,15 @@ export async function startTemporaryWhatsappQrIntent(
   }
 
   const attribution = dependencies.attribution ?? resolveCurrentAttribution();
-  const intent = buildTemporaryPurchaseIntent(input, attribution);
+  const metaBrowserIds =
+    dependencies.metaBrowserIds ?? getMetaBrowserIds(attribution.clickIds.fbclid);
+  const intent = buildTemporaryPurchaseIntent(
+    input,
+    attribution,
+    undefined,
+    undefined,
+    metaBrowserIds,
+  );
 
   storePurchaseIntent(intent);
 
