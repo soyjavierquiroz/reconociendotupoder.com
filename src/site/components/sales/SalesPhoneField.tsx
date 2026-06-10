@@ -62,7 +62,7 @@ export function SalesPhoneField({
           onCountryChange(nextCountry);
         }}
         phoneInputClassName="nle-checkout-phone-control"
-        placeholder="WhatsApp o teléfono"
+        placeholder="Tu WhatsApp"
         required
         value={value}
       />

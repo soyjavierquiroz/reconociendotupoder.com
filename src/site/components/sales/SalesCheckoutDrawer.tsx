@@ -125,9 +125,15 @@ export function SalesCheckoutDrawer({
           <div className="nle-checkout-heading">
             <div className="nle-checkout-progress">
               <span>Finaliza tu pedido</span>
-              <strong>Paso 1 de 2</strong>
+              <strong>
+                <span className="nle-checkout-copy-mobile">Paso 1/2</span>
+                <span className="nle-checkout-copy-desktop">Paso 1 de 2</span>
+              </strong>
             </div>
-            <h2>Genera tu QR seguro</h2>
+            <h2>
+              <span className="nle-checkout-copy-mobile">Genera tu QR</span>
+              <span className="nle-checkout-copy-desktop">Genera tu QR seguro</span>
+            </h2>
             <p>
               <span className="nle-checkout-copy-mobile">
                 Déjanos tus datos y abriremos WhatsApp para recibir tu QR.
@@ -161,7 +167,7 @@ export function SalesCheckoutDrawer({
               <div className="nle-checkout-summary-copy">
                 <span className="nle-checkout-offer-badge">Lanzamiento Bolivia</span>
                 <strong>{productName}</strong>
-                <span>Acceso al área de miembros premium</span>
+                <span className="nle-checkout-summary-detail">Acceso al área de miembros premium</span>
               </div>
               <div className="nle-checkout-price">
                 {regularPriceLabel ? <s>{regularPriceLabel}</s> : null}

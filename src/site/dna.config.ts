@@ -274,6 +274,7 @@ export interface DnaConfig {
       ctaLabel: string;
       checkoutSubmitLabel: string;
       topBarLabel: string;
+      topBarMobileLabel: string;
       qrCtaLabel: string;
     };
     purchase: {
@@ -727,6 +728,7 @@ const noLeEscribasOffer = {
   ctaLabel: `Quiero mi acceso por ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
   checkoutSubmitLabel: `Solicitar QR · ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
   topBarLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego sube a ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
+  topBarMobileLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
   qrCtaLabel: 'Recibir mi QR seguro',
 } as const;
 

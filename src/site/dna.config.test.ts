@@ -16,5 +16,10 @@ describe('No Le Escribas offer pricing', () => {
     expect(offer.checkoutSubmitLabel).toContain(offer.priceLabel);
     expect(offer.topBarLabel).toContain(offer.priceLabel);
     expect(offer.topBarLabel).toContain(offer.regularPriceLabel);
+    expect(offer.topBarMobileLabel).toBe(
+      `Hoy Bs ${offer.price} · Luego Bs ${offer.regularPrice}`,
+    );
+    expect(offer.topBarMobileLabel).toContain(offer.priceLabel);
+    expect(offer.topBarMobileLabel).toContain(offer.regularPriceLabel);
   });
 });

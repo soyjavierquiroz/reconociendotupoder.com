@@ -194,6 +194,7 @@ export function NoLeEscribasSalesPage() {
     qrCtaLabel,
     regularPriceLabel,
     topBarLabel,
+    topBarMobileLabel,
     value,
     valueTotalLabel,
   } = DNA.noLeEscribas.offer;
@@ -274,6 +275,11 @@ export function NoLeEscribasSalesPage() {
 
   useEffect(() => {
     const updateStickyCtaVisibility = () => {
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        setIsStickyCtaVisible(window.scrollY >= 360);
+        return;
+      }
+
       const tenMinuteBottom = tenMinuteRef.current?.getBoundingClientRect().bottom ?? 0;
       setIsStickyCtaVisible(tenMinuteBottom <= 0);
     };
@@ -290,7 +296,7 @@ export function NoLeEscribasSalesPage() {
 
   return (
     <main className="no-le-escribas-page" style={colorVariables}>
-      <SalesTopBar text={topBarLabel} />
+      <SalesTopBar mobileText={topBarMobileLabel} text={topBarLabel} />
 
       <section className="nle-hero" ref={heroRef}>
         <div className="nle-container nle-hero-content">
