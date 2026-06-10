@@ -23,6 +23,8 @@ Status: neutral parent baseline.
 - Every No Le Escribas purchase CTA opens a checkout-styled drawer for full
   name and phone. The phone field reuses `SmartPhoneInput` and
   `VisitorContext` for IP-based country detection, with `BO/+591` as fallback.
+  Offer pricing and its labels derive from `DNA.noLeEscribas.offer`, whose
+  numeric source is `noLeEscribasPrice` in `src/site/dna.config.ts`.
   On valid submit, `startPurchaseIntent` creates an
   `NLE-MMDD-XXXX` order id, resolves current attribution, stores the
   `qr_requested` intent and customer in local and session storage, and sends

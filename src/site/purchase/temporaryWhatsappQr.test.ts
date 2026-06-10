@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ResolvedAttribution } from '../../core/attribution';
+import { DNA } from '../current';
 import {
   buildTemporaryPurchaseIntent,
   buildTemporaryWhatsappQrMessage,
@@ -18,13 +19,13 @@ const attribution: ResolvedAttribution = {
 };
 
 const input = {
-  productId: 'NO_LE_ESCRIBAS',
-  offerId: 'NLE_LAUNCH_BOB_29',
+  productId: DNA.noLeEscribas.offer.productId,
+  offerId: DNA.noLeEscribas.offer.offerId,
   productName: 'Mujer, No Le Escribas',
-  value: 29,
-  currency: 'BOB',
+  value: DNA.noLeEscribas.offer.value,
+  currency: DNA.noLeEscribas.offer.currency,
   source: 'hero_cta',
-  ctaLabel: 'Solicitar QR por Bs 29',
+  ctaLabel: DNA.noLeEscribas.offer.ctaLabel,
   customer: {
     name: 'Test RTP',
     whatsapp: '59169430776',
@@ -54,7 +55,7 @@ describe('buildTemporaryWhatsappQrMessage', () => {
       buildTemporaryWhatsappQrMessage(
         'Mujer, No Le Escribas',
         'NLE-0608-LW55',
-        'Bs 29',
+        DNA.noLeEscribas.offer.priceLabel,
         'Test RTP',
         '+59169430776',
       ),
@@ -64,7 +65,7 @@ describe('buildTemporaryWhatsappQrMessage', () => {
         '',
         'Nombre: Test RTP',
         'Código de pedido: NLE-0608-LW55',
-        'Monto: Bs 29',
+        `Monto: ${DNA.noLeEscribas.offer.priceLabel}`,
         'WhatsApp: +59169430776',
       ].join('\n'),
     );
@@ -174,6 +175,9 @@ describe('startTemporaryWhatsappQrIntent', () => {
     expect(result.status).toBe('opened');
     expect(calls).toEqual(['webhook', 'track', 'navigate']);
     expect(webhookBody).toMatchObject({
+      offerId: DNA.noLeEscribas.offer.offerId,
+      value: DNA.noLeEscribas.offer.value,
+      currency: DNA.noLeEscribas.offer.currency,
       fbclid: 'fb-test',
       fbp: 'fb.1.1710000000000.1234567890',
       fbc: 'fb.1.1710000000000.fb-test',
@@ -193,6 +197,9 @@ describe('startTemporaryWhatsappQrIntent', () => {
     expect(track).toHaveBeenCalledWith(
       'InitiateCheckout',
       expect.objectContaining({
+        offer_id: DNA.noLeEscribas.offer.offerId,
+        value: DNA.noLeEscribas.offer.value,
+        currency: DNA.noLeEscribas.offer.currency,
         customer_name: 'Test RTP',
         customer_whatsapp: '59169430776',
         phone_country_code: 'BO',

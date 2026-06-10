@@ -48,6 +48,10 @@ Jakawi/Drenvex checkout is ready.
   captures full name and phone. Its reusable phone field uses the existing
   visitor/IP country detection and country selector, with Bolivia (`BO`,
   `+591`) as the fallback.
+- No Le Escribas pricing is centralized in `DNA.noLeEscribas.offer`. Change
+  `noLeEscribasPrice` in `src/site/dna.config.ts` to derive the offer id,
+  visible labels, CTA labels, webhook value, WhatsApp amount, and checkout
+  tracking from the same source.
 - Phone input is normalized into national, country, calling-code, E.164, and
   digits-only CRM fields without removing the existing `phone` and `whatsapp`
   fields. The landing then calls only `startPurchaseIntent`; WhatsApp

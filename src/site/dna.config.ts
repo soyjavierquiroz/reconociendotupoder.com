@@ -264,12 +264,16 @@ export interface DnaConfig {
     offer: {
       productId: string;
       offerId: string;
+      price: number;
       priceLabel: string;
+      regularPrice: number;
       regularPriceLabel: string;
       valueTotalLabel: string;
       value: number;
       currency: string;
       ctaLabel: string;
+      checkoutSubmitLabel: string;
+      topBarLabel: string;
       qrCtaLabel: string;
     };
     purchase: {
@@ -705,6 +709,26 @@ const vslVideoId = readEnv('VITE_VSL_VIDEO_ID', 'REPLACE_WITH_VSL_VIDEO_ID');
 const offerVideoUrl = readEnv('VITE_OFFER_VIDEO_URL', 'https://example.com/rtp-offer-video-placeholder.m3u8');
 const successActionType = readEnv('VITE_SUCCESS_ACTION_TYPE', 'url') as DnaSuccessActionType;
 const placeholderAsset = '/assets/funnel-placeholder.svg';
+const noLeEscribasPrice = 29;
+const noLeEscribasRegularPrice = 97;
+const noLeEscribasCurrency = 'BOB';
+const noLeEscribasCurrencyLabel = 'Bs';
+
+const noLeEscribasOffer = {
+  productId: 'NO_LE_ESCRIBAS',
+  offerId: `NLE_LAUNCH_${noLeEscribasCurrency}_${noLeEscribasPrice}`,
+  price: noLeEscribasPrice,
+  priceLabel: `${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
+  regularPrice: noLeEscribasRegularPrice,
+  regularPriceLabel: `${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
+  valueTotalLabel: 'Bs 286',
+  value: noLeEscribasPrice,
+  currency: noLeEscribasCurrency,
+  ctaLabel: `Quiero mi acceso por ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
+  checkoutSubmitLabel: `Solicitar QR · ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
+  topBarLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego sube a ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
+  qrCtaLabel: 'Recibir mi QR seguro',
+} as const;
 
 const eventAssets = {
   logo: placeholderAsset,
@@ -1171,17 +1195,7 @@ export const DNA = {
       description:
         'Un kit de emergencia emocional y reto de 7 dias para pausar antes de escribirle, recuperar claridad y volver a ti.',
     },
-    offer: {
-      productId: 'NO_LE_ESCRIBAS',
-      offerId: 'NLE_LAUNCH_BOB_29',
-      priceLabel: 'Bs 29',
-      regularPriceLabel: 'Bs 97',
-      valueTotalLabel: 'Bs 286',
-      value: 29,
-      currency: 'BOB',
-      ctaLabel: 'Quiero mi acceso por Bs 29',
-      qrCtaLabel: 'Recibir mi QR seguro',
-    },
+    offer: noLeEscribasOffer,
     purchase: {
       flow: readEnv('VITE_PURCHASE_FLOW', 'temporary_whatsapp_qr') as DnaPurchaseFlow,
       whatsappUrl: readEnv('VITE_TEMPORARY_QR_WHATSAPP_URL'),

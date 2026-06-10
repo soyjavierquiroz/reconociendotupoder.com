@@ -185,6 +185,7 @@ export function NoLeEscribasSalesPage() {
   const location = useLocation();
   const attribution = useMemo(() => resolveCurrentAttribution(location), [location]);
   const {
+    checkoutSubmitLabel,
     ctaLabel,
     currency,
     offerId,
@@ -192,6 +193,7 @@ export function NoLeEscribasSalesPage() {
     productId,
     qrCtaLabel,
     regularPriceLabel,
+    topBarLabel,
     value,
     valueTotalLabel,
   } = DNA.noLeEscribas.offer;
@@ -288,7 +290,7 @@ export function NoLeEscribasSalesPage() {
 
   return (
     <main className="no-le-escribas-page" style={colorVariables}>
-      <SalesTopBar text="Hoy Bs 29 · Luego sube a Bs 97" />
+      <SalesTopBar text={topBarLabel} />
 
       <section className="nle-hero" ref={heroRef}>
         <div className="nle-container nle-hero-content">
@@ -520,7 +522,7 @@ export function NoLeEscribasSalesPage() {
         priceLabel={priceLabel}
         productName="Mujer, No Le Escribas"
         regularPriceLabel={regularPriceLabel}
-        submitLabel="Solicitar QR · Bs 29"
+        submitLabel={checkoutSubmitLabel}
       />
     </main>
   );
