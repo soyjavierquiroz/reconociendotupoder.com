@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { type Country } from 'react-phone-number-input';
 import { SmartPhoneInput } from '../../../components/common/forms/SmartPhoneInput';
 import { useVisitor } from '../../../core/visitor/VisitorContext';
@@ -29,6 +29,19 @@ export function SalesPhoneField({
 }: SalesPhoneFieldProps) {
   const { visitorData, isLoading } = useVisitor();
   const hasManualCountryChangeRef = useRef(false);
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+
+    updateIsMobile();
+    mediaQuery.addEventListener('change', updateIsMobile);
+
+    return () => mediaQuery.removeEventListener('change', updateIsMobile);
+  }, []);
 
   useEffect(() => {
     if (isLoading || hasManualCountryChangeRef.current) {
@@ -62,7 +75,7 @@ export function SalesPhoneField({
           onCountryChange(nextCountry);
         }}
         phoneInputClassName="nle-checkout-phone-control"
-        placeholder="Tu WhatsApp"
+        placeholder={isMobile ? 'Tu WhatsApp' : 'WhatsApp o teléfono'}
         required
         value={value}
       />
