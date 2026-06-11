@@ -1,10 +1,9 @@
 import type { MouseEvent } from 'react';
 import { ArrowRight, Lock } from 'lucide-react';
-import analytics from '../../../../core/services/analytics';
 import type { FunnelOfferConfig } from '../../../../core/config/funnel.config';
 import type { ResolvedAttribution } from '../../../../core/attribution';
 import type { TrafficChannel } from '../../../../core/routing/channel';
-import { isOfferCheckoutConfigured, parseOfferPriceValue } from './offerUtils';
+import { isOfferCheckoutConfigured } from './offerUtils';
 
 interface ExpertOfferCtaProps {
   offer: FunnelOfferConfig;
@@ -17,9 +16,6 @@ interface ExpertOfferCtaProps {
 
 export function ExpertOfferCta({
   offer,
-  trackingEnabled,
-  trafficChannel,
-  attribution,
   className = '',
   compact = false,
 }: ExpertOfferCtaProps) {
@@ -29,18 +25,6 @@ export function ExpertOfferCta({
     if (!isConfigured) {
       event.preventDefault();
       return;
-    }
-
-    if (trackingEnabled) {
-      void analytics.trackEvent('InitiateCheckout', {
-        value: parseOfferPriceValue(offer.price),
-        currency: offer.currency,
-        productName: offer.productName,
-        content_name: offer.productName,
-        checkout_url: offer.checkoutUrl,
-        traffic_channel: trafficChannel,
-        attribution,
-      });
     }
   };
 

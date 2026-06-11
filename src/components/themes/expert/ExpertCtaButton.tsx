@@ -1,6 +1,5 @@
 import type { ComponentPropsWithoutRef, MouseEvent } from 'react';
-import { DNA, dnaNumericPrices } from '../../../site/current';
-import { analytics } from '../../../core/services/analytics';
+import { DNA } from '../../../site/current';
 
 interface ExpertCtaButtonProps extends ComponentPropsWithoutRef<'a'> {
   label: string;
@@ -8,12 +7,6 @@ interface ExpertCtaButtonProps extends ComponentPropsWithoutRef<'a'> {
   fullWidth?: boolean;
 }
 
-/**
- * Legacy VSL CTA.
- *
- * New event/offer CTAs should pass `ResolvedAttribution` into analytics like
- * `ExpertOfferCta` does. This component relies on analytics fallback behavior.
- */
 export function ExpertCtaButton({
   label,
   subLabel,
@@ -26,13 +19,6 @@ export function ExpertCtaButton({
   const finalHref = href === '#checkout' ? DNA.checkoutUrl : href;
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    void analytics.trackEvent('InitiateCheckout', {
-      content_name: DNA.copy.productName,
-      currency: 'USD',
-      value: dnaNumericPrices.main,
-      checkout_url: finalHref,
-    });
-
     onClick?.(event);
   };
 

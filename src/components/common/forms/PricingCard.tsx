@@ -4,22 +4,15 @@ import { DNA } from '../../../site/current';
 import funnelConfig from '../../../core/config/funnel.config';
 import { useVisitor } from '../../../core/visitor/VisitorContext';
 import { useCheckoutPrices } from '../../../core/hooks/useCheckoutPrices';
-import analytics from '../../../core/services/analytics';
 
 export interface PricingCardProps {
   productId: string;
   productName?: string;
 }
 
-/**
- * Legacy pricing card for the VSL flow.
- *
- * New checkout tracking should pass `ResolvedAttribution` explicitly, instead
- * of relying on analytics fallback attribution.
- */
 export function PricingCard({ productId, productName }: PricingCardProps) {
   const { visitorData } = useVisitor();
-  const { product, resolvedProductKey, scrapedData, status, hasRequestedProduct } = useCheckoutPrices(productId);
+  const { product, scrapedData, status, hasRequestedProduct } = useCheckoutPrices(productId);
 
   const countryCode = visitorData?.country_code?.toUpperCase() ?? 'US';
   const currencyCode = visitorData?.currency?.toUpperCase() ?? 'USD';
@@ -38,24 +31,6 @@ export function PricingCard({ productId, productName }: PricingCardProps) {
   const hasLocalizedPrice = status === 'ready' && Boolean(countryPricing?.total);
   const isArgentinaCase = countryCode === 'AR' && hasLocalizedPrice;
   const isStandardScrapedCase = countryCode !== 'AR' && countryCode !== 'US' && hasLocalizedPrice;
-  const localizedValue = Number(countryPricing?.total ?? basePriceUSD);
-
-  const handleCheckoutClick = () => {
-    if (!resolvedCheckoutUrl) {
-      return;
-    }
-
-    void analytics.trackEvent('InitiateCheckout', {
-      product_id: resolvedProductKey,
-      product_name: resolvedProductName,
-      content_name: resolvedProductName,
-      checkout_url: resolvedCheckoutUrl,
-      checkout_product_id: product.checkoutProductId,
-      country_code: countryCode,
-      currency: currencyCode,
-      value: Number.isFinite(localizedValue) ? localizedValue : basePriceUSD,
-    });
-  };
 
   return (
     <section className="glass-surface rounded-[1.75rem] p-6 md:p-8">
@@ -114,7 +89,6 @@ export function PricingCard({ productId, productName }: PricingCardProps) {
             href={resolvedCheckoutUrl}
             target="_blank"
             rel="noreferrer"
-            onClick={handleCheckoutClick}
             className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary px-6 text-base font-bold text-text-inverse transition hover:opacity-95 md:h-14 md:text-lg"
           >
             {pricingCopy.buyButtonLabel}

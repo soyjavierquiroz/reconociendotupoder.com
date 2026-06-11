@@ -8,7 +8,8 @@ interface ScriptMock {
   src: string;
 }
 
-function installBrowserMocks(pathname: string) {
+function installBrowserMocks(pathWithSearch: string) {
+  const url = new URL(pathWithSearch, 'https://reconociendotupoder.com');
   const scripts = new Map<string, ScriptMock>();
   const storage = new Map<string, string>();
   const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 202 });
@@ -23,9 +24,10 @@ function installBrowserMocks(pathname: string) {
   };
   const windowMock = {
     location: {
-      href: `https://reconociendotupoder.com${pathname}`,
-      pathname,
+      href: url.toString(),
+      pathname: url.pathname,
       protocol: 'https:',
+      search: url.search,
     },
     localStorage: storageMock,
     navigator: { userAgent: 'vitest' },
@@ -54,7 +56,7 @@ async function loadAnalytics() {
       integrations: {
         capiWebhookUrl: 'https://relay.example/v1/events',
         metaPixelId: '123456789',
-        siteId: 'test-site',
+        siteId: 'RECONOCIENDO_TU_PODER',
         tiktokPixelId: 'TEST_TIKTOK_PIXEL',
       },
     },
@@ -84,6 +86,7 @@ describe('ads tracking route gate', () => {
 
     const pageView = await trackEvent('PageView', { trackingEnabled: true });
     const viewContent = await trackEvent('ViewContent', { trackingEnabled: true });
+    const initiateCheckout = await trackEvent('InitiateCheckout', { trackingEnabled: true });
 
     expect(pageView).toMatchObject({
       capiSent: false,
@@ -91,6 +94,11 @@ describe('ads tracking route gate', () => {
       tiktokBrowserSent: false,
     });
     expect(viewContent).toMatchObject({
+      capiSent: false,
+      metaBrowserSent: false,
+      tiktokBrowserSent: false,
+    });
+    expect(initiateCheckout).toMatchObject({
       capiSent: false,
       metaBrowserSent: false,
       tiktokBrowserSent: false,
@@ -127,5 +135,71 @@ describe('ads tracking route gate', () => {
     });
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(windowMock).toHaveProperty('fbq');
+  });
+
+  it('deduplicates InitiateCheckout by sharing one event id across Meta Pixel and CAPI', async () => {
+    const { fetchMock, windowMock } = installBrowserMocks(
+      '/x9m/no-le-escribas?fbclid=TEST_DEDUPE_001&debug_tracking=1',
+    );
+    const consoleInfo = vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    vi.stubGlobal('crypto', {
+      randomUUID: vi.fn(() => 'event-shared-1'),
+    });
+    const { trackEvent } = await loadAnalytics();
+
+    const result = await trackEvent('InitiateCheckout', {
+      content_name: 'Mujer, No Le Escribas',
+      content_ids: ['NO_LE_ESCRIBAS'],
+      value: 39,
+      currency: 'BOB',
+    });
+
+    expect(result).toMatchObject({
+      eventId: 'event-shared-1',
+      capiSent: true,
+      metaBrowserSent: true,
+    });
+    const fbqQueue = (windowMock as { fbq?: { queue?: unknown[] } }).fbq?.queue;
+
+    expect(fbqQueue).toContainEqual([
+      'track',
+      'InitiateCheckout',
+      expect.objectContaining({
+        content_name: 'Mujer, No Le Escribas',
+        content_ids: ['NO_LE_ESCRIBAS'],
+        value: 39,
+        currency: 'BOB',
+      }),
+      { eventID: 'event-shared-1' },
+    ]);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const capiPayload = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
+
+    expect(capiPayload).toMatchObject({
+      siteId: 'RECONOCIENDO_TU_PODER',
+      event_name: 'InitiateCheckout',
+      event_id: 'event-shared-1',
+      event_source_url:
+        'https://reconociendotupoder.com/x9m/no-le-escribas?fbclid=TEST_DEDUPE_001&debug_tracking=1',
+      action_source: 'website',
+      user_data: {
+        fbp: expect.stringMatching(/^fb\.1\.\d+\.\d+$/),
+        fbc: expect.stringContaining('TEST_DEDUPE_001'),
+      },
+      custom_data: {
+        content_name: 'Mujer, No Le Escribas',
+        content_ids: ['NO_LE_ESCRIBAS'],
+        value: 39,
+        currency: 'BOB',
+      },
+    });
+    expect(capiPayload).not.toHaveProperty('eventId');
+    expect(consoleInfo).toHaveBeenCalledWith(
+      '[tracking] Meta Pixel InitiateCheckout eventID=event-shared-1',
+    );
+    expect(consoleInfo).toHaveBeenCalledWith(
+      '[tracking] CAPI InitiateCheckout event_id=event-shared-1',
+    );
   });
 });

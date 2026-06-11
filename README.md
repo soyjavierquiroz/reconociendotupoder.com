@@ -72,6 +72,10 @@ Jakawi/Drenvex checkout is ready.
   with HTTP `200`, `201`, or `202`, then redirects to WhatsApp with the customer
   name, E.164 phone, and short `NLE-MMDD-XXXX` order id. It never fires
   `Purchase`, `Lead`, or `CompleteRegistration`.
+- For Meta deduplication, that single `InitiateCheckout` call creates one
+  event id and reuses it as browser Pixel `{ eventID }` and CAPI relay
+  `event_id`. Add `?debug_tracking=1` or set `localStorage.DEBUG_TRACKING = '1'`
+  to log only the Pixel/CAPI event ids while testing.
 - Confirmed `Purchase` events must come later from n8n or the final
   Jakawi/Drenvex checkout after payment confirmation.
 - `CompleteRegistration` remains a capture conversion only and requires a

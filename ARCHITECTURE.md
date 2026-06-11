@@ -38,4 +38,6 @@ The ads route prefix remains the strongest signal. Click IDs mark ads even on or
 
 Analytics and capture payloads treat `ResolvedAttribution` as the canonical source for `traffic_channel`, `attribution_source`, `paid_platform`, `click_ids`, `utms`, `landing_path`, and `current_path`. Analytics should accept caller-provided attribution when available and resolve the current browser attribution only as a fallback. Meta Pixel, TikTok Pixel, and CAPI ads tracking are hard-gated by the current ads-prefixed path; attribution signals and explicit component flags cannot enable them on organic paths.
 
+Meta event deduplication is owned inside `src/core/services/analytics.ts`: one generated event id is reused for browser Pixel `eventID`, TikTok `event_id`, and CAPI relay `event_id` for each tracked event.
+
 New tracking and capture surfaces should use `resolveCurrentAttribution` plus `buildAttributionEventFields`. Route-only helpers such as `getTrafficChannel` remain for compatibility and are not sufficient for new tracking/capture decisions because plain pathname calls do not include click IDs, UTMs, or stored attribution. Legacy VSL components that submit capture or checkout events must be adapted before they are treated as clone-safe.

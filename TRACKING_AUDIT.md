@@ -47,6 +47,14 @@ Status: neutral parent baseline.
   gate; it fires only after the n8n webhook
   responds with HTTP `200`, `201`, or `202`. Failed or missing configuration
   does not navigate to WhatsApp or emit the event.
+- Browser Pixel and CAPI relay deduplication share the same generated id:
+  Pixel receives `{ eventID }` and the relay payload receives top-level
+  `event_id`, with the event name exactly `InitiateCheckout`. The relay payload
+  also carries the event fields as `custom_data` while keeping the legacy `data`
+  field for compatibility.
+- Temporary tracking debug is opt-in via `?debug_tracking=1` or
+  `localStorage.DEBUG_TRACKING = '1'` and logs only event ids, not customer
+  phone or other sensitive checkout data.
 - `ViewContent` uses explicit attribution and is emitted once per session only
   on the ads-prefixed route.
 - The landing does not emit `Lead`, `Purchase`, or `CompleteRegistration`.

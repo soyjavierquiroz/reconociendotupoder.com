@@ -122,6 +122,7 @@ interface CapiPayload {
   attribution: AttributionData;
   cookies: TrackingCookies;
   data: Record<string, unknown>;
+  custom_data: Record<string, unknown>;
   user_data: {
     external_id: string;
     client_user_agent?: string;
@@ -386,6 +387,41 @@ const createEventId = (): string => {
   return `evt_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
 };
 
+const isTrackingDebugEnabled = (): boolean => {
+  if (!isBrowserEnvironment()) {
+    return false;
+  }
+
+  try {
+    const url = new URL(window.location.href);
+
+    if (url.searchParams.get('debug_tracking') === '1') {
+      return true;
+    }
+  } catch {
+    // Ignore malformed browser URLs.
+  }
+
+  try {
+    return window.localStorage.getItem('DEBUG_TRACKING') === '1';
+  } catch {
+    return false;
+  }
+};
+
+const debugTrackDispatch = (
+  destination: 'Meta Pixel' | 'CAPI',
+  eventName: string,
+  eventId: string,
+): void => {
+  if (!isTrackingDebugEnabled()) {
+    return;
+  }
+
+  const idLabel = destination === 'Meta Pixel' ? 'eventID' : 'event_id';
+  console.info(`[tracking] ${destination} ${eventName} ${idLabel}=${eventId}`);
+};
+
 const extractStringValue = (value: unknown): string | undefined => {
   if (typeof value !== 'string') {
     return undefined;
@@ -631,6 +667,7 @@ const buildCapiPayload = ({
   attribution,
   cookies,
   data,
+  custom_data: data,
   user_data: {
     external_id: anonymousId,
     client_user_agent: isBrowserEnvironment() ? window.navigator.userAgent : undefined,
@@ -682,6 +719,7 @@ const trackEvent = async (
       if (typeof fbq === 'function') {
         const method = isMetaStandardEvent(eventName) ? 'track' : 'trackCustom';
         fbq(method, eventName, eventData, { eventID: eventId });
+        debugTrackDispatch('Meta Pixel', eventName, eventId);
         metaBrowserSent = true;
       }
     } catch {
@@ -735,6 +773,7 @@ const trackEvent = async (
     eventTime,
     preparedUserData,
   });
+  debugTrackDispatch('CAPI', eventName, eventId);
 
   try {
     const response = await fetch(capiWebhookUrl, {

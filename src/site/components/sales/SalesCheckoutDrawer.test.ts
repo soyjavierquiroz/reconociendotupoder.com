@@ -36,7 +36,7 @@ describe('validateCheckoutCustomer', () => {
 });
 
 describe('createCheckoutSubmitLock', () => {
-  it('allows only one submit while the first one is in progress', async () => {
+  it('prevents duplicate checkout submits so InitiateCheckout cannot be generated twice', async () => {
     let releaseSubmit: (() => void) | undefined;
     let submitCalls = 0;
     const lock = createCheckoutSubmitLock();
