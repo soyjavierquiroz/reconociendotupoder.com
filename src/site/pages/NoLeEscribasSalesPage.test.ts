@@ -56,9 +56,16 @@ describe('NoLeEscribasSalesPage offer-focused flow', () => {
 
     expect(beforeOffer).not.toMatch(/Bs \d/);
     expect(offer).toContain('priceLabel={priceLabel}');
+    expect(offer).toContain('regularPriceLabel={regularPriceLabel}');
+    expect(offer).toContain('valueTotalLabel={valueTotalLabel}');
     expect(offer).toContain('buttonDataCta="oferta-open-checkout"');
     expect(offer).toContain("openCheckoutDrawer('oferta_cta'");
     expect(offer).toContain('`Quiero mi QR por ${priceLabel}`');
+    expect(offer).toContain('Acceso completo al reto de 7 días y al área privada.');
+    expect(offer).toContain(
+      'Una forma guiada de pausar el impulso, ordenar lo que sientes y volver a ti.',
+    );
+    expect(offer).toContain('Pago por QR · Sin tarjeta · Acceso por WhatsApp');
     expect(payment).toContain('buttonHref="#oferta"');
     expect(payment).toContain('buttonDataCta="qr-ver-oferta"');
     expect(payment).not.toContain('openCheckoutDrawer');

@@ -191,6 +191,7 @@ export function NoLeEscribasSalesPage() {
     productId,
     regularPriceLabel,
     value,
+    valueTotalLabel,
   } = DNA.noLeEscribas.offer;
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
   const [checkoutSource, setCheckoutSource] = useState<{ source: string; ctaLabel: string } | null>(
@@ -408,18 +409,23 @@ export function NoLeEscribasSalesPage() {
         <SalesValueStack items={valueStackItems} />
       </SalesSection>
 
-      <SalesSection className="nle-price-section" id="oferta" width="narrow">
+      <SalesSection className="nle-price-section" id="oferta">
         <SalesPriceBox
           badge="Lanzamiento Bolivia"
           buttonLabel={`Quiero mi QR por ${priceLabel}`}
           buttonClarityLabel="oferta-open-checkout"
           buttonDataCta="oferta-open-checkout"
-          microcopy="Pago por QR · Recibes instrucciones por WhatsApp"
+          microcopy="Pago por QR · Sin tarjeta · Acceso por WhatsApp"
           onButtonClick={openCheckoutDrawer('oferta_cta', `Quiero mi QR por ${priceLabel}`)}
           priceLabel={priceLabel}
+          regularPriceLabel={regularPriceLabel}
           title="Hoy puedes entrar por:"
+          valueTotalLabel={valueTotalLabel}
         >
-          <p>Acceso completo al reto de 7 días y al área privada.</p>
+          <p className="nle-price-support">Acceso completo al reto de 7 días y al área privada.</p>
+          <p className="nle-price-emotional">
+            Una forma guiada de pausar el impulso, ordenar lo que sientes y volver a ti.
+          </p>
         </SalesPriceBox>
       </SalesSection>
 

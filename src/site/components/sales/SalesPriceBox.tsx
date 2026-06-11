@@ -32,6 +32,12 @@ export function SalesPriceBox({
   title,
   valueTotalLabel,
 }: SalesPriceBoxProps) {
+  const priceSeparatorIndex = priceLabel.lastIndexOf(' ');
+  const priceCurrency =
+    priceSeparatorIndex >= 0 ? priceLabel.slice(0, priceSeparatorIndex) : '';
+  const priceAmount =
+    priceSeparatorIndex >= 0 ? priceLabel.slice(priceSeparatorIndex + 1) : priceLabel;
+
   return (
     <div className="nle-price-card">
       <SalesBadge>{badge}</SalesBadge>
@@ -39,18 +45,21 @@ export function SalesPriceBox({
         <div className="nle-price-anchors">
           {valueTotalLabel ? (
             <p>
-              Valor total del kit: <s>{valueTotalLabel}</s>
+              Valor del kit completo: <strong>{valueTotalLabel}</strong>
             </p>
           ) : null}
           {regularPriceLabel ? (
             <p>
-              Precio regular: <strong>{regularPriceLabel}</strong>
+              Precio regular: <s>{regularPriceLabel}</s>
             </p>
           ) : null}
         </div>
       ) : null}
       <h2>{title}</h2>
-      <p className="nle-big-price">{priceLabel}</p>
+      <p aria-label={priceLabel} className="nle-big-price">
+        {priceCurrency ? <span>{priceCurrency}</span> : null}
+        <strong>{priceAmount}</strong>
+      </p>
       <div className="nle-price-copy">{children}</div>
       <SalesButton
         clarityLabel={buttonClarityLabel}

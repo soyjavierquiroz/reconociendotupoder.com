@@ -1042,25 +1042,29 @@
   }
 
   .nle-price-section {
-    padding-block: 4.5rem;
+    padding-block: 4.8rem 5.2rem;
     background:
-      radial-gradient(circle at 50% 48%, rgb(var(--nle-ritual-gold) / 0.15), transparent 23rem),
-      linear-gradient(180deg, transparent, rgb(var(--nle-royal-plum) / 0.12), transparent);
+      radial-gradient(circle at 50% 48%, rgb(var(--nle-ritual-gold) / 0.2), transparent 25rem),
+      linear-gradient(180deg, transparent, rgb(var(--nle-royal-plum) / 0.18), transparent);
   }
 
   .nle-price-card {
     position: relative;
     overflow: hidden;
-    border: 1px solid rgb(var(--nle-ritual-gold) / 0.5);
+    width: min(100%, 56rem);
+    margin-inline: auto;
+    border: 1px solid rgb(var(--nle-ritual-gold) / 0.62);
+    border-radius: 1.8rem;
     background:
-      radial-gradient(circle at 50% -8%, rgb(var(--nle-ritual-gold) / 0.22), transparent 18rem),
-      linear-gradient(145deg, rgb(var(--nle-warm-white) / 0.11), rgb(var(--nle-royal-plum) / 0.16));
+      radial-gradient(circle at 50% -8%, rgb(var(--nle-ritual-gold) / 0.28), transparent 20rem),
+      radial-gradient(circle at 10% 100%, rgb(var(--nle-royal-plum) / 0.34), transparent 22rem),
+      linear-gradient(145deg, rgb(var(--nle-warm-white) / 0.13), rgb(var(--nle-royal-plum) / 0.22));
     box-shadow:
-      0 34px 100px rgb(var(--nle-deep-night) / 0.58),
-      0 0 50px rgb(var(--nle-ritual-gold) / 0.12),
-      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.18);
+      0 38px 110px rgb(var(--nle-deep-night) / 0.66),
+      0 0 64px rgb(var(--nle-ritual-gold) / 0.16),
+      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.24);
     text-align: center;
-    padding: 2rem 1.35rem;
+    padding: 2rem 1.15rem 1.8rem;
   }
 
   .nle-price-card::before {
@@ -1085,41 +1089,78 @@
 
   .nle-price-copy {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.45rem;
+    max-width: 38rem;
+    margin-inline: auto;
   }
 
   .nle-price-anchors {
-    display: grid;
-    gap: 0.3rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3rem 0.8rem;
+    margin-block: 0.1rem 0.35rem;
   }
 
   .nle-price-anchors p {
     color: rgb(var(--nle-moon-lavender));
+    font-size: 0.82rem;
     font-weight: 800;
+    line-height: 1.4;
   }
 
   .nle-price-anchors strong {
     color: rgb(var(--nle-champagne));
   }
 
-  .nle-price-urgency {
-    color: rgb(var(--nle-champagne)) !important;
-    font-weight: 800;
+  .nle-price-anchors s {
+    color: rgb(var(--nle-champagne));
+    text-decoration-color: rgb(var(--nle-ritual-gold) / 0.85);
+    text-decoration-thickness: 2px;
   }
 
   .nle-big-price {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.3rem;
     color: rgb(var(--nle-champagne));
     font-family: var(--font-sans);
-    font-size: clamp(5rem, 23vw, 7.4rem);
     font-weight: 900;
     letter-spacing: 0;
-    line-height: 0.92;
+    line-height: 0.84;
+    margin-block: 0.15rem 0.35rem !important;
     text-shadow: 0 12px 42px rgb(var(--nle-ritual-gold) / 0.24);
+  }
+
+  .nle-big-price span {
+    margin-top: 0.6rem;
+    font-size: clamp(1.45rem, 7vw, 2.3rem);
+    line-height: 1;
+  }
+
+  .nle-big-price strong {
+    color: inherit;
+    font-size: clamp(5.2rem, 25vw, 8.4rem);
+    line-height: 0.84;
+  }
+
+  .nle-price-support {
+    color: rgb(var(--nle-warm-white)) !important;
+    font-weight: 800;
+  }
+
+  .nle-price-emotional {
+    color: rgb(var(--nle-moon-lavender)) !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
   }
 
   .nle-price-card .nle-button {
     min-height: 4rem;
     width: 100%;
+    max-width: 32rem;
+    margin: 0.55rem auto 0;
     border: 1px solid rgb(var(--nle-warm-white) / 0.34);
     box-shadow:
       0 22px 56px rgb(var(--nle-ritual-gold) / 0.42),
@@ -1129,7 +1170,7 @@
 
   .nle-price-card .nle-microcopy {
     color: rgb(var(--nle-champagne));
-    font-size: 0.76rem;
+    font-size: 0.74rem;
   }
 
   .nle-payment-section {
@@ -2122,9 +2163,44 @@
     }
 
     .nle-price-card {
-      max-width: 680px;
+      max-width: 880px;
       margin-inline: auto;
-      padding: 3.5rem;
+      padding: 3.6rem 4rem 3.3rem;
+    }
+
+    .nle-price-card h2 {
+      font-size: clamp(2.5rem, 3.4vw, 3.35rem);
+    }
+
+    .nle-price-anchors {
+      gap: 0.75rem 2.4rem;
+      margin-block: 0.35rem 0.6rem;
+    }
+
+    .nle-price-anchors p {
+      font-size: 0.98rem;
+    }
+
+    .nle-big-price span {
+      margin-top: 0.8rem;
+      font-size: 2.5rem;
+    }
+
+    .nle-big-price strong {
+      font-size: 9rem;
+    }
+
+    .nle-price-support {
+      font-size: 1.08rem !important;
+    }
+
+    .nle-price-emotional {
+      font-size: 1rem !important;
+    }
+
+    .nle-price-card .nle-button {
+      min-width: 0;
+      font-size: 1.08rem;
     }
 
     .nle-final-card {

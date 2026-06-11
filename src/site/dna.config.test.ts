@@ -11,6 +11,7 @@ describe('No Le Escribas offer pricing', () => {
     expect(offer.priceLabel).toBe(`Bs ${offer.price}`);
     expect(offer.regularPrice).toBe(97);
     expect(offer.regularPriceLabel).toBe(`Bs ${offer.regularPrice}`);
+    expect(offer.valueTotalLabel).toMatch(/^Bs \d+$/);
     expect(offer.offerId).toBe(`NLE_LAUNCH_${offer.currency}_${offer.price}`);
     expect(offer.ctaLabel).toContain(offer.priceLabel);
     expect(offer.checkoutSubmitLabel).toContain(offer.priceLabel);
