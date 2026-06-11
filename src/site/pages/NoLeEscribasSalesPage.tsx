@@ -461,8 +461,8 @@ export function NoLeEscribasSalesPage() {
             <img
               alt="Janny Helguero, fundadora del Movimiento GranDiosa Mujer"
               decoding="async"
-              loading="lazy"
-              src="/assets/reconociendo-tu-poder/janny-helguero-avatar.webp"
+              loading="eager"
+              src="/assets/reconociendo-tu-poder/janny-helguero-reconociendo.webp"
             />
           </figure>
           <div className="nle-authority-copy">
@@ -487,9 +487,18 @@ export function NoLeEscribasSalesPage() {
               </p>
             </div>
             <ul className="nle-authority-bullets">
-              <li>✨ Más de 25 años acompañando procesos de mujeres</li>
-              <li>💜 Fundadora del Movimiento GranDiosa Mujer</li>
-              <li>🌙 Especialista en sanación emocional, energética y reconexión femenina</li>
+              <li>
+                <span aria-hidden="true" className="nle-authority-bullet-mark">01</span>
+                <span>Más de 25 años acompañando procesos de mujeres</span>
+              </li>
+              <li>
+                <span aria-hidden="true" className="nle-authority-bullet-mark">02</span>
+                <span>Fundadora del Movimiento GranDiosa Mujer</span>
+              </li>
+              <li>
+                <span aria-hidden="true" className="nle-authority-bullet-mark">03</span>
+                <span>Especialista en sanación emocional, energética y reconexión femenina</span>
+              </li>
             </ul>
             <blockquote className="nle-authority-quote">
               <p>

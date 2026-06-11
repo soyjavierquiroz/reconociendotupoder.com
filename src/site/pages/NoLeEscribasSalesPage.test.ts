@@ -91,7 +91,8 @@ describe('NoLeEscribasSalesPage trust-first flow', () => {
     expect(janny).toContain('Fundadora del Movimiento GranDiosa Mujer');
     expect(janny).toContain('Especialista en sanación emocional');
     expect(janny).toContain('Este reto no reemplaza terapia psicológica');
-    expect(janny).toContain('janny-helguero-avatar.webp');
+    expect(janny).toContain('janny-helguero-reconociendo.webp');
+    expect(janny).not.toContain('janny-helguero-avatar.webp');
     expect(janny).toContain('dataCta="janny-ver-oferta"');
     expect(janny).toContain('href="#oferta"');
     expect(janny).not.toContain('openCheckoutDrawer');
