@@ -273,6 +273,7 @@ export interface DnaConfig {
       currency: string;
       ctaLabel: string;
       checkoutSubmitLabel: string;
+      offerCtaLabel: string;
       topBarLabel: string;
       topBarMobileLabel: string;
       qrCtaLabel: string;
@@ -727,9 +728,10 @@ const noLeEscribasOffer = {
   currency: noLeEscribasCurrency,
   ctaLabel: `Quiero mi acceso por ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
   checkoutSubmitLabel: `Solicitar QR · ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
+  offerCtaLabel: 'Quiero entrar al reto',
   topBarLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego sube a ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
   topBarMobileLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
-  qrCtaLabel: 'Recibir mi QR seguro',
+  qrCtaLabel: 'Solicitar QR por WhatsApp',
 } as const;
 
 const eventAssets = {

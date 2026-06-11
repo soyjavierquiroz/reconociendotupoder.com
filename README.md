@@ -44,10 +44,11 @@ Do not put secrets, real tokens, or private webhook URLs in committed files.
 `temporary_whatsapp_qr` purchase adapter to validate paid demand before the
 Jakawi/Drenvex checkout is ready.
 
-- Every sales CTA opens a premium-styled temporary checkout drawer that
-  captures full name and phone. Its reusable phone field uses the existing
-  visitor/IP country detection and country selector, with Bolivia (`BO`,
-  `+591`) as the fallback.
+- The sales page is intentionally trust-first: early CTAs navigate by section
+  anchors, the offer CTA moves to `#pago-qr`, and only the Pago QR CTA opens
+  the premium-styled temporary checkout drawer that captures full name and
+  phone. Its reusable phone field uses the existing visitor/IP country
+  detection and country selector, with Bolivia (`BO`, `+591`) as the fallback.
 - No Le Escribas pricing is centralized in `DNA.noLeEscribas.offer`. Change
   `noLeEscribasPrice` in `src/site/dna.config.ts` to derive the offer id,
   visible labels, CTA labels, webhook value, WhatsApp amount, and checkout

@@ -392,10 +392,27 @@
     line-height: 1.32;
   }
 
+  .nle-hero-secondary-link {
+    width: fit-content;
+    color: rgb(var(--nle-moon-lavender));
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.35;
+    text-decoration: underline;
+    text-decoration-color: rgb(var(--nle-champagne) / 0.44);
+    text-underline-offset: 0.24rem;
+  }
+
+  .nle-hero-secondary-link:hover,
+  .nle-hero-secondary-link:focus-visible {
+    color: rgb(var(--nle-champagne));
+  }
+
   .nle-hero-text,
   .nle-section-header p,
   .nle-flow-copy p,
   .nle-ritual-copy p,
+  .nle-authority-card p,
   .nle-price-card p,
   .nle-payment-card p,
   .nle-value-stack,
@@ -518,6 +535,7 @@
 
   .nle-price-card,
   .nle-payment-card,
+  .nle-authority-card,
   .nle-guarantee-card,
   .nle-final-card {
     display: grid;
@@ -571,6 +589,16 @@
     font-size: clamp(1.22rem, 5.2vw, 1.62rem);
     font-weight: 900;
     line-height: 1.42;
+  }
+
+  .nle-soft-section-cta,
+  .nle-centered-section-cta {
+    margin-top: 0.55rem;
+  }
+
+  .nle-centered-section-cta {
+    display: flex;
+    justify-content: center;
   }
 
   .nle-ten-minute-section {
@@ -932,6 +960,114 @@
     padding-block: 4rem 5rem;
   }
 
+  .nle-authority-section {
+    padding-block: 4.5rem 4rem;
+  }
+
+  .nle-authority-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgb(var(--nle-ritual-gold) / 0.28);
+    background:
+      radial-gradient(circle at 50% 0%, rgb(var(--nle-ritual-gold) / 0.18), transparent 20rem),
+      radial-gradient(circle at 0% 100%, rgb(var(--nle-royal-plum) / 0.34), transparent 18rem),
+      linear-gradient(145deg, rgb(var(--nle-warm-white) / 0.09), rgb(var(--nle-warm-white) / 0.035));
+    box-shadow:
+      0 30px 94px rgb(var(--nle-deep-night) / 0.48),
+      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.12);
+  }
+
+  .nle-authority-photo {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid rgb(var(--nle-champagne) / 0.16);
+    border-radius: 1.25rem;
+    background: rgb(var(--nle-deep-night) / 0.28);
+    box-shadow: 0 24px 74px rgb(var(--nle-deep-night) / 0.38);
+  }
+
+  .nle-authority-photo::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 34%;
+    background: linear-gradient(180deg, transparent, rgb(var(--nle-deep-night) / 0.28));
+  }
+
+  .nle-authority-photo img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .nle-authority-copy {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .nle-authority-copy .nle-section-header {
+    margin-bottom: 0;
+  }
+
+  .nle-authority-bio {
+    display: grid;
+    gap: 0.74rem;
+  }
+
+  .nle-authority-bullets {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nle-authority-bullets li {
+    border: 1px solid rgb(var(--nle-champagne) / 0.12);
+    border-radius: 0.95rem;
+    background: rgb(var(--nle-warm-white) / 0.045);
+    color: rgb(var(--nle-champagne));
+    font-size: 0.94rem;
+    font-weight: 800;
+    line-height: 1.45;
+    list-style: none;
+    padding: 0.82rem 0.95rem;
+  }
+
+  .nle-authority-quote {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    border-left: 3px solid rgb(var(--nle-ritual-gold));
+    background: rgb(var(--nle-deep-night) / 0.26);
+    padding: 1rem;
+  }
+
+  .nle-authority-quote p {
+    color: rgb(var(--nle-champagne));
+    font-family: var(--font-sans);
+    font-size: clamp(1.02rem, 4.2vw, 1.2rem);
+    font-weight: 900;
+    line-height: 1.52;
+  }
+
+  .nle-authority-quote cite {
+    color: rgb(var(--nle-moon-lavender));
+    font-size: 0.92rem;
+    font-style: normal;
+    font-weight: 800;
+  }
+
+  .nle-authority-disclaimer {
+    border-radius: 0.95rem;
+    background: rgb(var(--nle-deep-night) / 0.26);
+    color: rgb(var(--nle-moon-lavender)) !important;
+    font-size: 0.8rem !important;
+    line-height: 1.55 !important;
+    padding: 0.9rem;
+  }
+
   .nle-honesty-section .nle-section-header {
     margin-bottom: 2rem;
     text-align: center;
@@ -1179,20 +1315,22 @@
 
   .nle-payment-card {
     border-color: rgb(var(--nle-champagne) / 0.1);
-    background: rgb(var(--nle-warm-white) / 0.035);
-    box-shadow: none;
+    background:
+      radial-gradient(circle at 100% 8%, rgb(var(--nle-whatsapp-green) / 0.12), transparent 18rem),
+      rgb(var(--nle-warm-white) / 0.035);
+    box-shadow: 0 22px 76px rgb(var(--nle-deep-night) / 0.26);
   }
 
   .nle-payment-card .nle-button {
-    min-height: auto;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-    color: rgb(var(--nle-champagne));
-    font-size: 0.86rem;
-    padding: 0.5rem;
-    text-decoration: underline;
-    text-underline-offset: 0.25rem;
+    min-height: 3.65rem;
+    border: 1px solid rgb(var(--nle-warm-white) / 0.28);
+    background: linear-gradient(135deg, rgb(var(--nle-whatsapp-green)), rgb(var(--nle-champagne)));
+    box-shadow:
+      0 20px 50px rgb(var(--nle-whatsapp-green) / 0.22),
+      inset 0 1px 0 rgb(var(--nle-warm-white) / 0.56);
+    color: rgb(var(--nle-deep-night));
+    font-size: 0.98rem;
+    padding-block: 0.98rem;
   }
 
   .nle-payment-card {
@@ -2116,6 +2254,10 @@
       line-height: 1.45;
     }
 
+    .nle-hero-secondary-link {
+      font-size: 0.86rem;
+    }
+
     .nle-mobile-only {
       display: none;
     }
@@ -2157,9 +2299,18 @@
 
     .nle-price-card,
     .nle-payment-card,
+    .nle-authority-card,
     .nle-guarantee-card,
     .nle-final-card {
       padding: 2.35rem;
+    }
+
+    .nle-soft-section-cta {
+      margin-top: 0.9rem;
+    }
+
+    .nle-centered-section-cta {
+      margin-top: 1.35rem;
     }
 
     .nle-price-card {
@@ -2342,6 +2493,39 @@
       width: min(100%, 43rem);
       justify-self: start;
       margin-block: 0;
+    }
+
+    .nle-authority-section {
+      padding-block: 5.8rem 4.8rem;
+    }
+
+    .nle-authority-card {
+      grid-template-columns: minmax(18rem, 0.76fr) minmax(0, 1.24fr);
+      align-items: center;
+      gap: 3rem;
+      padding: 2.6rem;
+    }
+
+    .nle-authority-photo {
+      align-self: stretch;
+      border-radius: 1.55rem;
+    }
+
+    .nle-authority-photo img {
+      height: 100%;
+      min-height: 38rem;
+    }
+
+    .nle-authority-copy {
+      gap: 1.15rem;
+    }
+
+    .nle-authority-bullets {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .nle-authority-bullets li {
+      padding: 0.95rem;
     }
 
     .nle-media-showcase::before {

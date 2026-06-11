@@ -15,6 +15,8 @@ describe('No Le Escribas offer pricing', () => {
     expect(offer.offerId).toBe(`NLE_LAUNCH_${offer.currency}_${offer.price}`);
     expect(offer.ctaLabel).toContain(offer.priceLabel);
     expect(offer.checkoutSubmitLabel).toContain(offer.priceLabel);
+    expect(offer.offerCtaLabel).toBe('Quiero entrar al reto');
+    expect(offer.qrCtaLabel).toBe('Solicitar QR por WhatsApp');
     expect(offer.topBarLabel).toContain(offer.priceLabel);
     expect(offer.topBarLabel).toContain(offer.regularPriceLabel);
     expect(offer.topBarMobileLabel).toBe(

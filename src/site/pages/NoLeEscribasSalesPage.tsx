@@ -60,27 +60,27 @@ const colorVariables: NoLeEscribasColorVariables = {
 const pauseSteps = [
   {
     letter: 'P',
-    title: 'Parar',
+    title: 'Para el impulso',
     text: 'No abras el chat todavía.',
   },
   {
     letter: 'A',
-    title: 'Aterrizar',
+    title: 'Aterriza lo que sientes',
     text: 'Nombra lo que estás sintiendo.',
   },
   {
     letter: 'U',
-    title: 'Ubicar',
+    title: 'Ubica la realidad',
     text: 'Separa hechos de fantasías.',
   },
   {
     letter: 'S',
-    title: 'Sustituir',
+    title: 'Sustituye el mensaje',
     text: 'Descarga sin enviarlo.',
   },
   {
     letter: 'A',
-    title: 'Acordarte de ti',
+    title: 'Acuérdate de ti',
     text: 'Elige desde calma.',
   },
 ] as const;
@@ -186,14 +186,17 @@ export function NoLeEscribasSalesPage() {
   const {
     checkoutSubmitLabel,
     currency,
+    offerCtaLabel,
     offerId,
     priceLabel,
     productId,
+    qrCtaLabel,
     regularPriceLabel,
     value,
     valueTotalLabel,
   } = DNA.noLeEscribas.offer;
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
+  const [hasReachedOffer, setHasReachedOffer] = useState(false);
   const [checkoutSource, setCheckoutSource] = useState<{ source: string; ctaLabel: string } | null>(
     null,
   );
@@ -269,6 +272,10 @@ export function NoLeEscribasSalesPage() {
   useEffect(() => {
     const updateStickyCta = () => {
       setIsStickyCtaVisible(window.scrollY >= 420);
+      const offerSection = document.getElementById('oferta');
+      setHasReachedOffer(
+        Boolean(offerSection && offerSection.getBoundingClientRect().top <= window.innerHeight * 0.72),
+      );
     };
 
     updateStickyCta();
@@ -288,7 +295,7 @@ export function NoLeEscribasSalesPage() {
       <section className="nle-hero">
         <div className="nle-container nle-hero-content">
           <div className="nle-hero-copy">
-            <SalesBadge icon={<Pause aria-hidden="true" />}>Reto guiado de 7 días</SalesBadge>
+            <SalesBadge icon={<Pause aria-hidden="true" />}>RETO GUIADO DE 7 DÍAS</SalesBadge>
             <h1>
               No le escribas <span>todavía.</span>
             </h1>
@@ -296,8 +303,8 @@ export function NoLeEscribasSalesPage() {
               Haz una P.A.U.S.A. antes de mandar ese mensaje que mañana puede doler más.
             </p>
             <p className="nle-hero-text">
-              Un reto guiado de 7 días para calmar el impulso, ordenar lo que sientes y volver a ti
-              antes de escribir desde la ansiedad.
+              Un reto guiado para calmar el impulso, ordenar lo que sientes y volver a ti antes de
+              escribir desde la ansiedad.
             </p>
             <SalesButton
               clarityLabel="hero-ver-como-funciona"
@@ -307,6 +314,14 @@ export function NoLeEscribasSalesPage() {
               Ver cómo funciona
             </SalesButton>
             <TrustMicrocopy>Método P.A.U.S.A. · Regla de los 10 minutos · Área privada</TrustMicrocopy>
+            <a
+              className="nle-hero-secondary-link"
+              data-clarity-label="hero-ver-oferta"
+              data-cta="hero-ver-oferta"
+              href="#oferta"
+            >
+              Ya conozco el reto, quiero ver la oferta
+            </a>
           </div>
         </div>
       </section>
@@ -324,6 +339,15 @@ export function NoLeEscribasSalesPage() {
             Ese mensaje no siempre busca amor. A veces solo busca alivio.
           </p>
           <p className="nle-gold-line">Y ahí es donde necesitas una pausa.</p>
+          <SalesButton
+            className="nle-soft-section-cta"
+            clarityLabel="problema-como-funciona"
+            dataCta="problema-como-funciona"
+            href="#como-funciona"
+            variant="outline"
+          >
+            Entiendo lo que siento
+          </SalesButton>
         </div>
       </SalesSection>
 
@@ -356,10 +380,21 @@ export function NoLeEscribasSalesPage() {
             imageSrc="/assets/reconociendo-tu-poder/visual-regla-10-minutos.png.webp"
             title="Antes de escribirle, date 10 minutos."
           >
-            <p>No tienes que prometer que nunca le vas a escribir.</p>
-            <p>No tienes que bloquearlo ahora.</p>
+            <p>
+              No tienes que resolver toda tu historia hoy. Solo necesitas crear una pausa entre lo
+              que sientes y lo que haces.
+            </p>
             <p className="nle-image-feature__highlight">Solo esto: 10 minutos sin enviar el mensaje.</p>
             <p>Durante esos 10 minutos, haces una P.A.U.S.A.</p>
+            <SalesButton
+              className="nle-soft-section-cta"
+              clarityLabel="como-funciona-metodo"
+              dataCta="como-funciona-metodo"
+              href="#metodo-pausa"
+              variant="outline"
+            >
+              Conocer el Método P.A.U.S.A.
+            </SalesButton>
           </SalesImageFeature>
         </div>
       </section>
@@ -368,12 +403,22 @@ export function NoLeEscribasSalesPage() {
         <SectionHeader
           title={
             <>
-              El método P.A.U.S.A.: <span>qué hacer en los 10 minutos antes de escribirle</span>
+              El Método P.A.U.S.A.: <span>qué hacer en los 10 minutos antes de escribirle</span>
             </>
           }
           subtitle="No necesitas más fuerza de voluntad. Necesitas un proceso simple para no actuar desde la ansiedad."
         />
         <SalesTimeline items={pauseSteps} />
+        <div className="nle-centered-section-cta">
+          <SalesButton
+            clarityLabel="metodo-que-incluye"
+            dataCta="metodo-que-incluye"
+            href="#que-incluye"
+            variant="outline"
+          >
+            Ver qué incluye el reto
+          </SalesButton>
+        </div>
       </SalesSection>
 
       <SalesSection className="nle-includes-section" id="que-incluye">
@@ -397,32 +442,114 @@ export function NoLeEscribasSalesPage() {
           />
           <div className="nle-includes-list">
             <CheckList items={receives} />
+            <SalesButton
+              className="nle-soft-section-cta"
+              clarityLabel="kit-incluye"
+              dataCta="kit-incluye"
+              href="#incluye"
+              variant="outline"
+            >
+              Ver todo lo incluido
+            </SalesButton>
+          </div>
+        </div>
+      </SalesSection>
+
+      <SalesSection className="nle-authority-section" id="quien-te-acompana">
+        <div className="nle-authority-card">
+          <figure className="nle-authority-photo">
+            <img
+              alt="Janny Helguero, fundadora del Movimiento GranDiosa Mujer"
+              decoding="async"
+              loading="lazy"
+              src="/assets/reconociendo-tu-poder/janny-helguero-avatar.webp"
+            />
+          </figure>
+          <div className="nle-authority-copy">
+            <SectionHeader
+              eyebrow="Janny Helguero"
+              title="Quién te acompaña en este reto"
+              subtitle="Una guía creada desde la experiencia, la sensibilidad y el trabajo profundo con mujeres."
+            />
+            <div className="nle-authority-bio">
+              <p>Soy Janny Helguero, fundadora del Movimiento GranDiosa Mujer.</p>
+              <p>
+                Durante más de 25 años he acompañado a mujeres en procesos de sanación emocional,
+                reconexión personal, trabajo energético y transformación interior.
+              </p>
+              <p>
+                He visto muchas veces cómo una mujer puede perder su centro esperando una respuesta,
+                sosteniendo silencios que duelen o intentando cerrar heridas desde el impulso.
+              </p>
+              <p>
+                Por eso nace este reto: para ayudarte a hacer una pausa antes de escribir desde la
+                ansiedad, ordenar lo que sientes y volver a ti con más claridad.
+              </p>
+            </div>
+            <ul className="nle-authority-bullets">
+              <li>✨ Más de 25 años acompañando procesos de mujeres</li>
+              <li>💜 Fundadora del Movimiento GranDiosa Mujer</li>
+              <li>🌙 Especialista en sanación emocional, energética y reconexión femenina</li>
+            </ul>
+            <blockquote className="nle-authority-quote">
+              <p>
+                “En cada mujer hay una luz capaz de convertir el dolor en conciencia, y la ansiedad
+                en una decisión más amorosa hacia sí misma.”
+              </p>
+              <cite>— Janny Helguero</cite>
+            </blockquote>
+            <p className="nle-authority-disclaimer">
+              Este reto no reemplaza terapia psicológica, atención médica ni acompañamiento
+              profesional en situaciones de crisis. Es una guía práctica y amorosa para ayudarte a
+              pausar, observar lo que sientes y tomar decisiones desde más calma.
+            </p>
+            <SalesButton
+              clarityLabel="janny-ver-oferta"
+              dataCta="janny-ver-oferta"
+              href="#oferta"
+              variant="outline"
+            >
+              Ver la oferta
+            </SalesButton>
           </div>
         </div>
       </SalesSection>
 
       <SalesSection className="nle-value-section" id="incluye">
         <SectionHeader
-          title="Todo esto está incluido hoy"
+          title="Todo esto está incluido en el reto"
           subtitle="No estás comprando un PDF. Estás entrando a un sistema completo para pausar, ordenar lo que sientes y volver a ti."
         />
         <SalesValueStack items={valueStackItems} />
+        <div className="nle-centered-section-cta">
+          <SalesButton
+            clarityLabel="incluye-ver-oferta"
+            dataCta="incluye-ver-oferta"
+            href="#oferta"
+            variant="outline"
+          >
+            Ver la oferta
+          </SalesButton>
+        </div>
       </SalesSection>
 
       <SalesSection className="nle-price-section" id="oferta">
         <SalesPriceBox
           badge="Lanzamiento Bolivia"
-          buttonLabel={`Quiero mi QR por ${priceLabel}`}
-          buttonClarityLabel="oferta-open-checkout"
-          buttonDataCta="oferta-open-checkout"
-          microcopy="Pago por QR · Sin tarjeta · Acceso por WhatsApp"
-          onButtonClick={openCheckoutDrawer('oferta_cta', `Quiero mi QR por ${priceLabel}`)}
+          buttonLabel={offerCtaLabel}
+          buttonClarityLabel="oferta-pago-qr"
+          buttonDataCta="oferta-pago-qr"
+          buttonHref="#pago-qr"
+          microcopy="Pago con QR · Acceso al área privada · Garantía de 7 días"
           priceLabel={priceLabel}
           regularPriceLabel={regularPriceLabel}
-          title="Hoy puedes entrar por:"
+          title="Hoy puedes entrar al reto por:"
           valueTotalLabel={valueTotalLabel}
         >
-          <p className="nle-price-support">Acceso completo al reto de 7 días y al área privada.</p>
+          <p className="nle-price-support">
+            Acceso completo al reto de 7 días, área privada, videos, audios, workbook y ejercicios
+            guiados.
+          </p>
           <p className="nle-price-emotional">
             Una forma guiada de pausar el impulso, ordenar lo que sientes y volver a ti.
           </p>
@@ -431,15 +558,15 @@ export function NoLeEscribasSalesPage() {
 
       <SalesSection className="nle-payment-section" id="pago-qr">
         <SalesQrPayment
-          buttonClarityLabel="qr-ver-oferta"
-          buttonDataCta="qr-ver-oferta"
-          buttonHref="#oferta"
-          buttonLabel="Ver la oferta"
+          buttonClarityLabel="pago-qr-open-checkout"
+          buttonDataCta="pago-qr-open-checkout"
+          buttonLabel={qrCtaLabel}
+          onButtonClick={openCheckoutDrawer('pago_qr_cta', qrCtaLabel)}
           imageAlt="Pago seguro por QR desde WhatsApp en Bolivia"
           imageSrc="/assets/reconociendo-tu-poder/pago-seguro-por-qr.webp"
           microcopy="El QR se genera según tu orden. No te pediremos datos de tarjeta."
           steps={paymentSteps}
-          subtitle="No necesitas tarjeta. Dejas tu WhatsApp, recibes tu QR seguro, pagas desde tu app bancaria y activamos tu acceso al área de miembros premium."
+          subtitle="El pago se realiza de forma simple por QR. Después de confirmar tu pago, recibes el acceso al área privada del reto."
           title="Pagas con QR. Entras al área privada."
         />
       </SalesSection>
@@ -448,11 +575,10 @@ export function NoLeEscribasSalesPage() {
         <SalesGuaranteeCard
           body={
             <>
-            <p>Entra al reto. Haz el Módulo de Emergencia y el Día 1.</p>
-            <p>
-              Si no sientes que te ayudó a pausar antes de actuar en automático, nos escribes
-              dentro de 7 días y te devolvemos tu dinero.
-            </p>
+              <p>
+                Entra, revisa el contenido y si sientes que no es para ti, puedes solicitar la
+                devolución dentro de los primeros 7 días.
+              </p>
             </>
           }
           imageAlt="Sello visual de garantía de 7 días"
@@ -486,12 +612,12 @@ export function NoLeEscribasSalesPage() {
           <h2>Antes de volver a él, vuelve a ti.</h2>
           <p>No tienes que decidir toda tu historia hoy. Solo empieza con 10 minutos.</p>
           <SalesButton
-            clarityLabel="final-ver-oferta"
-            dataCta="final-ver-oferta"
-            href="#oferta"
+            clarityLabel="final-pago-qr"
+            dataCta="final-pago-qr"
+            href="#pago-qr"
             variant="outline"
           >
-            Ver la oferta
+            Ir al pago QR
           </SalesButton>
           <TrustMicrocopy>
             Pago con QR · Sin tarjeta · Acceso al área de miembros premium
@@ -499,7 +625,7 @@ export function NoLeEscribasSalesPage() {
         </div>
       </SalesSection>
 
-      <StickySalesCta visible={isStickyCtaVisible} />
+      <StickySalesCta hasReachedOffer={hasReachedOffer} visible={isStickyCtaVisible} />
       <SalesCheckoutDrawer
         error={checkoutError}
         loading={checkoutLoading}

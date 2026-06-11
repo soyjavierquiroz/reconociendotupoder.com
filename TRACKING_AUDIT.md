@@ -28,8 +28,10 @@ Status: neutral parent baseline.
 - `temporary_whatsapp_qr` is a temporary adapter for validating sales through a
   manual WhatsApp and QR handoff. The intended final destination is the
   Jakawi/Drenvex checkout.
-- Every No Le Escribas purchase CTA opens a checkout-styled drawer for full
-  name and phone. The phone field reuses `SmartPhoneInput` and
+- No Le Escribas uses a trust-first sales flow: pre-offer CTAs navigate by
+  anchors, `#oferta` presents the centralized price and sends the user to
+  `#pago-qr`, and only the Pago QR CTA opens the checkout-styled drawer for
+  full name and phone. The phone field reuses `SmartPhoneInput` and
   `VisitorContext` for IP-based country detection, with `BO/+591` as fallback.
   Offer pricing and its labels derive from `DNA.noLeEscribas.offer`, whose
   numeric source is `noLeEscribasPrice` in `src/site/dna.config.ts`.
