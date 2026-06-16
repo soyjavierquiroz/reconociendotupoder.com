@@ -40,7 +40,8 @@ Do not put secrets, real tokens, or private webhook URLs in committed files.
 
 ## Temporary No Le Escribas Purchase Flow
 
-`/no-le-escribas` and `/x9m/no-le-escribas` currently use the
+`/o/no-le-escribas`, `/x9m/o/no-le-escribas`, `/no-le-escribas`, and
+`/x9m/no-le-escribas` currently use the
 `temporary_whatsapp_qr` purchase adapter to validate paid demand before the
 Jakawi/Drenvex checkout is ready.
 
@@ -63,6 +64,10 @@ Jakawi/Drenvex checkout is ready.
   the adapter can continue. It receives customer data, order metadata, current
   URL, structured attribution, and flat n8n/CRM attribution fields, including
   Meta's `fbp` and `fbc` browser identifiers when available.
+- Funnel handoff context is stored separately from attribution in
+  `localStorage.rtp_funnel_context_v1`. The `/ordenes` payload includes the
+  structured `funnel` object plus flat `from_funnel`, `funnel_sid`,
+  `funnel_pattern`, and `vsl_completed` fields for n8n/Sheets convenience.
 - n8n should persist `fbp` and `fbc` with the order in Sheets and pass them as
   `user_data.fbp` and `user_data.fbc` from the mark-paid workflow to the relay.
   `Purchase` continues to be emitted only by n8n after payment confirmation.
@@ -88,6 +93,8 @@ Current public routes are:
 
 - `/`
 - `/x9m`
+- `/o/no-le-escribas`
+- `/x9m/o/no-le-escribas`
 - `/no-le-escribas`
 - `/x9m/no-le-escribas`
 - `/oferta`
@@ -111,6 +118,11 @@ Traffic attribution is resolved by upstream code in `src/core/attribution`. The 
 
 Analytics, browser pixels, CAPI relay payloads, and the event capture payload should consume this resolver as the canonical attribution source. `src/core/services/analytics.ts` must not parse click IDs or UTMs independently. Meta Pixel, TikTok Pixel, and CAPI are enabled only when the current path is under `VITE_ADS_ROUTE_PREFIX`; click IDs, paid UTMs, stored attribution, and explicit `trackingEnabled` values cannot enable them on organic paths. Paid attribution may still come from the ads route, a click ID, a paid-like UTM, or fresh stored attribution for reporting.
 
+For the No Le Escribas offer, the canonical organic route is
+`/o/no-le-escribas` and the canonical ads route is `/x9m/o/no-le-escribas`.
+Legacy aliases `/no-le-escribas` and `/x9m/no-le-escribas` remain internal
+route aliases and do not redirect.
+
 For new forms and checkout CTAs, resolve attribution once in the route/component and pass the `ResolvedAttribution` object into analytics. Capture payloads should include the shared `buildAttributionEventFields(attribution)` output. Legacy VSL helpers such as `AdvancedCaptureForm`, `PricingCard`, and `ExpertCtaButton` are not clone-safe capture/tracking templates until they are adapted to that contract.
 
 Keep shared components, analytics helpers, routing, and capture relay generic unless the change should flow back upstream to every clone.
@@ -126,5 +138,5 @@ Before publishing a clone, run:
 `git diff --check`
 
 Then verify the current routes using the configured ads prefix. With `VITE_ADS_ROUTE_PREFIX=/x9m`, check `/`, `/x9m`, `/oferta`, `/x9m/oferta`, `/confirmacion`, and `/x9m/confirmacion`.
-The first RTP sales letter lives at `/no-le-escribas` and `/x9m/no-le-escribas`; `/oferta` remains available but is not the strategic ads route for this offer.
+The first RTP sales letter lives at `/o/no-le-escribas`, `/x9m/o/no-le-escribas`, `/no-le-escribas`, and `/x9m/no-le-escribas`; `/oferta` remains available but is not the strategic ads route for this offer.
 Also verify `/oferta?fbclid=abc`, `/oferta?ttclid=abc`, `/oferta?gclid=abc`, and `/oferta?utm_medium=paid` resolve as ads, then clear `localStorage.funnel_attribution` and confirm `/oferta` returns to organic/default.

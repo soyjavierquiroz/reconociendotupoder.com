@@ -56,8 +56,26 @@ npm run build
 ### Deploy
 
 ```bash
-rsync -av --delete dist/ /home/reconociendotupoder.com/public_html/
+rsync -av --delete --exclude 'capture.php' dist/ /home/reconociendotupoder.com/public_html/
 ```
+
+### Future Funnel Protection
+
+When the immersive funnel is deployed under the same domain from a separate
+repo, preserve its built folders during offer deploys. Once
+`public_html/fi/` and `public_html/x9m/fi/` exist, add these excludes to the
+offer deploy command:
+
+```bash
+rsync -av --delete \
+  --exclude 'capture.php' \
+  --exclude '/fi/' \
+  --exclude '/x9m/fi/' \
+  dist/ /home/reconociendotupoder.com/public_html/
+```
+
+Do not add the `/fi/` excludes to the active deploy command until those folders
+exist and are owned by the funnel repo/deploy process.
 
 ### Ownership Repair
 
@@ -75,6 +93,10 @@ find /home/reconociendotupoder.com/public_html -type f -exec chown recon3297:rec
 ```bash
 curl -I https://reconociendotupoder.com/
 curl -I https://reconociendotupoder.com/x9m
+curl -I https://reconociendotupoder.com/no-le-escribas
+curl -I https://reconociendotupoder.com/o/no-le-escribas
+curl -I https://reconociendotupoder.com/x9m/no-le-escribas
+curl -I https://reconociendotupoder.com/x9m/o/no-le-escribas
 curl -I https://reconociendotupoder.com/oferta
 curl -I https://reconociendotupoder.com/x9m/oferta
 curl -I https://reconociendotupoder.com/confirmacion

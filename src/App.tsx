@@ -14,7 +14,18 @@ const adsRoutePrefix = getAdsRoutePrefix();
 const adsOfferPath = withAdsRoutePrefix('/oferta', adsRoutePrefix);
 const adsConfirmationPath = withAdsRoutePrefix('/confirmacion', adsRoutePrefix);
 const noLeEscribasPath = '/no-le-escribas';
+const canonicalNoLeEscribasPath = '/o/no-le-escribas';
 const adsNoLeEscribasPath = withAdsRoutePrefix(noLeEscribasPath, adsRoutePrefix);
+const adsCanonicalNoLeEscribasPath = withAdsRoutePrefix(
+  canonicalNoLeEscribasPath,
+  adsRoutePrefix,
+);
+const noLeEscribasPaths = [
+  noLeEscribasPath,
+  canonicalNoLeEscribasPath,
+  adsNoLeEscribasPath,
+  adsCanonicalNoLeEscribasPath,
+];
 
 function resolveHomeTheme() {
   if (DNA.theme === 'expert' && DNA.funnelType === 'event') {
@@ -30,8 +41,7 @@ function RoutedApp() {
   const trafficChannel = attribution.channel;
   const isSuccessRoute =
     location.pathname === '/confirmacion' || location.pathname === adsConfirmationPath;
-  const isNoLeEscribasRoute =
-    location.pathname === noLeEscribasPath || location.pathname === adsNoLeEscribasPath;
+  const isNoLeEscribasRoute = noLeEscribasPaths.includes(location.pathname);
 
   useEffect(() => {
     const documentTheme = resolveDnaDocumentTheme();
@@ -72,8 +82,9 @@ function RoutedApp() {
     <Routes>
       <Route path="/" element={resolveHomeTheme()} />
       <Route path={adsRoutePrefix} element={resolveHomeTheme()} />
-      <Route path={noLeEscribasPath} element={<NoLeEscribasSalesPage />} />
-      <Route path={adsNoLeEscribasPath} element={<NoLeEscribasSalesPage />} />
+      {noLeEscribasPaths.map((path) => (
+        <Route key={path} path={path} element={<NoLeEscribasSalesPage />} />
+      ))}
       <Route path="/oferta" element={<ExpertOfferPage />} />
       <Route path={adsOfferPath} element={<ExpertOfferPage />} />
       <Route path="/confirmacion" element={<Success />} />

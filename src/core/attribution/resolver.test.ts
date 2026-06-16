@@ -160,6 +160,10 @@ describe('resolveAttribution', () => {
 
   it('uses the ads route exclusively to enable ads tracking', () => {
     expect(resolve('/no-le-escribas?fbclid=abc', freshStoredAttribution).shouldTrackAds).toBe(false);
+    expect(resolve('/o/no-le-escribas?fbclid=abc', freshStoredAttribution).shouldTrackAds).toBe(
+      false,
+    );
     expect(resolve('/x9m/no-le-escribas').shouldTrackAds).toBe(true);
+    expect(resolve('/x9m/o/no-le-escribas?fbclid=abc').shouldTrackAds).toBe(true);
   });
 });

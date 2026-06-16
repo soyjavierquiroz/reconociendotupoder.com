@@ -11,6 +11,7 @@ import { Check, Pause, Sparkles } from 'lucide-react';
 import { resolveCurrentAttribution } from '../../core/attribution';
 import { trackEvent } from '../../core/services/analytics';
 import { DNA } from '../current';
+import { persistFunnelContextFromUrl } from '../funnel/funnelContext';
 import { startPurchaseIntent, type PurchaseCustomer } from '../purchase';
 import {
   SalesBadge,
@@ -202,6 +203,10 @@ export function NoLeEscribasSalesPage() {
   );
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  useEffect(() => {
+    persistFunnelContextFromUrl();
+  }, [location.pathname, location.search]);
 
   const openCheckoutDrawer = (source: string, clickedCtaLabel: string) => () => {
     setCheckoutError(null);

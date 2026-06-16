@@ -1,6 +1,7 @@
 import { resolveCurrentAttribution } from '../../core/attribution';
 import { trackEvent } from '../../core/services/analytics';
 import { DNA } from '../current';
+import { getFunnelContext } from '../funnel/funnelContext';
 import { getMetaBrowserIds, type MetaBrowserIds } from '../tracking/metaBrowserIds';
 import { createTemporaryOrderId } from './orderId';
 import { storePurchaseIntent } from './storage';
@@ -88,12 +89,15 @@ export function buildTemporaryPurchaseIntent(
   currentUrl = getCurrentUrl(),
   metaBrowserIds = getMetaBrowserIds(attribution.clickIds.fbclid),
 ): PurchaseIntent {
+  const funnelContext = getFunnelContext();
+
   return {
     ...input,
     orderId,
     status: 'qr_requested',
     purchaseFlow: 'temporary_whatsapp_qr',
     attribution,
+    funnel: funnelContext,
     createdAt: new Date().toISOString(),
     currentUrl,
     name: input.customer.name,
@@ -114,6 +118,11 @@ export function buildTemporaryPurchaseIntent(
     metaBrowserIds,
     landing_path: attribution.landingPath,
     current_path: attribution.currentPath,
+    from_funnel: funnelContext?.from_funnel ?? '',
+    funnel_sid: funnelContext?.sid ?? '',
+    funnel_pattern: funnelContext?.pattern ?? '',
+    vsl_completed:
+      typeof funnelContext?.vsl_completed === 'boolean' ? funnelContext.vsl_completed : '',
   };
 }
 

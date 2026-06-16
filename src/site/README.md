@@ -17,7 +17,8 @@
 - Tracking source: `rtp-event`.
 - Product ids: `RTP_MAIN`, `RTP_BUMP`, `RTP_CONTINUITY`, `RTP_VIP`.
 - Assets still point to `/assets/funnel-placeholder.svg` until brand media is added.
-- First offer routes: `/no-le-escribas` and `/x9m/no-le-escribas`.
+- First offer routes: `/o/no-le-escribas`, `/x9m/o/no-le-escribas`,
+  `/no-le-escribas`, and `/x9m/no-le-escribas`.
 
 ## Site Guidance
 

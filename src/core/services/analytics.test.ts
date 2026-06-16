@@ -81,7 +81,9 @@ afterEach(() => {
 
 describe('ads tracking route gate', () => {
   it('does not load Meta or call CAPI on the organic sales route', async () => {
-    const { appendChild, fetchMock, scripts, windowMock } = installBrowserMocks('/no-le-escribas');
+    const { appendChild, fetchMock, scripts, windowMock } = installBrowserMocks(
+      '/o/no-le-escribas?fbclid=test',
+    );
     const { trackEvent } = await loadAnalytics();
 
     const pageView = await trackEvent('PageView', { trackingEnabled: true });
@@ -111,7 +113,9 @@ describe('ads tracking route gate', () => {
   });
 
   it('loads Meta and permits PageView, ViewContent, and CAPI on the ads sales route', async () => {
-    const { fetchMock, scripts, windowMock } = installBrowserMocks('/x9m/no-le-escribas');
+    const { fetchMock, scripts, windowMock } = installBrowserMocks(
+      '/x9m/o/no-le-escribas?fbclid=test',
+    );
     const { trackEvent } = await loadAnalytics();
 
     const pageView = await trackEvent('PageView');
@@ -135,6 +139,31 @@ describe('ads tracking route gate', () => {
     });
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(windowMock).toHaveProperty('fbq');
+  });
+
+  it('keeps the legacy sales aliases behind the same ads tracking gate', async () => {
+    const organic = installBrowserMocks('/no-le-escribas?fbclid=test');
+    const organicAnalytics = await loadAnalytics();
+
+    await expect(organicAnalytics.trackEvent('PageView')).resolves.toMatchObject({
+      capiSent: false,
+      metaBrowserSent: false,
+      tiktokBrowserSent: false,
+    });
+    expect(organic.fetchMock).not.toHaveBeenCalled();
+
+    vi.resetModules();
+    vi.unstubAllGlobals();
+
+    const ads = installBrowserMocks('/x9m/no-le-escribas?fbclid=test');
+    const adsAnalytics = await loadAnalytics();
+
+    await expect(adsAnalytics.trackEvent('PageView')).resolves.toMatchObject({
+      capiSent: true,
+      metaBrowserSent: true,
+      tiktokBrowserSent: true,
+    });
+    expect(ads.fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('deduplicates InitiateCheckout by sharing one event id across Meta Pixel and CAPI', async () => {

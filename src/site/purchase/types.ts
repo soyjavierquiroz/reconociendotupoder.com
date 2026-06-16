@@ -1,4 +1,5 @@
 import type { ResolvedAttribution } from '../../core/attribution';
+import type { FunnelContext } from '../funnel/funnelContext';
 import type { MetaBrowserIds } from '../tracking/metaBrowserIds';
 
 export type PurchaseFlow = 'temporary_whatsapp_qr' | 'jakawi_drenvex_checkout';
@@ -29,6 +30,7 @@ export interface PurchaseIntent extends StartPurchaseIntentInput {
   status: 'qr_requested';
   purchaseFlow: 'temporary_whatsapp_qr';
   attribution: ResolvedAttribution;
+  funnel: FunnelContext | null;
   createdAt: string;
   currentUrl: string;
   name: string;
@@ -49,6 +51,10 @@ export interface PurchaseIntent extends StartPurchaseIntentInput {
   metaBrowserIds: MetaBrowserIds;
   landing_path: string;
   current_path: string;
+  from_funnel: string;
+  funnel_sid: string;
+  funnel_pattern: string;
+  vsl_completed: boolean | '';
 }
 
 export type StartPurchaseIntentResult =

@@ -109,6 +109,55 @@ describe('buildTemporaryPurchaseIntent', () => {
       },
       landing_path: '/x9m/no-le-escribas',
       current_path: '/x9m/no-le-escribas',
+      funnel: null,
+      from_funnel: '',
+      funnel_sid: '',
+      funnel_pattern: '',
+      vsl_completed: '',
+    });
+  });
+
+  it('includes funnel context as structured and flat order fields', () => {
+    vi.stubGlobal('window', {
+      location: {
+        href: 'https://reconociendotupoder.com/x9m/o/no-le-escribas?from_funnel=mnle&sid=abc123&pattern=abandono&vsl_completed=1',
+        pathname: '/x9m/o/no-le-escribas',
+        search: '?from_funnel=mnle&sid=abc123&pattern=abandono&vsl_completed=1',
+      },
+      localStorage: {
+        getItem: vi.fn(() => null),
+        setItem: vi.fn(),
+      },
+    });
+
+    expect(
+      buildTemporaryPurchaseIntent(
+        input,
+        {
+          ...attribution,
+          landingPath: '/x9m/o/no-le-escribas',
+          currentPath: '/x9m/o/no-le-escribas',
+        },
+        'NLE-0608-LW55',
+        'https://reconociendotupoder.com/x9m/o/no-le-escribas?from_funnel=mnle&sid=abc123&pattern=abandono&vsl_completed=1',
+        {
+          fbp: 'fb.1.1710000000000.1234567890',
+          fbc: 'fb.1.1710000000000.fb-test',
+        },
+      ),
+    ).toMatchObject({
+      funnel: {
+        from_funnel: 'mnle',
+        funnel_slug: 'mnle',
+        sid: 'abc123',
+        pattern: 'abandono',
+        vsl_completed: true,
+        tracking_mode: 'ads',
+      },
+      from_funnel: 'mnle',
+      funnel_sid: 'abc123',
+      funnel_pattern: 'abandono',
+      vsl_completed: true,
     });
   });
 });
@@ -178,6 +227,11 @@ describe('startTemporaryWhatsappQrIntent', () => {
       offerId: DNA.noLeEscribas.offer.offerId,
       value: DNA.noLeEscribas.offer.value,
       currency: DNA.noLeEscribas.offer.currency,
+      funnel: null,
+      from_funnel: '',
+      funnel_sid: '',
+      funnel_pattern: '',
+      vsl_completed: '',
       fbclid: 'fb-test',
       fbp: 'fb.1.1710000000000.1234567890',
       fbc: 'fb.1.1710000000000.fb-test',
