@@ -121,7 +121,11 @@ echo "Creando backup en $BACKUP_DIR..."
 cp -a "$PUBLIC_HTML" "$BACKUP_DIR"
 
 echo "Deploy..."
-rsync -av --delete --exclude 'capture.php' dist/ "$PUBLIC_HTML/"
+rsync -av --delete \
+  --exclude 'capture.php' \
+  --exclude '/fi/' \
+  --exclude '/x9m/fi/' \
+  dist/ "$PUBLIC_HTML/"
 
 chown -R recon3297:recon3297 "$PUBLIC_HTML"
 chown recon3297:nogroup "$PUBLIC_HTML"

@@ -56,17 +56,6 @@ npm run build
 ### Deploy
 
 ```bash
-rsync -av --delete --exclude 'capture.php' dist/ /home/reconociendotupoder.com/public_html/
-```
-
-### Future Funnel Protection
-
-When the immersive funnel is deployed under the same domain from a separate
-repo, preserve its built folders during offer deploys. Once
-`public_html/fi/` and `public_html/x9m/fi/` exist, add these excludes to the
-offer deploy command:
-
-```bash
 rsync -av --delete \
   --exclude 'capture.php' \
   --exclude '/fi/' \
@@ -74,8 +63,9 @@ rsync -av --delete \
   dist/ /home/reconociendotupoder.com/public_html/
 ```
 
-Do not add the `/fi/` excludes to the active deploy command until those folders
-exist and are owned by the funnel repo/deploy process.
+`capture.php` is server-owned and must stay in place. The `/fi/` and
+`/x9m/fi/` folders are reserved for immersive funnels published from separate
+repos, including MNLE, so offer deploys must always preserve them.
 
 ### Ownership Repair
 
