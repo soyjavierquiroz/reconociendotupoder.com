@@ -9,7 +9,8 @@ export type FunnelContext = {
   entry_path?: string;
   handoff_path?: string;
   completed_at?: string;
-  tracking_mode?: 'ads' | 'organic';
+  tracking_mode?: 'ads' | 'organic' | string;
+  offer_received_at?: string;
 };
 
 export const FUNNEL_CONTEXT_STORAGE_KEY = 'rtp_funnel_context_v1';
@@ -24,10 +25,19 @@ const STRING_CONTEXT_KEYS: StringFunnelContextKey[] = [
   'entry_path',
   'handoff_path',
   'completed_at',
+  'offer_received_at',
 ];
 
 const TRUE_VALUES = new Set(['1', 'true', 'yes']);
 const FALSE_VALUES = new Set(['0', 'false', 'no']);
+const VALID_PATTERNS = new Set([
+  'abandono',
+  'validacion',
+  'cierre',
+  'culpa',
+  'nostalgia',
+  'ansiedad-silencio',
+]);
 const MAX_CONTEXT_VALUE_LENGTH = 512;
 
 function getCurrentUrl(): URL | null {
@@ -88,7 +98,34 @@ function parseBooleanContextValue(value: string | null): boolean | undefined {
 function parseTrackingMode(value: string | null): FunnelContext['tracking_mode'] {
   const normalized = value?.trim().toLowerCase();
 
-  return normalized === 'ads' || normalized === 'organic' ? normalized : undefined;
+  return normalized ? normalized.slice(0, MAX_CONTEXT_VALUE_LENGTH) : undefined;
+}
+
+function stripAccents(value: string): string {
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function normalizePattern(value: string | null): string | undefined {
+  const normalized = stripAccents(value?.trim().toLowerCase() ?? '')
+    .replace(/[_\s]+/g, '-')
+    .replace(/-+/g, '-');
+
+  return VALID_PATTERNS.has(normalized) ? normalized : undefined;
+}
+
+function assignStringContextValue(
+  context: FunnelContext,
+  key: StringFunnelContextKey,
+  value: string | null,
+): boolean {
+  const cleanedValue = cleanContextValue(value);
+
+  if (!cleanedValue) {
+    return false;
+  }
+
+  context[key] = cleanedValue;
+  return true;
 }
 
 function readContextFromStorage(): FunnelContext | null {
@@ -107,21 +144,29 @@ function readContextFromStorage(): FunnelContext | null {
     const context: FunnelContext = {};
 
     STRING_CONTEXT_KEYS.forEach((key) => {
-      const value = cleanContextValue(
+      assignStringContextValue(
+        context,
+        key,
         typeof parsedContext[key] === 'string' ? parsedContext[key] : null,
       );
-
-      if (value) {
-        context[key] = value;
-      }
     });
+
+    const normalizedPattern = normalizePattern(
+      typeof parsedContext.pattern === 'string' ? parsedContext.pattern : null,
+    );
+
+    if (normalizedPattern) {
+      context.pattern = normalizedPattern;
+    } else {
+      delete context.pattern;
+    }
 
     if (typeof parsedContext.vsl_completed === 'boolean') {
       context.vsl_completed = parsedContext.vsl_completed;
     }
 
-    if (parsedContext.tracking_mode === 'ads' || parsedContext.tracking_mode === 'organic') {
-      context.tracking_mode = parsedContext.tracking_mode;
+    if (typeof parsedContext.tracking_mode === 'string') {
+      context.tracking_mode = parseTrackingMode(parsedContext.tracking_mode);
     }
 
     return Object.keys(context).length > 0 ? context : null;
@@ -135,14 +180,33 @@ function readContextFromUrl(url: URL): FunnelContext | null {
   const context: FunnelContext = {};
   let hasExplicitContext = false;
 
-  STRING_CONTEXT_KEYS.forEach((key) => {
-    const value = cleanContextValue(params.get(key));
+  hasExplicitContext =
+    assignStringContextValue(context, 'from_funnel', params.get('from_funnel')) ||
+    hasExplicitContext;
+  hasExplicitContext =
+    assignStringContextValue(context, 'funnel_slug', params.get('funnel_slug')) ||
+    hasExplicitContext;
+  hasExplicitContext =
+    assignStringContextValue(context, 'sid', params.get('sid') ?? params.get('funnel_sid')) ||
+    hasExplicitContext;
+  hasExplicitContext =
+    assignStringContextValue(context, 'entry_path', params.get('entry_path')) ||
+    hasExplicitContext;
+  hasExplicitContext =
+    assignStringContextValue(context, 'handoff_path', params.get('handoff_path')) ||
+    hasExplicitContext;
+  hasExplicitContext =
+    assignStringContextValue(context, 'completed_at', params.get('completed_at')) ||
+    hasExplicitContext;
 
-    if (value) {
-      context[key] = value;
-      hasExplicitContext = true;
-    }
-  });
+  const normalizedPattern = normalizePattern(
+    params.get('pattern') ?? params.get('funnel_pattern'),
+  );
+
+  if (normalizedPattern) {
+    context.pattern = normalizedPattern;
+    hasExplicitContext = true;
+  }
 
   const vslCompleted = parseBooleanContextValue(params.get('vsl_completed'));
 
@@ -169,16 +233,45 @@ function readContextFromUrl(url: URL): FunnelContext | null {
   return hasExplicitContext ? context : null;
 }
 
+function mergeFunnelContext(
+  storedContext: FunnelContext | null,
+  urlContext: FunnelContext | null,
+  url: URL | null,
+  options: { markOfferReceived?: boolean } = {},
+): FunnelContext | null {
+  const context = {
+    ...(storedContext ?? {}),
+    ...(urlContext ?? {}),
+  };
+
+  if (!context.funnel_slug && context.from_funnel) {
+    context.funnel_slug = context.from_funnel;
+  }
+
+  if (url && isAdsRoutePath(url.pathname)) {
+    context.tracking_mode = 'ads';
+  } else if (!context.tracking_mode && url) {
+    context.tracking_mode = isAdsRoutePath(url.pathname) ? 'ads' : 'organic';
+  }
+
+  if (options.markOfferReceived && Object.keys(context).length > 0 && !context.offer_received_at) {
+    context.offer_received_at = new Date().toISOString();
+  }
+
+  return Object.keys(context).length > 0 ? context : null;
+}
+
 export function getFunnelContext(): FunnelContext | null {
   const url = getCurrentUrl();
-  const urlContext = url ? readContextFromUrl(url) : null;
 
-  return urlContext ?? readContextFromStorage();
+  return mergeFunnelContext(readContextFromStorage(), url ? readContextFromUrl(url) : null, url);
 }
 
 export function persistFunnelContextFromUrl(): FunnelContext | null {
   const url = getCurrentUrl();
-  const context = url ? readContextFromUrl(url) : null;
+  const context = mergeFunnelContext(readContextFromStorage(), url ? readContextFromUrl(url) : null, url, {
+    markOfferReceived: true,
+  });
 
   if (!context || typeof window === 'undefined') {
     return context;

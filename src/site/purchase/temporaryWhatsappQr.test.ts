@@ -118,6 +118,19 @@ describe('buildTemporaryPurchaseIntent', () => {
   });
 
   it('includes funnel context as structured and flat order fields', () => {
+    const storedFunnelContext = {
+      from_funnel: 'mnle',
+      funnel_slug: 'mnle',
+      sid: 'abc123',
+      pattern: 'abandono',
+      vsl_completed: true,
+      entry_path: '/x9m/fi/mnle/',
+      handoff_path: '/x9m/o/no-le-escribas',
+      tracking_mode: 'ads',
+      completed_at: '2026-06-16T19:27:19.000Z',
+      offer_received_at: '2026-06-16T19:28:19.000Z',
+    };
+
     vi.stubGlobal('window', {
       location: {
         href: 'https://reconociendotupoder.com/x9m/o/no-le-escribas?from_funnel=mnle&sid=abc123&pattern=abandono&vsl_completed=1',
@@ -125,7 +138,7 @@ describe('buildTemporaryPurchaseIntent', () => {
         search: '?from_funnel=mnle&sid=abc123&pattern=abandono&vsl_completed=1',
       },
       localStorage: {
-        getItem: vi.fn(() => null),
+        getItem: vi.fn(() => JSON.stringify(storedFunnelContext)),
         setItem: vi.fn(),
       },
     });
@@ -152,7 +165,11 @@ describe('buildTemporaryPurchaseIntent', () => {
         sid: 'abc123',
         pattern: 'abandono',
         vsl_completed: true,
+        entry_path: '/x9m/fi/mnle/',
+        handoff_path: '/x9m/o/no-le-escribas',
         tracking_mode: 'ads',
+        completed_at: '2026-06-16T19:27:19.000Z',
+        offer_received_at: '2026-06-16T19:28:19.000Z',
       },
       from_funnel: 'mnle',
       funnel_sid: 'abc123',

@@ -59,7 +59,7 @@ describe('funnel context', () => {
       from_funnel: 'mnle',
       funnel_slug: 'mnle',
       sid: 'stored-sid',
-      pattern: 'stored-pattern',
+      pattern: 'validacion',
       vsl_completed: true,
       tracking_mode: 'organic',
     });
@@ -68,7 +68,7 @@ describe('funnel context', () => {
       from_funnel: 'mnle',
       funnel_slug: 'mnle',
       sid: 'stored-sid',
-      pattern: 'stored-pattern',
+      pattern: 'validacion',
       vsl_completed: true,
       tracking_mode: 'organic',
     });
@@ -90,27 +90,70 @@ describe('funnel context', () => {
     });
   });
 
-  it('persists only recognized funnel context keys from the URL', () => {
+  it('persists recognized funnel context keys from the URL without sensitive fields', () => {
     const { localStorage } = installWindowMock(
       '/x9m/o/no-le-escribas?from_funnel=mnle&sid=abc123&email=test@example.com&vsl_completed=yes',
     );
 
-    expect(persistFunnelContextFromUrl()).toMatchObject({
+    const context = persistFunnelContextFromUrl();
+
+    expect(context).toMatchObject({
       from_funnel: 'mnle',
       funnel_slug: 'mnle',
       sid: 'abc123',
       vsl_completed: true,
       tracking_mode: 'ads',
+      offer_received_at: expect.any(String),
     });
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      FUNNEL_CONTEXT_STORAGE_KEY,
-      JSON.stringify({
+    expect(JSON.parse(String(localStorage.setItem.mock.calls[0]?.[1]))).toEqual(context);
+    expect(localStorage.setItem.mock.calls[0]?.[1]).not.toContain('test@example.com');
+  });
+
+  it('merges query params over existing storage while preserving full funnel handoff context', () => {
+    const { localStorage } = installWindowMock(
+      '/x9m/o/no-le-escribas?from_funnel=mnle&funnel_slug=mnle&sid=mnle-123&pattern=abandono&vsl_completed=1',
+      {
         from_funnel: 'mnle',
-        sid: 'abc123',
-        vsl_completed: true,
         funnel_slug: 'mnle',
+        sid: 'mnle-123',
+        pattern: 'abandono',
+        vsl_completed: true,
+        entry_path: '/x9m/fi/mnle/',
+        handoff_path: '/x9m/o/no-le-escribas',
         tracking_mode: 'ads',
-      }),
+        completed_at: '2026-06-16T19:27:19.000Z',
+      },
     );
+
+    const context = persistFunnelContextFromUrl();
+
+    expect(context).toMatchObject({
+      from_funnel: 'mnle',
+      funnel_slug: 'mnle',
+      sid: 'mnle-123',
+      pattern: 'abandono',
+      vsl_completed: true,
+      entry_path: '/x9m/fi/mnle/',
+      handoff_path: '/x9m/o/no-le-escribas',
+      tracking_mode: 'ads',
+      completed_at: '2026-06-16T19:27:19.000Z',
+      offer_received_at: expect.any(String),
+    });
+    expect(JSON.parse(String(localStorage.setItem.mock.calls[0]?.[1]))).toEqual(context);
+  });
+
+  it('supports flat alias params for sid and pattern', () => {
+    installWindowMock(
+      '/o/no-le-escribas?from_funnel=mnle&funnel_sid=alias-sid&funnel_pattern=nostalgia&vsl_completed=false',
+    );
+
+    expect(getFunnelContext()).toMatchObject({
+      from_funnel: 'mnle',
+      funnel_slug: 'mnle',
+      sid: 'alias-sid',
+      pattern: 'nostalgia',
+      vsl_completed: false,
+      tracking_mode: 'organic',
+    });
   });
 });
