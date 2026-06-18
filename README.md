@@ -38,6 +38,27 @@ Do not put secrets, real tokens, or private webhook URLs in committed files.
 - [Deploy on CyberPanel](OPERATIONS/deploy-cyberpanel.md)
 - [Capture server env](OPERATIONS/capture-server-env.md)
 
+## Deploy Safety
+
+Offer deploys publish `dist/` into
+`/home/reconociendotupoder.com/public_html/` with `rsync --delete`, so they
+must preserve external funnel folders that live under the same domain.
+
+Use these excludes for every offer deploy:
+
+```bash
+rsync -av --delete \
+  --exclude 'capture.php' \
+  --exclude '/fi/' \
+  --exclude '/x9m/fi/' \
+  dist/ /home/reconociendotupoder.com/public_html/
+```
+
+`/fi/` and `/x9m/fi/` belong to external funnels served from
+`reconociendotupoder.com`, including MNLE at `/fi/mnle/` and
+`/x9m/fi/mnle/`. Do not delete or update those folders from this offer repo;
+use the corresponding funnel repo and deploy process instead.
+
 ## Temporary No Le Escribas Purchase Flow
 
 `/o/no-le-escribas`, `/x9m/o/no-le-escribas`, `/no-le-escribas`, and

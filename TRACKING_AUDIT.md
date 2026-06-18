@@ -28,6 +28,12 @@ Status: neutral parent baseline.
 - `temporary_whatsapp_qr` is a temporary adapter for validating sales through a
   manual WhatsApp and QR handoff. The intended final destination is the
   Jakawi/Drenvex checkout.
+- External immersive funnels may hand off into this offer from same-domain
+  paths such as `/fi/mnle/` and `/x9m/fi/mnle/`. Those funnel folders are
+  deployed from their own repositories and must be preserved by offer deploys
+  with `rsync --delete --exclude '/fi/' --exclude '/x9m/fi/'`. The offer repo
+  owns the sales tracking after handoff; it does not own or deploy those funnel
+  assets.
 - No Le Escribas uses a trust-first sales flow: pre-offer CTAs navigate by
   anchors, `#oferta` presents the centralized price and sends the user to
   `#pago-qr`, and only the Pago QR CTA opens the checkout-styled drawer for

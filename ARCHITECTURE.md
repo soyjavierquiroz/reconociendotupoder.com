@@ -18,6 +18,22 @@ The old root config facade was removed. New code should import site config throu
 
 The parent intentionally does not ship a deploy script or Docker stack for a real site. A clone should document its own deploy path outside the shared boilerplate unless the flow is genuinely generic.
 
+This child site shares the production web root with external immersive funnels.
+The offer deploy copies `dist/` into
+`/home/reconociendotupoder.com/public_html/` with `rsync --delete`, so the
+deployment contract must always exclude:
+
+```bash
+--exclude 'capture.php'
+--exclude '/fi/'
+--exclude '/x9m/fi/'
+```
+
+`/fi/` and `/x9m/fi/` are not owned by this offer repo. They are external
+funnel publish roots on the same domain, including the MNLE funnel. Updating
+those folders must happen from the funnel-specific repository, not from this
+offer deployment.
+
 ## Clone Rule
 
 A child site owns identity, assets, env, checkout, capture destinations, tracking ids, and launch documentation. Shared engine code should remain product-agnostic.

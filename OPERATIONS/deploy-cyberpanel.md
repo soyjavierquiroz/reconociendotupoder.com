@@ -55,6 +55,8 @@ npm run build
 
 ### Deploy
 
+Always preserve `capture.php` and same-domain external funnel folders:
+
 ```bash
 rsync -av --delete \
   --exclude 'capture.php' \
@@ -64,8 +66,10 @@ rsync -av --delete \
 ```
 
 `capture.php` is server-owned and must stay in place. The `/fi/` and
-`/x9m/fi/` folders are reserved for immersive funnels published from separate
-repos, including MNLE, so offer deploys must always preserve them.
+`/x9m/fi/` folders belong to external funnels served under the same domain,
+including MNLE at `/fi/mnle/` and `/x9m/fi/mnle/`. Offer deploys must never
+delete or overwrite those folders. To update those funnels, use the
+corresponding funnel repository and deploy process, not this offer repo.
 
 ### Ownership Repair
 
