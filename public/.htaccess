@@ -6,3 +6,6 @@
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
 </IfModule>
+<IfModule mod_dir.c>
+  DirectorySlash Off
+</IfModule>

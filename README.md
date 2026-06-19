@@ -62,15 +62,17 @@ use the corresponding funnel repo and deploy process instead.
 ## Temporary No Le Escribas Purchase Flow
 
 `/o/no-le-escribas`, `/x9m/o/no-le-escribas`, `/no-le-escribas`, and
-`/x9m/no-le-escribas` currently use the
+`/x9m/no-le-escribas` render the direct offer page and use the
 `temporary_whatsapp_qr` purchase adapter to validate paid demand before the
 Jakawi/Drenvex checkout is ready.
 
-- The sales page is intentionally trust-first: early CTAs navigate by section
-  anchors, the offer CTA moves to `#pago-qr`, and only the Pago QR CTA opens
-  the premium-styled temporary checkout drawer that captures full name and
+- The sales page is intentionally direct for users arriving from the immersive
+  MNLE funnel. Its page CTAs all say `SOLICITAR QR POR WHATSAPP` and open the
+  existing premium-styled temporary checkout drawer that captures full name and
   phone. Its reusable phone field uses the existing visitor/IP country
   detection and country selector, with Bolivia (`BO`, `+591`) as the fallback.
+- The previous long-form sales page is preserved as V1 at
+  `/v1/no-le-escribas` and `/x9m/v1/no-le-escribas`.
 - No Le Escribas pricing is centralized in `DNA.noLeEscribas.offer`. Change
   `noLeEscribasPrice` in `src/site/dna.config.ts` to derive the offer id,
   visible labels, CTA labels, webhook value, WhatsApp amount, and checkout
@@ -118,6 +120,8 @@ Current public routes are:
 - `/x9m/o/no-le-escribas`
 - `/no-le-escribas`
 - `/x9m/no-le-escribas`
+- `/v1/no-le-escribas`
+- `/x9m/v1/no-le-escribas`
 - `/oferta`
 - `/x9m/oferta`
 - `/confirmacion`
@@ -139,10 +143,11 @@ Traffic attribution is resolved by upstream code in `src/core/attribution`. The 
 
 Analytics, browser pixels, CAPI relay payloads, and the event capture payload should consume this resolver as the canonical attribution source. `src/core/services/analytics.ts` must not parse click IDs or UTMs independently. Meta Pixel, TikTok Pixel, and CAPI are enabled only when the current path is under `VITE_ADS_ROUTE_PREFIX`; click IDs, paid UTMs, stored attribution, and explicit `trackingEnabled` values cannot enable them on organic paths. Paid attribution may still come from the ads route, a click ID, a paid-like UTM, or fresh stored attribution for reporting.
 
-For the No Le Escribas offer, the canonical organic route is
+For the No Le Escribas direct offer, the canonical organic route is
 `/o/no-le-escribas` and the canonical ads route is `/x9m/o/no-le-escribas`.
-Legacy aliases `/no-le-escribas` and `/x9m/no-le-escribas` remain internal
-route aliases and do not redirect.
+Aliases `/no-le-escribas` and `/x9m/no-le-escribas` render the same direct
+offer and do not redirect. V1 fallback routes live at `/v1/no-le-escribas` and
+`/x9m/v1/no-le-escribas`.
 
 For new forms and checkout CTAs, resolve attribution once in the route/component and pass the `ResolvedAttribution` object into analytics. Capture payloads should include the shared `buildAttributionEventFields(attribution)` output. Legacy VSL helpers such as `AdvancedCaptureForm`, `PricingCard`, and `ExpertCtaButton` are not clone-safe capture/tracking templates until they are adapted to that contract.
 
@@ -159,5 +164,5 @@ Before publishing a clone, run:
 `git diff --check`
 
 Then verify the current routes using the configured ads prefix. With `VITE_ADS_ROUTE_PREFIX=/x9m`, check `/`, `/x9m`, `/oferta`, `/x9m/oferta`, `/confirmacion`, and `/x9m/confirmacion`.
-The first RTP sales letter lives at `/o/no-le-escribas`, `/x9m/o/no-le-escribas`, `/no-le-escribas`, and `/x9m/no-le-escribas`; `/oferta` remains available but is not the strategic ads route for this offer.
+The active RTP direct offer lives at `/o/no-le-escribas`, `/x9m/o/no-le-escribas`, `/no-le-escribas`, and `/x9m/no-le-escribas`; V1 remains available at `/v1/no-le-escribas` and `/x9m/v1/no-le-escribas`; `/oferta` remains available but is not the strategic ads route for this offer.
 Also verify `/oferta?fbclid=abc`, `/oferta?ttclid=abc`, `/oferta?gclid=abc`, and `/oferta?utm_medium=paid` resolve as ads, then clear `localStorage.funnel_attribution` and confirm `/oferta` returns to organic/default.

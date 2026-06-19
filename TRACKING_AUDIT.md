@@ -34,13 +34,15 @@ Status: neutral parent baseline.
   with `rsync --delete --exclude '/fi/' --exclude '/x9m/fi/'`. The offer repo
   owns the sales tracking after handoff; it does not own or deploy those funnel
   assets.
-- No Le Escribas uses a trust-first sales flow: pre-offer CTAs navigate by
-  anchors, `#oferta` presents the centralized price and sends the user to
-  `#pago-qr`, and only the Pago QR CTA opens the checkout-styled drawer for
-  full name and phone. The phone field reuses `SmartPhoneInput` and
-  `VisitorContext` for IP-based country detection, with `BO/+591` as fallback.
-  Offer pricing and its labels derive from `DNA.noLeEscribas.offer`, whose
-  numeric source is `noLeEscribasPrice` in `src/site/dna.config.ts`.
+- No Le Escribas uses a direct offer flow for immersive funnel handoff traffic:
+  page CTAs all say `SOLICITAR QR POR WHATSAPP` and open the existing
+  checkout-styled drawer for full name and phone. The page has no embedded
+  form. The phone field reuses `SmartPhoneInput` and `VisitorContext` for
+  IP-based country detection, with `BO/+591` as fallback. Offer pricing and its
+  labels derive from `DNA.noLeEscribas.offer`, whose numeric source is
+  `noLeEscribasPrice` in `src/site/dna.config.ts`. The previous long-form V1
+  sales page remains available at `/v1/no-le-escribas` and
+  `/x9m/v1/no-le-escribas`.
   On valid submit, `startPurchaseIntent` creates an
   `NLE-MMDD-XXXX` order id, resolves current attribution, stores the
   `qr_requested` intent and customer in local and session storage, and sends

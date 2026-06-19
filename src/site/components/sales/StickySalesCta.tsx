@@ -1,11 +1,20 @@
 type StickySalesCtaProps = {
   hasReachedOffer: boolean;
+  label?: string;
+  onClick?: () => void;
+  subtitle?: string;
   visible: boolean;
 };
 
-export function StickySalesCta({ hasReachedOffer, visible }: StickySalesCtaProps) {
+export function StickySalesCta({
+  hasReachedOffer,
+  label,
+  onClick,
+  subtitle = 'Reto guiado de 7 días',
+  visible,
+}: StickySalesCtaProps) {
   const href = hasReachedOffer ? '#pago-qr' : '#como-funciona';
-  const label = hasReachedOffer ? 'Quiero entrar al reto' : 'Ver cómo funciona';
+  const resolvedLabel = label ?? (hasReachedOffer ? 'Quiero entrar al reto' : 'Ver cómo funciona');
 
   return (
     <div
@@ -14,11 +23,22 @@ export function StickySalesCta({ hasReachedOffer, visible }: StickySalesCtaProps
     >
       <div>
         <strong>Mujer, No Le Escribas</strong>
-        <span>Reto guiado de 7 días</span>
+        <span>{subtitle}</span>
       </div>
-      <a data-clarity-label="sticky-primary" data-cta="sticky-primary" href={href}>
-        {label}
-      </a>
+      {onClick ? (
+        <button
+          data-clarity-label="sticky-primary"
+          data-cta="sticky-primary"
+          onClick={onClick}
+          type="button"
+        >
+          {resolvedLabel}
+        </button>
+      ) : (
+        <a data-clarity-label="sticky-primary" data-cta="sticky-primary" href={href}>
+          {resolvedLabel}
+        </a>
+      )}
     </div>
   );
 }

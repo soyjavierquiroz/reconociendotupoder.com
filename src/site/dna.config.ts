@@ -727,7 +727,7 @@ const noLeEscribasOffer = {
   value: noLeEscribasPrice,
   currency: noLeEscribasCurrency,
   ctaLabel: `Quiero mi acceso por ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
-  checkoutSubmitLabel: `Solicitar QR · ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
+  checkoutSubmitLabel: `Solicitar QR • ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice}`,
   offerCtaLabel: 'Quiero entrar al reto',
   topBarLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego sube a ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
   topBarMobileLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,

@@ -9,6 +9,7 @@ import { ExpertEventTheme } from './components/themes/expert/event/ExpertEventTh
 import { ExpertOfferPage } from './components/themes/expert/offer/ExpertOfferPage';
 import { Success } from './pages/Success';
 import { NoLeEscribasSalesPage } from './site/pages/NoLeEscribasSalesPage';
+import { NoLeEscribasSalesPageV1 } from './site/pages/NoLeEscribasSalesPageV1';
 
 const adsRoutePrefix = getAdsRoutePrefix();
 const adsOfferPath = withAdsRoutePrefix('/oferta', adsRoutePrefix);
@@ -20,12 +21,15 @@ const adsCanonicalNoLeEscribasPath = withAdsRoutePrefix(
   canonicalNoLeEscribasPath,
   adsRoutePrefix,
 );
+const legacyNoLeEscribasPath = '/v1/no-le-escribas';
+const adsLegacyNoLeEscribasPath = withAdsRoutePrefix(legacyNoLeEscribasPath, adsRoutePrefix);
 const noLeEscribasPaths = [
   noLeEscribasPath,
   canonicalNoLeEscribasPath,
   adsNoLeEscribasPath,
   adsCanonicalNoLeEscribasPath,
 ];
+const legacyNoLeEscribasPaths = [legacyNoLeEscribasPath, adsLegacyNoLeEscribasPath];
 
 function resolveHomeTheme() {
   if (DNA.theme === 'expert' && DNA.funnelType === 'event') {
@@ -41,7 +45,9 @@ function RoutedApp() {
   const trafficChannel = attribution.channel;
   const isSuccessRoute =
     location.pathname === '/confirmacion' || location.pathname === adsConfirmationPath;
-  const isNoLeEscribasRoute = noLeEscribasPaths.includes(location.pathname);
+  const isNoLeEscribasRoute =
+    noLeEscribasPaths.includes(location.pathname) ||
+    legacyNoLeEscribasPaths.includes(location.pathname);
 
   useEffect(() => {
     const documentTheme = resolveDnaDocumentTheme();
@@ -84,6 +90,9 @@ function RoutedApp() {
       <Route path={adsRoutePrefix} element={resolveHomeTheme()} />
       {noLeEscribasPaths.map((path) => (
         <Route key={path} path={path} element={<NoLeEscribasSalesPage />} />
+      ))}
+      {legacyNoLeEscribasPaths.map((path) => (
+        <Route key={path} path={path} element={<NoLeEscribasSalesPageV1 />} />
       ))}
       <Route path="/oferta" element={<ExpertOfferPage />} />
       <Route path={adsOfferPath} element={<ExpertOfferPage />} />

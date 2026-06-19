@@ -25,12 +25,24 @@ function renderRoute(path: string) {
 
 describe('No Le Escribas offer routes', () => {
   it.each(['/o/no-le-escribas', '/x9m/o/no-le-escribas', '/no-le-escribas', '/x9m/no-le-escribas'])(
-    'renders the sales page at %s',
+    'renders the direct sales page at %s',
     (path) => {
       const html = renderRoute(path);
 
       expect(html).toContain('no-le-escribas-page');
-      expect(html).toContain('No le escribas');
+      expect(html).toContain('No le escribas todavía.');
+      expect(html).toContain('Hoy puedes entrar por:');
+    },
+  );
+
+  it.each(['/v1/no-le-escribas', '/x9m/v1/no-le-escribas'])(
+    'renders the legacy V1 sales page at %s',
+    (path) => {
+      const html = renderRoute(path);
+
+      expect(html).toContain('no-le-escribas-page');
+      expect(html).toContain('Tal vez solo querías mandarle un');
+      expect(html).toContain('Antes de volver a él, vuelve a ti.');
     },
   );
 });
