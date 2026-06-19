@@ -111,6 +111,18 @@ describe('NoLeEscribasSalesPage direct offer', () => {
     expect(pageSource).not.toContain('CompleteRegistration');
   });
 
+  it('sends complete Meta product data for ViewContent on the direct and legacy pages', () => {
+    for (const source of [pageSource, legacyPageSource]) {
+      expect(source).toContain("trackEvent('ViewContent'");
+      expect(source).toContain('content_ids: [productId]');
+      expect(source).toContain("content_name: 'Mujer, No Le Escribas'");
+      expect(source).toContain("content_type: 'product'");
+      expect(source).toContain('num_items: 1');
+      expect(source).toContain('value,');
+      expect(source).toContain('currency,');
+    }
+  });
+
   it('keeps funnel context and purchase submission on the existing path', () => {
     expect(pageSource).toContain('persistFunnelContextFromUrl');
     expect(pageSource).toContain('startPurchaseIntent({');

@@ -202,7 +202,7 @@ describe('startTemporaryWhatsappQrIntent', () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
-  it('tracks InitiateCheckout and navigates only after a 202 webhook response', async () => {
+  it('tracks InitiateCheckout product data and navigates only after a 202 webhook response', async () => {
     const localStorage = {
       getItem: vi.fn(() => null),
       setItem: vi.fn(),
@@ -213,7 +213,9 @@ describe('startTemporaryWhatsappQrIntent', () => {
     };
     vi.stubGlobal('window', { localStorage, sessionStorage });
     const calls: string[] = [];
-    const track = vi.fn(async () => {
+    const track = vi.fn(async (_eventName: string, _data?: Record<string, unknown>) => {
+      void _eventName;
+      void _data;
       calls.push('track');
       return trackResult;
     });
@@ -268,17 +270,27 @@ describe('startTemporaryWhatsappQrIntent', () => {
     expect(track).toHaveBeenCalledWith(
       'InitiateCheckout',
       expect.objectContaining({
+        content_ids: [DNA.noLeEscribas.offer.productId],
+        content_name: 'Mujer, No Le Escribas',
+        content_type: 'product',
+        num_items: 1,
         offer_id: DNA.noLeEscribas.offer.offerId,
         value: DNA.noLeEscribas.offer.value,
         currency: DNA.noLeEscribas.offer.currency,
-        customer_name: 'Test RTP',
-        customer_whatsapp: '59169430776',
-        phone_country_code: 'BO',
-        phone_calling_code: '+591',
-        phone_e164: '+59169430776',
         order_id: expect.stringMatching(/^NLE-\d{4}-[A-HJ-NP-Z2-9]{4}$/),
+        userData: {
+          phone: '+59169430776',
+        },
       }),
     );
+    const trackedData = track.mock.calls[0]?.[1] as Record<string, unknown>;
+
+    expect(trackedData).not.toHaveProperty('customer_name');
+    expect(trackedData).not.toHaveProperty('customer_whatsapp');
+    expect(trackedData).not.toHaveProperty('phone');
+    expect(trackedData).not.toHaveProperty('whatsapp');
+    expect(trackedData).not.toHaveProperty('phone_e164');
+    expect(trackedData).not.toHaveProperty('customer');
   });
 
   it('returns a safe error and does not navigate when checkout config is missing', async () => {

@@ -179,8 +179,13 @@ describe('ads tracking route gate', () => {
     const result = await trackEvent('InitiateCheckout', {
       content_name: 'Mujer, No Le Escribas',
       content_ids: ['NO_LE_ESCRIBAS'],
+      content_type: 'product',
+      num_items: 1,
       value: 39,
       currency: 'BOB',
+      userData: {
+        phone: '+59169430776',
+      },
     });
 
     expect(result).toMatchObject({
@@ -196,6 +201,8 @@ describe('ads tracking route gate', () => {
       expect.objectContaining({
         content_name: 'Mujer, No Le Escribas',
         content_ids: ['NO_LE_ESCRIBAS'],
+        content_type: 'product',
+        num_items: 1,
         value: 39,
         currency: 'BOB',
       }),
@@ -215,14 +222,20 @@ describe('ads tracking route gate', () => {
       user_data: {
         fbp: expect.stringMatching(/^fb\.1\.\d+\.\d+$/),
         fbc: expect.stringContaining('TEST_DEDUPE_001'),
+        ph: expect.any(String),
       },
       custom_data: {
         content_name: 'Mujer, No Le Escribas',
         content_ids: ['NO_LE_ESCRIBAS'],
+        content_type: 'product',
+        num_items: 1,
         value: 39,
         currency: 'BOB',
       },
     });
+    expect(capiPayload.custom_data).not.toHaveProperty('userData');
+    expect(capiPayload.custom_data).not.toHaveProperty('phone');
+    expect(capiPayload.data).not.toHaveProperty('userData');
     expect(capiPayload).not.toHaveProperty('eventId');
     expect(consoleInfo).toHaveBeenCalledWith(
       '[tracking] Meta Pixel InitiateCheckout eventID=event-shared-1',

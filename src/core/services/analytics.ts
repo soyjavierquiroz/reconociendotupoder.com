@@ -33,6 +33,7 @@ export interface AttributionEventFields {
 export interface AnalyticsTrackEventData extends Record<string, unknown> {
   attribution?: ResolvedAttribution;
   trackingEnabled?: boolean;
+  userData?: Record<string, unknown>;
 }
 
 export interface TrackEventResult {
@@ -327,6 +328,7 @@ const stripAnalyticsControlFields = (data: AnalyticsTrackEventData): Record<stri
   const eventData = { ...data };
   delete eventData.attribution;
   delete eventData.trackingEnabled;
+  delete eventData.userData;
 
   return eventData;
 };
@@ -705,7 +707,10 @@ const trackEvent = async (
   const eventData = enrichEventData(data, attribution);
   const { anonymousId, cookies } = ensureInitialized(legacyAttribution);
   const eventTime = Math.floor(Date.now() / 1000);
-  const preparedUserData = await prepareUserData(eventData);
+  const preparedUserData = await prepareUserData({
+    ...eventData,
+    ...toRecord(data.userData),
+  });
   const metaPixelId = normalizePixelId(funnelConfig.integrations.metaPixelId);
   const tiktokPixelId = normalizePixelId(funnelConfig.integrations.tiktokPixelId);
   const capiWebhookUrl = normalizePixelId(funnelConfig.integrations.capiWebhookUrl);

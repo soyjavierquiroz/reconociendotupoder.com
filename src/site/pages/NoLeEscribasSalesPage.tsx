@@ -203,12 +203,14 @@ export function NoLeEscribasSalesPage() {
     }
 
     void trackEvent('ViewContent', {
-      content_name: 'No Le Escribas',
+      content_ids: [productId],
+      content_name: 'Mujer, No Le Escribas',
       content_category: 'sales_page',
       content_type: 'product',
+      num_items: 1,
       product_id: productId,
-      currency,
       value,
+      currency,
       attribution,
     }).catch(() => undefined);
   }, [attribution, attribution.shouldTrackAds, currency, productId, value]);

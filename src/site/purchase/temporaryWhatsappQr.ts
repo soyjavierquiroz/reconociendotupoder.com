@@ -192,24 +192,21 @@ export async function startTemporaryWhatsappQrIntent(
 
   await track('InitiateCheckout', {
     event_name: 'InitiateCheckout',
-    content_name: input.productName,
     content_ids: [input.productId],
+    content_name: input.productName,
     content_category: 'sales_page',
     content_type: 'product',
+    num_items: 1,
     product_id: input.productId,
     offer_id: input.offerId,
     order_id: intent.orderId,
     value: input.value,
     currency: input.currency,
-    customer_name: input.customer.name,
-    customer_whatsapp: input.customer.whatsapp,
-    phone: input.customer.phone,
-    whatsapp: input.customer.whatsapp,
-    phone_country_code: input.customer.phoneCountryCode,
-    phone_calling_code: input.customer.phoneCallingCode,
-    phone_e164: input.customer.phoneE164,
     source: input.source,
     cta_label: input.ctaLabel,
+    userData: {
+      phone: input.customer.phoneE164,
+    },
     attribution,
   }).catch(() => undefined);
 
