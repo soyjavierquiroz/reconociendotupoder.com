@@ -201,7 +201,7 @@ export async function startTemporaryWhatsappQrIntent(
     event_name: 'InitiateCheckout',
     content_ids: [input.productId],
     content_name: input.productName,
-    content_category: 'sales_page',
+    content_category: 'Reto 7 días',
     content_type: 'product',
     num_items: 1,
     product_id: input.productId,

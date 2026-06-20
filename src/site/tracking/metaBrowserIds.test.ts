@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getMetaBrowserIds } from './metaBrowserIds';
 
 afterEach(() => {
+  vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
 
@@ -30,13 +31,34 @@ describe('getMetaBrowserIds', () => {
     });
   });
 
-  it('creates fbc from fbclid when _fbc is missing', () => {
+  it('creates fbc from the original fbclid when _fbc is missing', () => {
+    vi.spyOn(Date, 'now').mockReturnValue(1710000000000);
     vi.stubGlobal('window', {});
     vi.stubGlobal('document', { cookie: '_fbp=fb.1.1710000000000.1234567890' });
 
-    expect(getMetaBrowserIds('fb-test')).toMatchObject({
+    expect(getMetaBrowserIds('TEST_FULL_EMQ_001')).toEqual({
       fbp: 'fb.1.1710000000000.1234567890',
-      fbc: expect.stringMatching(/^fb\.1\.\d+\.fb-test$/),
+      fbc: 'fb.1.1710000000000.TEST_FULL_EMQ_001',
+    });
+  });
+
+  it('returns an empty fbc when fbclid is empty', () => {
+    vi.stubGlobal('window', {});
+    vi.stubGlobal('document', { cookie: '' });
+
+    expect(getMetaBrowserIds('')).toEqual({
+      fbp: '',
+      fbc: '',
+    });
+  });
+
+  it('does not invent fbc without _fbc or fbclid', () => {
+    vi.stubGlobal('window', {});
+    vi.stubGlobal('document', { cookie: '' });
+
+    expect(getMetaBrowserIds()).toEqual({
+      fbp: '',
+      fbc: '',
     });
   });
 

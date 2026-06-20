@@ -32,6 +32,7 @@ export interface AttributionEventFields {
 
 export interface AnalyticsTrackEventData extends Record<string, unknown> {
   attribution?: ResolvedAttribution;
+  eventId?: string;
   trackingEnabled?: boolean;
   userData?: Record<string, unknown>;
 }
@@ -193,6 +194,9 @@ const normalizeNullable = (value: string | null | undefined): string | null => {
 
 const normalizePixelId = (value: string): string | null => normalizeNullable(value);
 
+const normalizeEventId = (value: unknown): string | null =>
+  typeof value === 'string' ? normalizeNullable(value) : null;
+
 const toRecord = (value: unknown): Record<string, unknown> => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return {};
@@ -328,6 +332,7 @@ const resolveAdsTrackingEnabled = (
 const stripAnalyticsControlFields = (data: AnalyticsTrackEventData): Record<string, unknown> => {
   const eventData = { ...data };
   delete eventData.attribution;
+  delete eventData.eventId;
   delete eventData.trackingEnabled;
   delete eventData.userData;
 
@@ -723,7 +728,7 @@ const trackEvent = async (
   data: AnalyticsTrackEventData = {},
 ): Promise<TrackEventResult> => {
   const attribution = resolveEventAttribution(data);
-  const eventId = createEventId();
+  const eventId = normalizeEventId(data.eventId) ?? createEventId();
   const shouldSendAdsTracking = resolveAdsTrackingEnabled(attribution);
 
   if (!shouldSendAdsTracking) {

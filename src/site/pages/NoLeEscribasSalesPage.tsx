@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Check, Heart, Pause, ShieldCheck } from 'lucide-react';
 import { resolveCurrentAttribution } from '../../core/attribution';
@@ -43,6 +43,15 @@ const colorVariables: NoLeEscribasColorVariables = {
 };
 
 const directCtaLabel = 'SOLICITAR QR POR WHATSAPP';
+const offerContentCategory = 'Reto 7 días';
+
+function createOfferBridgeEventId(prefix: string): string {
+  if (typeof globalThis.crypto !== 'undefined' && typeof globalThis.crypto.randomUUID === 'function') {
+    return `${prefix}_${globalThis.crypto.randomUUID()}`;
+  }
+
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+}
 
 const receiveItems = [
   'Reto guiado de 7 días.',
@@ -147,12 +156,28 @@ export function NoLeEscribasSalesPage() {
   );
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const offerViewedTrackedRef = useRef(false);
 
   useEffect(() => {
     persistFunnelContextFromUrl();
   }, [location.pathname, location.search]);
 
   const openCheckoutDrawer = (source: string, clickedCtaLabel = directCtaLabel) => () => {
+    if (attribution.shouldTrackAds && !isVisitorLoading) {
+      void trackEvent('ClickSolicitarQR', {
+        eventId: createOfferBridgeEventId('click_qr'),
+        content_ids: [productId],
+        content_name: 'Mujer, No Le Escribas',
+        content_type: 'product',
+        cta_label: clickedCtaLabel,
+        currency,
+        payment_method: 'QR WhatsApp',
+        value,
+        userData: visitorUserData,
+        attribution,
+      }).catch(() => undefined);
+    }
+
     setCheckoutError(null);
     setCheckoutSource({ source, ctaLabel: clickedCtaLabel });
   };
@@ -211,7 +236,7 @@ export function NoLeEscribasSalesPage() {
     void trackEvent('ViewContent', {
       content_ids: [productId],
       content_name: 'Mujer, No Le Escribas',
-      content_category: 'sales_page',
+      content_category: offerContentCategory,
       content_type: 'product',
       num_items: 1,
       product_id: productId,
@@ -225,6 +250,37 @@ export function NoLeEscribasSalesPage() {
     attribution.shouldTrackAds,
     currency,
     isVisitorLoading,
+    productId,
+    value,
+    visitorUserData,
+  ]);
+
+  useEffect(() => {
+    if (!attribution.shouldTrackAds || isVisitorLoading || offerViewedTrackedRef.current) {
+      return;
+    }
+
+    offerViewedTrackedRef.current = true;
+
+    void trackEvent('OfferViewed', {
+      eventId: createOfferBridgeEventId('offer_viewed'),
+      content_ids: [productId],
+      content_name: 'Mujer, No Le Escribas',
+      content_type: 'product',
+      content_category: offerContentCategory,
+      currency,
+      funnel_name: 'Oráculo psicológico místico',
+      offer_id: offerId,
+      value,
+      userData: visitorUserData,
+      attribution,
+    }).catch(() => undefined);
+  }, [
+    attribution,
+    attribution.shouldTrackAds,
+    currency,
+    isVisitorLoading,
+    offerId,
     productId,
     value,
     visitorUserData,

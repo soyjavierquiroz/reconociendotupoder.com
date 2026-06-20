@@ -8,7 +8,7 @@ interface ScriptMock {
   src: string;
 }
 
-function installBrowserMocks(pathWithSearch: string) {
+function installBrowserMocks(pathWithSearch: string, cookie = '') {
   const url = new URL(pathWithSearch, 'https://reconociendotupoder.com');
   const scripts = new Map<string, ScriptMock>();
   const storage = new Map<string, string>();
@@ -34,7 +34,7 @@ function installBrowserMocks(pathWithSearch: string) {
     sessionStorage: storageMock,
   };
   const documentMock = {
-    cookie: '',
+    cookie,
     createElement: vi.fn(
       (): ScriptMock => ({ async: false, id: '', onerror: null, onload: null, src: '' }),
     ),
@@ -74,6 +74,7 @@ async function loadAnalytics() {
 }
 
 afterEach(() => {
+  vi.restoreAllMocks();
   vi.clearAllMocks();
   vi.resetModules();
   vi.unstubAllGlobals();
@@ -284,5 +285,77 @@ describe('ads tracking route gate', () => {
     expect(consoleInfo).toHaveBeenCalledWith(
       '[tracking] CAPI InitiateCheckout event_id=event-shared-1',
     );
+  });
+
+  it('preserves an existing _fbc cookie exactly in CAPI user_data', async () => {
+    const { fetchMock } = installBrowserMocks(
+      '/x9m/no-le-escribas?fbclid=TEST_SHOULD_NOT_WIN',
+      '_fbc=fb.1.1710000000000.ORIGINAL_COOKIE_VALUE',
+    );
+    const { trackEvent } = await loadAnalytics();
+
+    await trackEvent('ViewContent');
+
+    const capiPayload = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
+
+    expect(capiPayload.user_data.fbc).toBe('fb.1.1710000000000.ORIGINAL_COOKIE_VALUE');
+  });
+
+  it('builds fbc from the original fbclid without lowercasing, truncating, or using a literal key', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(1710000000000);
+    const { fetchMock } = installBrowserMocks(
+      '/x9m/no-le-escribas?fbclid=TEST_FULL_EMQ_001',
+    );
+    const { trackEvent } = await loadAnalytics();
+
+    await trackEvent('ViewContent');
+
+    const capiPayload = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
+
+    expect(capiPayload.user_data.fbc).toBe('fb.1.1710000000000.TEST_FULL_EMQ_001');
+    expect(capiPayload.user_data.fbc).not.toContain('fbclid');
+  });
+
+  it('does not invent fbc when neither _fbc nor fbclid exists', async () => {
+    const { fetchMock } = installBrowserMocks('/x9m/no-le-escribas');
+    const { trackEvent } = await loadAnalytics();
+
+    await trackEvent('ViewContent');
+
+    const capiPayload = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
+
+    expect(capiPayload.user_data).not.toHaveProperty('fbc');
+  });
+
+  it('uses a supplied eventId for Pixel and CAPI deduplication without leaking it into custom_data', async () => {
+    const { fetchMock, windowMock } = installBrowserMocks('/x9m/o/no-le-escribas');
+    const { trackEvent } = await loadAnalytics();
+
+    const result = await trackEvent('ResultViewed', {
+      eventId: 'result_viewed_shared_1',
+      funnel_name: 'Oráculo psicológico místico',
+      funnel_slug: 'mnle',
+      traffic_channel: 'ads',
+    });
+
+    const fbqQueue = (windowMock as { fbq?: { queue?: unknown[] } }).fbq?.queue;
+    const capiPayload = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
+
+    expect(result.eventId).toBe('result_viewed_shared_1');
+    expect(fbqQueue).toContainEqual([
+      'trackCustom',
+      'ResultViewed',
+      expect.objectContaining({
+        funnel_name: 'Oráculo psicológico místico',
+        funnel_slug: 'mnle',
+        traffic_channel: 'ads',
+      }),
+      { eventID: 'result_viewed_shared_1' },
+    ]);
+    expect(capiPayload).toMatchObject({
+      event_name: 'ResultViewed',
+      event_id: 'result_viewed_shared_1',
+    });
+    expect(capiPayload.custom_data).not.toHaveProperty('eventId');
   });
 });

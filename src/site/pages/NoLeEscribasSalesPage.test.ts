@@ -97,18 +97,30 @@ describe('NoLeEscribasSalesPage direct offer', () => {
     expect(drawerSource).toContain('Tus datos se usan solo para gestionar este pedido.');
   });
 
-  it('does not add frontend conversion events or fire InitiateCheckout on CTA click', () => {
+  it('tracks the QR click bridge without firing InitiateCheckout on CTA click', () => {
     const openCheckoutHandler = sourceBetween(
       'const openCheckoutDrawer =',
       'const closeCheckoutDrawer',
     );
 
-    expect(openCheckoutHandler).not.toContain('trackEvent');
+    expect(openCheckoutHandler).toContain("trackEvent('ClickSolicitarQR'");
+    expect(openCheckoutHandler).toContain("eventId: createOfferBridgeEventId('click_qr')");
+    expect(openCheckoutHandler).toContain("payment_method: 'QR WhatsApp'");
     expect(openCheckoutHandler).not.toContain('startPurchaseIntent');
+    expect(openCheckoutHandler).not.toContain('InitiateCheckout');
     expect(pageSource).not.toContain('InitiateCheckout');
     expect(pageSource).not.toContain("trackEvent('Lead'");
     expect(pageSource).not.toContain("trackEvent('Purchase'");
     expect(pageSource).not.toContain('CompleteRegistration');
+  });
+
+  it('sends OfferViewed once per mounted page view as a custom bridge event', () => {
+    expect(pageSource).toContain('const offerViewedTrackedRef = useRef(false)');
+    expect(pageSource).toContain('offerViewedTrackedRef.current = true');
+    expect(pageSource).toContain("trackEvent('OfferViewed'");
+    expect(pageSource).toContain("eventId: createOfferBridgeEventId('offer_viewed')");
+    expect(pageSource).toContain("funnel_name: 'Oráculo psicológico místico'");
+    expect(pageSource).toContain("offer_id: offerId");
   });
 
   it('sends complete Meta product data for ViewContent on the direct and legacy pages', () => {

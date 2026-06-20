@@ -330,6 +330,7 @@ describe('startTemporaryWhatsappQrIntent', () => {
       expect.objectContaining({
         content_ids: [DNA.noLeEscribas.offer.productId],
         content_name: 'Mujer, No Le Escribas',
+        content_category: 'Reto 7 días',
         content_type: 'product',
         num_items: 1,
         offer_id: DNA.noLeEscribas.offer.offerId,
