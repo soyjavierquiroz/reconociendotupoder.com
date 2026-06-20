@@ -126,6 +126,7 @@ interface CapiPayload {
   custom_data: Record<string, unknown>;
   user_data: {
     external_id: string;
+    client_ip_address?: string;
     client_user_agent?: string;
     fbp?: string;
     fbc?: string;
@@ -433,6 +434,28 @@ const extractStringValue = (value: unknown): string | undefined => {
   return normalized.length > 0 ? normalized : undefined;
 };
 
+const extractClientIpAddress = (value: unknown): string | undefined => {
+  const normalized = extractStringValue(value);
+
+  if (!normalized || normalized.length > 45) {
+    return undefined;
+  }
+
+  if (!normalized.includes('.') && !normalized.includes(':')) {
+    return undefined;
+  }
+
+  if (!/^[0-9a-fA-F:.]+$/.test(normalized)) {
+    return undefined;
+  }
+
+  if (normalized === '0.0.0.0' || normalized === '::') {
+    return undefined;
+  }
+
+  return normalized;
+};
+
 const extractUserData = (data: Record<string, unknown>): PreparedUserData['raw'] => {
   const lead = toRecord(data.lead);
   const rawEmail = extractStringValue(data.email) ?? extractStringValue(lead.email);
@@ -644,6 +667,7 @@ const buildCapiPayload = ({
   eventName,
   eventTime,
   preparedUserData,
+  userData,
 }: {
   anonymousId: string;
   attribution: AttributionData;
@@ -653,35 +677,44 @@ const buildCapiPayload = ({
   eventName: string;
   eventTime: number;
   preparedUserData: PreparedUserData;
-}): CapiPayload => ({
-  siteId: funnelConfig.integrations.siteId,
-  provider: 'agnostic',
-  event_name: eventName,
-  event_id: eventId,
-  event_time: eventTime,
-  event_source_url: isBrowserEnvironment() ? window.location.href : '',
-  action_source: 'website',
-  anonymous_id: anonymousId,
-  integrations: {
-    metaPixelId: normalizePixelId(funnelConfig.integrations.metaPixelId),
-    tiktokPixelId: normalizePixelId(funnelConfig.integrations.tiktokPixelId),
-  },
-  attribution,
-  cookies,
-  data,
-  custom_data: data,
-  user_data: {
-    external_id: anonymousId,
-    client_user_agent: isBrowserEnvironment() ? window.navigator.userAgent : undefined,
-    fbp: cookies._fbp ?? undefined,
-    fbc: cookies._fbc ?? undefined,
-    ttclid: cookies.ttclid ?? attribution.ttclid ?? undefined,
-    em: preparedUserData.hashed.email,
-    ph: preparedUserData.hashed.phone,
-    fn: preparedUserData.hashed.firstName,
-    ln: preparedUserData.hashed.lastName,
-  },
-});
+  userData: Record<string, unknown>;
+}): CapiPayload => {
+  const clientIpAddress = extractClientIpAddress(userData.client_ip_address);
+  const clientUserAgent =
+    extractStringValue(userData.client_user_agent) ??
+    (isBrowserEnvironment() ? window.navigator.userAgent : undefined);
+
+  return {
+    siteId: funnelConfig.integrations.siteId,
+    provider: 'agnostic',
+    event_name: eventName,
+    event_id: eventId,
+    event_time: eventTime,
+    event_source_url: isBrowserEnvironment() ? window.location.href : '',
+    action_source: 'website',
+    anonymous_id: anonymousId,
+    integrations: {
+      metaPixelId: normalizePixelId(funnelConfig.integrations.metaPixelId),
+      tiktokPixelId: normalizePixelId(funnelConfig.integrations.tiktokPixelId),
+    },
+    attribution,
+    cookies,
+    data,
+    custom_data: data,
+    user_data: {
+      external_id: anonymousId,
+      client_ip_address: clientIpAddress,
+      client_user_agent: clientUserAgent,
+      fbp: cookies._fbp ?? undefined,
+      fbc: cookies._fbc ?? undefined,
+      ttclid: cookies.ttclid ?? attribution.ttclid ?? undefined,
+      em: preparedUserData.hashed.email,
+      ph: preparedUserData.hashed.phone,
+      fn: preparedUserData.hashed.firstName,
+      ln: preparedUserData.hashed.lastName,
+    },
+  };
+};
 
 const isMetaStandardEvent = (eventName: string): boolean => META_STANDARD_EVENTS.has(eventName);
 
@@ -705,11 +738,12 @@ const trackEvent = async (
 
   const legacyAttribution = toLegacyAttributionData(attribution);
   const eventData = enrichEventData(data, attribution);
+  const userData = toRecord(data.userData);
   const { anonymousId, cookies } = ensureInitialized(legacyAttribution);
   const eventTime = Math.floor(Date.now() / 1000);
   const preparedUserData = await prepareUserData({
     ...eventData,
-    ...toRecord(data.userData),
+    ...userData,
   });
   const metaPixelId = normalizePixelId(funnelConfig.integrations.metaPixelId);
   const tiktokPixelId = normalizePixelId(funnelConfig.integrations.tiktokPixelId);
@@ -777,6 +811,7 @@ const trackEvent = async (
     eventName,
     eventTime,
     preparedUserData,
+    userData,
   });
   debugTrackDispatch('CAPI', eventName, eventId);
 

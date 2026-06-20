@@ -120,6 +120,7 @@ describe('NoLeEscribasSalesPage direct offer', () => {
       expect(source).toContain('num_items: 1');
       expect(source).toContain('value,');
       expect(source).toContain('currency,');
+      expect(source).toContain('userData: visitorUserData');
     }
   });
 
@@ -128,6 +129,7 @@ describe('NoLeEscribasSalesPage direct offer', () => {
     expect(pageSource).toContain('startPurchaseIntent({');
     expect(pageSource).toContain('source: checkoutSource.source');
     expect(pageSource).toContain('ctaLabel: checkoutSource.ctaLabel');
+    expect(pageSource).toContain('visitor: visitorOrderMetadata');
   });
 
   it('uses the real Janny photo and preserves V1 as a separate component', () => {

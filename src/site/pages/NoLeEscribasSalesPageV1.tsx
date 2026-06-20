@@ -10,9 +10,11 @@ import { useLocation } from 'react-router-dom';
 import { Check, Pause, Sparkles } from 'lucide-react';
 import { resolveCurrentAttribution } from '../../core/attribution';
 import { trackEvent } from '../../core/services/analytics';
+import { useVisitor } from '../../core/visitor/VisitorContext';
 import { DNA } from '../current';
 import { persistFunnelContextFromUrl } from '../funnel/funnelContext';
 import { startPurchaseIntent, type PurchaseCustomer } from '../purchase';
+import { buildVisitorCapiUserData, buildVisitorOrderMetadata } from '../tracking/visitorUserData';
 import {
   SalesBadge,
   SalesButton,
@@ -183,7 +185,10 @@ function CheckList({ items }: { items: readonly string[] }) {
 
 export function NoLeEscribasSalesPageV1() {
   const location = useLocation();
+  const { isLoading: isVisitorLoading, visitorData } = useVisitor();
   const attribution = useMemo(() => resolveCurrentAttribution(location), [location]);
+  const visitorOrderMetadata = useMemo(() => buildVisitorOrderMetadata(visitorData), [visitorData]);
+  const visitorUserData = useMemo(() => buildVisitorCapiUserData(visitorData), [visitorData]);
   const {
     checkoutSubmitLabel,
     currency,
@@ -237,6 +242,7 @@ export function NoLeEscribasSalesPageV1() {
       source: checkoutSource.source,
       ctaLabel: checkoutSource.ctaLabel,
       customer,
+      visitor: visitorOrderMetadata,
     });
 
     if (result.status !== 'opened') {
@@ -247,7 +253,7 @@ export function NoLeEscribasSalesPageV1() {
   };
 
   useEffect(() => {
-    if (!attribution.shouldTrackAds) {
+    if (!attribution.shouldTrackAds || isVisitorLoading) {
       return;
     }
 
@@ -272,9 +278,18 @@ export function NoLeEscribasSalesPageV1() {
       product_id: productId,
       value,
       currency,
+      userData: visitorUserData,
       attribution,
     }).catch(() => undefined);
-  }, [attribution, attribution.shouldTrackAds, currency, productId, value]);
+  }, [
+    attribution,
+    attribution.shouldTrackAds,
+    currency,
+    isVisitorLoading,
+    productId,
+    value,
+    visitorUserData,
+  ]);
 
   useEffect(() => {
     const updateStickyCta = () => {

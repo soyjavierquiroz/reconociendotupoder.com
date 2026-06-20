@@ -4,12 +4,14 @@ import { DNA, resolveDnaDocumentTheme } from './site/current';
 import analytics from './core/services/analytics';
 import { resolveCurrentAttribution } from './core/attribution';
 import { getAdsRoutePrefix, withAdsRoutePrefix } from './core/routing/adsRoute';
+import { useVisitor } from './core/visitor/VisitorContext';
 import { ExpertTheme } from './components/themes/expert/ExpertTheme';
 import { ExpertEventTheme } from './components/themes/expert/event/ExpertEventTheme';
 import { ExpertOfferPage } from './components/themes/expert/offer/ExpertOfferPage';
 import { Success } from './pages/Success';
 import { NoLeEscribasSalesPage } from './site/pages/NoLeEscribasSalesPage';
 import { NoLeEscribasSalesPageV1 } from './site/pages/NoLeEscribasSalesPageV1';
+import { buildVisitorCapiUserData } from './site/tracking/visitorUserData';
 
 const adsRoutePrefix = getAdsRoutePrefix();
 const adsOfferPath = withAdsRoutePrefix('/oferta', adsRoutePrefix);
@@ -41,7 +43,9 @@ function resolveHomeTheme() {
 
 function RoutedApp() {
   const location = useLocation();
+  const { isLoading: isVisitorLoading, visitorData } = useVisitor();
   const attribution = useMemo(() => resolveCurrentAttribution(location), [location]);
+  const visitorUserData = useMemo(() => buildVisitorCapiUserData(visitorData), [visitorData]);
   const trafficChannel = attribution.channel;
   const isSuccessRoute =
     location.pathname === '/confirmacion' || location.pathname === adsConfirmationPath;
@@ -65,23 +69,26 @@ function RoutedApp() {
     document.title = nextTitle;
     descriptionMeta?.setAttribute('content', nextDescription);
 
-    if (attribution.shouldTrackAds) {
+    if (attribution.shouldTrackAds && !isVisitorLoading) {
       void analytics.trackEvent('PageView', {
         source: 'AppLoad',
         theme: DNA.theme,
         funnel_type: DNA.funnelType,
         traffic_channel: trafficChannel,
+        userData: visitorUserData,
         attribution,
       });
     }
   }, [
     attribution,
     attribution.shouldTrackAds,
+    isVisitorLoading,
     isNoLeEscribasRoute,
     isSuccessRoute,
     location.pathname,
     location.search,
     trafficChannel,
+    visitorUserData,
   ]);
 
   return (

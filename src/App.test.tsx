@@ -2,6 +2,7 @@ import { renderToString } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import App from './App';
+import { VisitorProvider } from './core/visitor/VisitorContext';
 
 vi.mock('./components/themes/expert/ExpertTheme', () => ({
   ExpertTheme: () => <main>Home</main>,
@@ -18,7 +19,9 @@ vi.mock('./components/themes/expert/offer/ExpertOfferPage', () => ({
 function renderRoute(path: string) {
   return renderToString(
     <MemoryRouter initialEntries={[path]}>
-      <App />
+      <VisitorProvider>
+        <App />
+      </VisitorProvider>
     </MemoryRouter>,
   );
 }

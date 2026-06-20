@@ -3,6 +3,7 @@ import { trackEvent } from '../../core/services/analytics';
 import { DNA } from '../current';
 import { getFunnelContext } from '../funnel/funnelContext';
 import { getMetaBrowserIds, type MetaBrowserIds } from '../tracking/metaBrowserIds';
+import { buildVisitorOrderMetadata } from '../tracking/visitorUserData';
 import { createTemporaryOrderId } from './orderId';
 import { storePurchaseIntent } from './storage';
 import type {
@@ -90,9 +91,11 @@ export function buildTemporaryPurchaseIntent(
   metaBrowserIds = getMetaBrowserIds(attribution.clickIds.fbclid),
 ): PurchaseIntent {
   const funnelContext = getFunnelContext();
+  const visitorMetadata = input.visitor ?? buildVisitorOrderMetadata(null);
 
   return {
     ...input,
+    visitor: visitorMetadata.visitor,
     orderId,
     status: 'qr_requested',
     purchaseFlow: 'temporary_whatsapp_qr',
@@ -107,6 +110,10 @@ export function buildTemporaryPurchaseIntent(
     phone_country_code: input.customer.phoneCountryCode,
     phone_calling_code: input.customer.phoneCallingCode,
     phone_e164: input.customer.phoneE164,
+    client_ip_address: visitorMetadata.client_ip_address,
+    client_user_agent: visitorMetadata.client_user_agent,
+    visitor_country: visitorMetadata.visitor_country,
+    visitor_country_name: visitorMetadata.visitor_country_name,
     traffic_channel: attribution.channel,
     attribution_source: attribution.source,
     paid_platform: attribution.paidPlatform,
@@ -206,6 +213,8 @@ export async function startTemporaryWhatsappQrIntent(
     cta_label: input.ctaLabel,
     userData: {
       phone: input.customer.phoneE164,
+      client_ip_address: intent.client_ip_address,
+      client_user_agent: intent.client_user_agent,
     },
     attribution,
   }).catch(() => undefined);

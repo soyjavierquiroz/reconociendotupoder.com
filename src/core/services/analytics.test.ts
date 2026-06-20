@@ -119,7 +119,12 @@ describe('ads tracking route gate', () => {
     const { trackEvent } = await loadAnalytics();
 
     const pageView = await trackEvent('PageView');
-    const viewContent = await trackEvent('ViewContent');
+    const viewContent = await trackEvent('ViewContent', {
+      userData: {
+        client_ip_address: '203.0.113.42',
+        client_user_agent: 'visitor-agent',
+      },
+    });
 
     expect(scripts.get('boilerplate-meta-pixel-script')?.src).toBe(
       'https://connect.facebook.net/en_US/fbevents.js',
@@ -138,6 +143,17 @@ describe('ads tracking route gate', () => {
       tiktokBrowserSent: true,
     });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    const viewContentPayload = JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body));
+
+    expect(viewContentPayload).toMatchObject({
+      event_name: 'ViewContent',
+      user_data: {
+        client_ip_address: '203.0.113.42',
+        client_user_agent: 'visitor-agent',
+      },
+    });
+    expect(viewContentPayload.custom_data).not.toHaveProperty('client_ip_address');
+    expect(viewContentPayload.custom_data).not.toHaveProperty('client_user_agent');
     expect(windowMock).toHaveProperty('fbq');
   });
 
@@ -166,6 +182,25 @@ describe('ads tracking route gate', () => {
     expect(ads.fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it('drops invalid visitor IPs from CAPI user_data', async () => {
+    const { fetchMock } = installBrowserMocks('/x9m/o/no-le-escribas?fbclid=test');
+    const { trackEvent } = await loadAnalytics();
+
+    await trackEvent('ViewContent', {
+      userData: {
+        client_ip_address: 'not-an-ip',
+        client_user_agent: 'visitor-agent',
+      },
+    });
+
+    const capiPayload = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
+
+    expect(capiPayload.user_data).not.toHaveProperty('client_ip_address');
+    expect(capiPayload.user_data).toMatchObject({
+      client_user_agent: 'visitor-agent',
+    });
+  });
+
   it('deduplicates InitiateCheckout by sharing one event id across Meta Pixel and CAPI', async () => {
     const { fetchMock, windowMock } = installBrowserMocks(
       '/x9m/no-le-escribas?fbclid=TEST_DEDUPE_001&debug_tracking=1',
@@ -184,6 +219,8 @@ describe('ads tracking route gate', () => {
       value: 39,
       currency: 'BOB',
       userData: {
+        client_ip_address: '203.0.113.77',
+        client_user_agent: 'checkout-agent',
         phone: '+59169430776',
       },
     });
@@ -220,6 +257,8 @@ describe('ads tracking route gate', () => {
         'https://reconociendotupoder.com/x9m/no-le-escribas?fbclid=TEST_DEDUPE_001&debug_tracking=1',
       action_source: 'website',
       user_data: {
+        client_ip_address: '203.0.113.77',
+        client_user_agent: 'checkout-agent',
         fbp: expect.stringMatching(/^fb\.1\.\d+\.\d+$/),
         fbc: expect.stringContaining('TEST_DEDUPE_001'),
         ph: expect.any(String),
@@ -234,6 +273,8 @@ describe('ads tracking route gate', () => {
       },
     });
     expect(capiPayload.custom_data).not.toHaveProperty('userData');
+    expect(capiPayload.custom_data).not.toHaveProperty('client_ip_address');
+    expect(capiPayload.custom_data).not.toHaveProperty('client_user_agent');
     expect(capiPayload.custom_data).not.toHaveProperty('phone');
     expect(capiPayload.data).not.toHaveProperty('userData');
     expect(capiPayload).not.toHaveProperty('eventId');

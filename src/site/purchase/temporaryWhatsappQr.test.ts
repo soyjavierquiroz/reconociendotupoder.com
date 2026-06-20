@@ -37,6 +37,19 @@ const input = {
   },
 };
 
+const visitor = {
+  visitor: {
+    ip: '203.0.113.42',
+    country: 'BO',
+    countryName: 'Bolivia',
+    userAgent: 'checkout-agent',
+  },
+  client_ip_address: '203.0.113.42',
+  client_user_agent: 'checkout-agent',
+  visitor_country: 'BO',
+  visitor_country_name: 'Bolivia',
+};
+
 const trackResult = {
   eventId: 'event-test',
   metaBrowserSent: false,
@@ -97,6 +110,16 @@ describe('buildTemporaryPurchaseIntent', () => {
       phone_country_code: 'BO',
       phone_calling_code: '+591',
       phone_e164: '+59169430776',
+      visitor: {
+        ip: '',
+        country: '',
+        countryName: '',
+        userAgent: '',
+      },
+      client_ip_address: '',
+      client_user_agent: '',
+      visitor_country: '',
+      visitor_country_name: '',
       traffic_channel: 'ads',
       attribution_source: 'clickid',
       paid_platform: 'meta',
@@ -114,6 +137,30 @@ describe('buildTemporaryPurchaseIntent', () => {
       funnel_sid: '',
       funnel_pattern: '',
       vsl_completed: '',
+    });
+  });
+
+  it('includes visitor IP, country, and user agent in the order payload when available', () => {
+    expect(
+      buildTemporaryPurchaseIntent(
+        {
+          ...input,
+          visitor,
+        },
+        attribution,
+        'NLE-0608-LW55',
+        'https://reconociendotupoder.com/x9m/no-le-escribas',
+        {
+          fbp: 'fb.1.1710000000000.1234567890',
+          fbc: 'fb.1.1710000000000.fb-test',
+        },
+      ),
+    ).toMatchObject({
+      visitor: visitor.visitor,
+      client_ip_address: '203.0.113.42',
+      client_user_agent: 'checkout-agent',
+      visitor_country: 'BO',
+      visitor_country_name: 'Bolivia',
     });
   });
 
@@ -227,18 +274,24 @@ describe('startTemporaryWhatsappQrIntent', () => {
       return new Response(null, { status: 202 });
     });
 
-    const result = await startTemporaryWhatsappQrIntent(input, {
-      attribution,
-      intentWebhookUrl: 'https://webhook.example/orders',
-      whatsappUrl: 'https://wa.me/59160000000',
-      fetch: fetchImplementation,
-      navigate,
-      track,
-      metaBrowserIds: {
-        fbp: 'fb.1.1710000000000.1234567890',
-        fbc: 'fb.1.1710000000000.fb-test',
+    const result = await startTemporaryWhatsappQrIntent(
+      {
+        ...input,
+        visitor,
       },
-    });
+      {
+        attribution,
+        intentWebhookUrl: 'https://webhook.example/orders',
+        whatsappUrl: 'https://wa.me/59160000000',
+        fetch: fetchImplementation,
+        navigate,
+        track,
+        metaBrowserIds: {
+          fbp: 'fb.1.1710000000000.1234567890',
+          fbc: 'fb.1.1710000000000.fb-test',
+        },
+      },
+    );
 
     expect(result.status).toBe('opened');
     expect(calls).toEqual(['webhook', 'track', 'navigate']);
@@ -254,6 +307,11 @@ describe('startTemporaryWhatsappQrIntent', () => {
       fbclid: 'fb-test',
       fbp: 'fb.1.1710000000000.1234567890',
       fbc: 'fb.1.1710000000000.fb-test',
+      visitor: visitor.visitor,
+      client_ip_address: '203.0.113.42',
+      client_user_agent: 'checkout-agent',
+      visitor_country: 'BO',
+      visitor_country_name: 'Bolivia',
       metaBrowserIds: {
         fbp: 'fb.1.1710000000000.1234567890',
         fbc: 'fb.1.1710000000000.fb-test',
@@ -279,6 +337,8 @@ describe('startTemporaryWhatsappQrIntent', () => {
         currency: DNA.noLeEscribas.offer.currency,
         order_id: expect.stringMatching(/^NLE-\d{4}-[A-HJ-NP-Z2-9]{4}$/),
         userData: {
+          client_ip_address: '203.0.113.42',
+          client_user_agent: 'checkout-agent',
           phone: '+59169430776',
         },
       }),
@@ -318,12 +378,17 @@ describe('startTemporaryWhatsappQrIntent', () => {
     vi.stubGlobal('window', {});
     const navigate = vi.fn();
     const track = vi.fn(async () => trackResult);
+    let webhookBody: unknown;
+    const fetchImplementation = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      webhookBody = JSON.parse(String(init?.body));
+      return new Response(null, { status: 200 });
+    });
 
     const result = await startTemporaryWhatsappQrIntent(input, {
       attribution,
       intentWebhookUrl: 'https://webhook.example/orders',
       whatsappUrl: '',
-      fetch: vi.fn(async () => new Response(null, { status: 200 })),
+      fetch: fetchImplementation,
       navigate,
       track,
     });
@@ -332,6 +397,18 @@ describe('startTemporaryWhatsappQrIntent', () => {
       status: 'not_configured',
       orderId: expect.stringMatching(/^NLE-\d{4}-[A-HJ-NP-Z2-9]{4}$/),
       message: 'WhatsApp de pedidos no está configurado.',
+    });
+    expect(webhookBody).toMatchObject({
+      visitor: {
+        ip: '',
+        country: '',
+        countryName: '',
+        userAgent: '',
+      },
+      client_ip_address: '',
+      client_user_agent: '',
+      visitor_country: '',
+      visitor_country_name: '',
     });
     expect(track).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
