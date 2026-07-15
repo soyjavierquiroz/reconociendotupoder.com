@@ -152,6 +152,27 @@ describe('NoLeEscribasSalesPage direct offer', () => {
     expect(pageSource).toContain('checkoutCountryMode !== \'international\'');
   });
 
+  it('keeps Hotmart outside orders and routes the unknown QR fallback through the modal submit', () => {
+    const checkoutHandler = sourceBetween('const openCheckoutDrawer =', 'const closeCheckoutDrawer');
+
+    expect(checkoutHandler).toContain('if (!usesBoliviaCheckout && !forceBoliviaCheckout)');
+    expect(checkoutHandler).toContain('window.location.assign(checkout.toString())');
+    expect(checkoutHandler).toContain('return;');
+    expect(checkoutHandler).not.toContain('startPurchaseIntent');
+    expect(checkoutHandler).not.toContain("trackEvent('Purchase'");
+    expect(pageSource).toContain("'unknown_country_bolivia_qr_link'");
+    expect(pageSource).toContain('forceBoliviaCheckout = false');
+    expect(pageSource).toContain('startPurchaseIntent({');
+  });
+
+  it('logs non-sensitive checkout diagnostics only in debug mode', () => {
+    expect(pageSource).toContain("get('debug_tracking') === '1'");
+    expect(pageSource).toContain('[country-checkout] visitor.country=');
+    expect(pageSource).toContain('[country-checkout] checkoutMode=');
+    expect(pageSource).toContain('[country-checkout] checkoutSource=');
+    expect(pageSource).toContain('[country-checkout] checkoutProvider=');
+  });
+
   it('uses the real Janny photo and preserves V1 as a separate component', () => {
     expect(pageSource).toContain('janny-helguero-reconociendo.webp');
     expect(pageSource).not.toContain('janny-helguero-avatar.webp');

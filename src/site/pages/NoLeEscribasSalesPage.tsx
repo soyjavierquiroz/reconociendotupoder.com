@@ -5,7 +5,7 @@ import { resolveCurrentAttribution } from '../../core/attribution';
 import { trackEvent } from '../../core/services/analytics';
 import { useVisitor } from '../../core/visitor/VisitorContext';
 import { DNA } from '../current';
-import { getCheckoutCountryMode } from '../checkoutCountry';
+import { resolveCheckoutCountry } from '../checkoutCountry';
 import { persistFunnelContextFromUrl } from '../funnel/funnelContext';
 import { startPurchaseIntent, type PurchaseCustomer } from '../purchase';
 import { buildVisitorCapiUserData, buildVisitorOrderMetadata } from '../tracking/visitorUserData';
@@ -156,7 +156,11 @@ export function NoLeEscribasSalesPage() {
     regularPriceLabel,
     value,
   } = DNA.noLeEscribas.offer;
-  const checkoutCountryMode = getCheckoutCountryMode(visitorData?.country_code);
+  const checkoutCountry = useMemo(
+    () => resolveCheckoutCountry(visitorData?.country_code, location.search),
+    [location.search, visitorData?.country_code],
+  );
+  const checkoutCountryMode = checkoutCountry.mode;
   const usesBoliviaCheckout = checkoutCountryMode === 'bolivia';
   const isUnknownCountry = checkoutCountryMode === 'unknown';
   const displayPriceLabel = usesBoliviaCheckout ? priceLabel : internationalPriceLabel;
@@ -180,6 +184,16 @@ export function NoLeEscribasSalesPage() {
   useEffect(() => {
     persistFunnelContextFromUrl();
   }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    const debugEnabled = new URLSearchParams(location.search).get('debug_tracking') === '1';
+    if (!debugEnabled) return;
+
+    console.info(`[country-checkout] visitor.country=${checkoutCountry.visitorCountry}`);
+    console.info(`[country-checkout] checkoutMode=${checkoutCountry.mode}`);
+    console.info(`[country-checkout] checkoutSource=${checkoutCountry.source}`);
+    console.info(`[country-checkout] checkoutProvider=${checkoutCountry.provider}`);
+  }, [checkoutCountry, location.search]);
 
   const openCheckoutDrawer = (
     source: string,
