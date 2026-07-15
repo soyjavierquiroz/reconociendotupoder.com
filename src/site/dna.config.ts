@@ -277,6 +277,10 @@ export interface DnaConfig {
       topBarLabel: string;
       topBarMobileLabel: string;
       qrCtaLabel: string;
+      internationalCheckoutUrl: string;
+      internationalPriceLabel: string;
+      internationalCurrency: string;
+      internationalPaymentProvider: 'hotmart';
     };
     purchase: {
       flow: DnaPurchaseFlow;
@@ -732,6 +736,13 @@ const noLeEscribasOffer = {
   topBarLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego sube a ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
   topBarMobileLabel: `Hoy ${noLeEscribasCurrencyLabel} ${noLeEscribasPrice} · Luego ${noLeEscribasCurrencyLabel} ${noLeEscribasRegularPrice}`,
   qrCtaLabel: 'Solicitar QR por WhatsApp',
+  internationalCheckoutUrl: readEnv(
+    'VITE_NLE_INTERNATIONAL_CHECKOUT_URL',
+    'https://pay.hotmart.com/D91691442N',
+  ),
+  internationalPriceLabel: 'USD 7',
+  internationalCurrency: 'USD',
+  internationalPaymentProvider: 'hotmart',
 } as const;
 
 const eventAssets = {

@@ -5,6 +5,7 @@ import { resolveCurrentAttribution } from '../../core/attribution';
 import { trackEvent } from '../../core/services/analytics';
 import { useVisitor } from '../../core/visitor/VisitorContext';
 import { DNA } from '../current';
+import { getCheckoutCountryMode } from '../checkoutCountry';
 import { persistFunnelContextFromUrl } from '../funnel/funnelContext';
 import { startPurchaseIntent, type PurchaseCustomer } from '../purchase';
 import { buildVisitorCapiUserData, buildVisitorOrderMetadata } from '../tracking/visitorUserData';
@@ -43,6 +44,7 @@ const colorVariables: NoLeEscribasColorVariables = {
 };
 
 const directCtaLabel = 'SOLICITAR QR POR WHATSAPP';
+const internationalCtaLabel = 'QUIERO ACCEDER POR USD 7';
 const offerContentCategory = 'Reto 7 días';
 
 function createOfferBridgeEventId(prefix: string): string {
@@ -144,12 +146,29 @@ export function NoLeEscribasSalesPage() {
   const {
     checkoutSubmitLabel,
     currency,
+    internationalCheckoutUrl,
+    internationalCurrency,
+    internationalPaymentProvider,
+    internationalPriceLabel,
     offerId,
     priceLabel,
     productId,
     regularPriceLabel,
     value,
   } = DNA.noLeEscribas.offer;
+  const checkoutCountryMode = getCheckoutCountryMode(visitorData?.country_code);
+  const usesBoliviaCheckout = checkoutCountryMode === 'bolivia';
+  const isUnknownCountry = checkoutCountryMode === 'unknown';
+  const displayPriceLabel = usesBoliviaCheckout ? priceLabel : internationalPriceLabel;
+  const displayCurrency = usesBoliviaCheckout ? currency : internationalCurrency;
+  const displayValue = usesBoliviaCheckout ? value : 7;
+  const ctaLabel = usesBoliviaCheckout ? directCtaLabel : internationalCtaLabel;
+  const displayedReceiveItems = !usesBoliviaCheckout
+    ? receiveItems.filter((item) => !item.includes('WhatsApp'))
+    : receiveItems;
+  const displayedOfferIncludes = !usesBoliviaCheckout
+    ? offerIncludes.filter((item) => item !== 'soporte por WhatsApp')
+    : offerIncludes;
   const [isStickyCtaVisible, setIsStickyCtaVisible] = useState(false);
   const [checkoutSource, setCheckoutSource] = useState<{ source: string; ctaLabel: string } | null>(
     null,
@@ -162,7 +181,41 @@ export function NoLeEscribasSalesPage() {
     persistFunnelContextFromUrl();
   }, [location.pathname, location.search]);
 
-  const openCheckoutDrawer = (source: string, clickedCtaLabel = directCtaLabel) => () => {
+  const openCheckoutDrawer = (
+    source: string,
+    clickedCtaLabel = directCtaLabel,
+    forceBoliviaCheckout = false,
+  ) => () => {
+    if (!usesBoliviaCheckout && !forceBoliviaCheckout) {
+      if (attribution.shouldTrackAds && !isVisitorLoading) {
+        void trackEvent('ClickHotmartCheckout', {
+          eventId: createOfferBridgeEventId('click_hotmart'),
+          content_ids: [productId],
+          content_name: 'Mujer, No Le Escribas',
+          content_type: 'product',
+          cta_label: internationalCtaLabel,
+          currency: internationalCurrency,
+          payment_method: internationalPaymentProvider,
+          value: 7,
+          userData: visitorUserData,
+          attribution,
+        }).catch(() => undefined);
+      }
+
+      const checkout = new URL(internationalCheckoutUrl);
+      const currentParams = new URLSearchParams(location.search);
+      currentParams.forEach((paramValue, key) => {
+        if (
+          ['fbclid', 'fbc', 'fbp', 'ttclid', 'gclid', 'debug_tracking'].includes(key) ||
+          key.toLowerCase().startsWith('utm_')
+        ) {
+          checkout.searchParams.set(key, paramValue);
+        }
+      });
+      window.location.assign(checkout.toString());
+      return;
+    }
+
     if (attribution.shouldTrackAds && !isVisitorLoading) {
       void trackEvent('ClickSolicitarQR', {
         eventId: createOfferBridgeEventId('click_qr'),
@@ -181,6 +234,12 @@ export function NoLeEscribasSalesPage() {
     setCheckoutError(null);
     setCheckoutSource({ source, ctaLabel: clickedCtaLabel });
   };
+
+  const openUnknownCountryBoliviaCheckout = openCheckoutDrawer(
+    'unknown_country_bolivia_qr_link',
+    '¿Estás en Bolivia? Puedes pagar por QR aquí.',
+    true,
+  );
 
   const closeCheckoutDrawer = useCallback(() => {
     if (!checkoutLoading) {
@@ -240,18 +299,18 @@ export function NoLeEscribasSalesPage() {
       content_type: 'product',
       num_items: 1,
       product_id: productId,
-      value,
-      currency,
+      value: displayValue,
+      currency: displayCurrency,
       userData: visitorUserData,
       attribution,
     }).catch(() => undefined);
   }, [
     attribution,
     attribution.shouldTrackAds,
-    currency,
+    displayCurrency,
+    displayValue,
     isVisitorLoading,
     productId,
-    value,
     visitorUserData,
   ]);
 
@@ -268,21 +327,21 @@ export function NoLeEscribasSalesPage() {
       content_name: 'Mujer, No Le Escribas',
       content_type: 'product',
       content_category: offerContentCategory,
-      currency,
+      currency: displayCurrency,
       funnel_name: 'Oráculo psicológico místico',
       offer_id: offerId,
-      value,
+      value: displayValue,
       userData: visitorUserData,
       attribution,
     }).catch(() => undefined);
   }, [
     attribution,
     attribution.shouldTrackAds,
-    currency,
+    displayCurrency,
+    displayValue,
     isVisitorLoading,
     offerId,
     productId,
-    value,
     visitorUserData,
   ]);
 
@@ -303,7 +362,13 @@ export function NoLeEscribasSalesPage() {
 
   return (
     <main className="no-le-escribas-page nle-direct-page" style={colorVariables}>
-      <SalesTopBar text={`Mujer, No Le Escribas · Hoy ${priceLabel} · Pago por QR`} />
+      <SalesTopBar
+        text={
+          usesBoliviaCheckout
+            ? `Mujer, No Le Escribas · Hoy ${priceLabel} · Pago por QR`
+            : `Mujer, No Le Escribas · Hoy ${internationalPriceLabel} · Pago seguro con Hotmart`
+        }
+      />
 
       <section className="nle-direct-hero">
         <div className="nle-container nle-direct-hero-grid">
@@ -332,14 +397,29 @@ export function NoLeEscribasSalesPage() {
                 dataCta="direct-hero-open-checkout"
                 onClick={openCheckoutDrawer('direct_hero_cta')}
               >
-                {directCtaLabel}
+                {ctaLabel}
               </SalesButton>
-              <TrustMicrocopy>Pago por QR en Bolivia. No necesitas tarjeta.</TrustMicrocopy>
+              <TrustMicrocopy>
+                {usesBoliviaCheckout
+                  ? 'Pago por QR en Bolivia. No necesitas tarjeta.'
+                  : 'Pago internacional seguro procesado por Hotmart.'}
+              </TrustMicrocopy>
+              {isUnknownCountry ? (
+                <button
+                  className="nle-bolivia-fallback-link"
+                  data-clarity-label="unknown-country-bolivia-qr"
+                  data-cta="unknown-country-bolivia-qr"
+                  onClick={openUnknownCountryBoliviaCheckout}
+                  type="button"
+                >
+                  ¿Estás en Bolivia? Puedes pagar por QR aquí.
+                </button>
+              ) : null}
             </div>
           </div>
           <aside className="nle-direct-quick-offer" aria-label="Resumen de la oferta">
             <span>Hoy puedes entrar por:</span>
-            <strong>{priceLabel}</strong>
+            <strong>{displayPriceLabel}</strong>
             <p>Acceso completo al kit guiado de 7 días.</p>
           </aside>
         </div>
@@ -352,7 +432,7 @@ export function NoLeEscribasSalesPage() {
               title="No es solo un PDF."
               subtitle="Es un kit práctico para los minutos antes de escribirle."
             />
-            <DirectCheckList items={receiveItems} />
+            <DirectCheckList items={displayedReceiveItems} />
             <div className="nle-direct-highlight">
               <p>No estás comprando información.</p>
               <strong>Estás comprando una pausa guiada para no actuar desde ansiedad.</strong>
@@ -362,7 +442,7 @@ export function NoLeEscribasSalesPage() {
               dataCta="direct-receives-open-checkout"
               onClick={openCheckoutDrawer('direct_receives_cta')}
             >
-              {directCtaLabel}
+              {ctaLabel}
             </SalesButton>
           </div>
           <figure className="nle-direct-kit-mockup">
@@ -434,9 +514,9 @@ export function NoLeEscribasSalesPage() {
               Acceso digital inmediato tras confirmar pago
             </span>
             <h2>Hoy puedes entrar por:</h2>
-            <p className="nle-direct-price">{priceLabel}</p>
+            <p className="nle-direct-price">{displayPriceLabel}</p>
             <p>Acceso completo al kit guiado de 7 días.</p>
-            <DirectCheckList items={offerIncludes} />
+            <DirectCheckList items={displayedOfferIncludes} />
             <div className="nle-direct-highlight">
               <p>Te cuesta menos que una salida impulsiva.</p>
               <strong>Pero puede evitarte otro mensaje enviado desde ansiedad.</strong>
@@ -446,11 +526,12 @@ export function NoLeEscribasSalesPage() {
               dataCta="direct-offer-open-checkout"
               onClick={openCheckoutDrawer('direct_offer_cta')}
             >
-              {directCtaLabel}
+              {ctaLabel}
             </SalesButton>
             <TrustMicrocopy>
-              Al tocar el botón, se abre el formulario seguro para generar tu pedido y solicitar tu
-              QR.
+              {usesBoliviaCheckout
+                ? 'Al tocar el botón, se abre el formulario seguro para generar tu pedido y solicitar tu QR.'
+                : 'Al tocar el botón, irás al checkout internacional seguro de Hotmart.'}
             </TrustMicrocopy>
           </div>
 
@@ -477,7 +558,7 @@ export function NoLeEscribasSalesPage() {
               onClick={openCheckoutDrawer('direct_final_cta')}
               variant="outline"
             >
-              {directCtaLabel}
+              {ctaLabel}
             </SalesButton>
             <p className="nle-direct-last-line">
               Tu primer acto de regreso a ti puede ser no enviar ese mensaje todavía.
@@ -488,22 +569,24 @@ export function NoLeEscribasSalesPage() {
 
       <StickySalesCta
         hasReachedOffer
-        label={directCtaLabel}
+        label={ctaLabel}
         onClick={openCheckoutDrawer('direct_sticky_cta')}
-        subtitle="Pago por QR en Bolivia"
+        subtitle={usesBoliviaCheckout ? 'Pago por QR en Bolivia' : 'Pago internacional con Hotmart'}
         visible={isStickyCtaVisible}
       />
-      <SalesCheckoutDrawer
-        error={checkoutError}
-        loading={checkoutLoading}
-        onClose={closeCheckoutDrawer}
-        onSubmit={handleCheckoutSubmit}
-        open={checkoutSource !== null}
-        priceLabel={priceLabel}
-        productName="Mujer, No Le Escribas"
-        regularPriceLabel={regularPriceLabel}
-        submitLabel={checkoutSubmitLabel}
-      />
+      {checkoutCountryMode !== 'international' ? (
+        <SalesCheckoutDrawer
+          error={checkoutError}
+          loading={checkoutLoading}
+          onClose={closeCheckoutDrawer}
+          onSubmit={handleCheckoutSubmit}
+          open={checkoutSource !== null}
+          priceLabel={priceLabel}
+          productName="Mujer, No Le Escribas"
+          regularPriceLabel={regularPriceLabel}
+          submitLabel={checkoutSubmitLabel}
+        />
+      ) : null}
     </main>
   );
 }

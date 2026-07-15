@@ -144,6 +144,14 @@ describe('NoLeEscribasSalesPage direct offer', () => {
     expect(pageSource).toContain('visitor: visitorOrderMetadata');
   });
 
+  it('uses Hotmart by default when country is unknown and exposes QR only as a secondary action', () => {
+    expect(pageSource).toContain("const isUnknownCountry = checkoutCountryMode === 'unknown'");
+    expect(pageSource).toContain('if (!usesBoliviaCheckout && !forceBoliviaCheckout)');
+    expect(pageSource).toContain('¿Estás en Bolivia? Puedes pagar por QR aquí.');
+    expect(pageSource).toContain("'unknown_country_bolivia_qr_link'");
+    expect(pageSource).toContain('checkoutCountryMode !== \'international\'');
+  });
+
   it('uses the real Janny photo and preserves V1 as a separate component', () => {
     expect(pageSource).toContain('janny-helguero-reconociendo.webp');
     expect(pageSource).not.toContain('janny-helguero-avatar.webp');

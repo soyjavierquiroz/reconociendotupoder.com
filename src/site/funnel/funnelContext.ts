@@ -8,6 +8,7 @@ export type FunnelContext = {
   vsl_completed?: boolean;
   entry_path?: string;
   handoff_path?: string;
+  source_path?: string;
   completed_at?: string;
   tracking_mode?: 'ads' | 'organic' | string;
   offer_received_at?: string;
@@ -24,6 +25,7 @@ const STRING_CONTEXT_KEYS: StringFunnelContextKey[] = [
   'pattern',
   'entry_path',
   'handoff_path',
+  'source_path',
   'completed_at',
   'offer_received_at',
 ];
@@ -194,6 +196,9 @@ function readContextFromUrl(url: URL): FunnelContext | null {
     hasExplicitContext;
   hasExplicitContext =
     assignStringContextValue(context, 'handoff_path', params.get('handoff_path')) ||
+    hasExplicitContext;
+  hasExplicitContext =
+    assignStringContextValue(context, 'source_path', params.get('source_path')) ||
     hasExplicitContext;
   hasExplicitContext =
     assignStringContextValue(context, 'completed_at', params.get('completed_at')) ||
